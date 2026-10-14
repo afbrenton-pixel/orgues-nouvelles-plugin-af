@@ -2,6 +2,7 @@
 
 function on_complete_order($order_id, $from, $to, $order) {
     if ($to !== 'processing') return;
+    if ('yes' === $order->get_meta('_on_student_proof_required', true)) return;
     $has_to_shipping = false;
 
     // Check if the order contains a physical product
