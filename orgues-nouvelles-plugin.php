@@ -69,6 +69,7 @@ function on_load_plugin() {
     if (is_plugin_active('pods/init.php')) {
         require_once(__DIR__ . '/includes/core/pods-pick-field-labels.php');
         require_once(__DIR__ . '/includes/vignettes/terms.php');
+        require_once(__DIR__ . '/includes/vignettes/auto-create.php');
     }
     
     // Charger les modules frontend
