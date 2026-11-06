@@ -203,7 +203,7 @@ add_action(
 	function () {
 		wp_enqueue_style(
 			'on-vignettes-accueil',
-			plugin_dir_url( dirname( __DIR__ ) . '/orgues-nouvelles-plugin.php' ) . 'assets/css/vignettes-accueil.css',
+			plugins_url( 'assets/css/vignettes-accueil.css', dirname( __DIR__, 2 ) . '/orgues-nouvelles-plugin.php' ),
 			array(),
 			'1.0'
 		);
