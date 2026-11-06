@@ -60,9 +60,24 @@ add_action(
 					return array( \Elementor\Modules\DynamicTags\Module::TEXT_CATEGORY );
 				}
 
+				protected function register_controls() {
+					$this->add_control(
+						'avant',
+						array(
+							'label'   => 'Texte avant le numéro',
+							'type'    => \Elementor\Controls_Manager::TEXT,
+							'default' => 'Ressources N°',
+						)
+					);
+				}
+
 				public function render() {
 					$n = on_vignettes_dernier_numero();
-					echo $n ? esc_html( (string) $n ) : '';
+					if ( ! $n ) {
+						return;
+					}
+					$avant = trim( (string) $this->get_settings( 'avant' ) );
+					echo esc_html( ( '' !== $avant ? $avant . ' ' : '' ) . $n );
 				}
 			}
 		}
