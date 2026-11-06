@@ -137,6 +137,88 @@ add_action(
 );
 
 /**
+ * Grandes vignettes et vignettes standard dans des grilles séparées.
+ *
+ * Dans le Loop Grid, « ID de la requête » :
+ *   vignettes_larges    → seulement les vignettes dont le champ « format » vaut « large »
+ *                         (par rang puis date). Une grille par grande vignette : la 1ère avec
+ *                         décalage 0, la suivante avec décalage 1, etc.
+ *   vignettes_standard  → toutes les autres vignettes (rang puis date). Le nombre de vignettes
+ *                         et le décalage de chaque grille se règlent dans le Loop Grid.
+ * La zone (zone_vignette) se choisit dans le Loop Grid.
+ */
+function on_vignettes_split_query( $query, $want_large ) {
+	static $running = false;
+	if ( $running ) {
+		return;
+	}
+	$running = true;
+	try {
+		$tax_query = $query->get( 'tax_query' );
+		$args      = array(
+			'post_type'        => 'vignette_accueil',
+			'post_status'      => 'publish',
+			'posts_per_page'   => 200,
+			'fields'           => 'ids',
+			'no_found_rows'    => true,
+			'suppress_filters' => true,
+			'meta_query'       => array( // phpcs:ignore WordPress.DB.SlowDBQuery
+				'relation'    => 'OR',
+				'rang_clause' => array(
+					'key'     => 'rang',
+					'type'    => 'NUMERIC',
+					'compare' => 'EXISTS',
+				),
+				array(
+					'key'     => 'rang',
+					'compare' => 'NOT EXISTS',
+				),
+			),
+			'orderby'          => array(
+				'rang_clause' => 'ASC',
+				'date'        => 'DESC',
+			),
+		);
+		if ( is_array( $tax_query ) && $tax_query ) {
+			$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery
+		}
+		if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
+			$args['lang']             = pll_current_language();
+			$args['suppress_filters'] = false;
+		}
+		$ids    = array_map( 'intval', ( new WP_Query( $args ) )->posts );
+		$result = array();
+		foreach ( $ids as $id ) {
+			$is_large = 'large' === get_post_meta( $id, 'format', true );
+			if ( $is_large === $want_large ) {
+				$result[] = $id;
+			}
+		}
+		$query->set( 'meta_query', array() );
+		$query->set( 'tax_query', array() );
+		$query->set( 'post__in', $result ? $result : array( 0 ) );
+		$query->set( 'orderby', 'post__in' );
+	} catch ( \Throwable $e ) {
+		unset( $e );
+	}
+	$running = false;
+}
+
+add_action(
+	'elementor/query/vignettes_larges',
+	function ( $query ) {
+		on_vignettes_split_query( $query, true );
+	}
+);
+
+add_action(
+	'elementor/query/vignettes_standard',
+	function ( $query ) {
+		on_vignettes_split_query( $query, false );
+	}
+);
+
+/**
  * Ressources du dernier numéro.
  *
  * Dans le Loop Grid, « ID de la requête » : vignettes_numero
