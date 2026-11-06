@@ -147,56 +147,53 @@ add_action(
 add_action(
 	'elementor/query/vignettes_numero',
 	function ( $query ) {
-		global $wpdb;
-		$tax = $query->get( 'tax_query' );
-		$ids = get_posts(
-			array(
+		static $running = false;
+		if ( $running ) {
+			return;
+		}
+		$running = true;
+		try {
+			$tax  = $query->get( 'tax_query' );
+			$args = array(
 				'post_type'        => 'vignette_accueil',
 				'post_status'      => 'publish',
 				'posts_per_page'   => 200,
 				'fields'           => 'ids',
 				'no_found_rows'    => true,
 				'suppress_filters' => true,
-				'tax_query'        => is_array( $tax ) ? $tax : array(), // phpcs:ignore WordPress.DB.SlowDBQuery
-			)
-		);
-		$max = 0;
-		foreach ( $ids as $id ) {
-			$max = max( $max, (int) get_post_meta( $id, 'numero', true ) );
-		}
-		if ( $max > 0 ) {
-			$query->set(
-				'meta_query',
-				array(
-					'relation'    => 'AND',
-					array(
-						'key'     => 'numero',
-						'value'   => $max,
-						'type'    => 'NUMERIC',
-						'compare' => '=',
-					),
-					array(
-						'relation'    => 'OR',
-						'rang_clause' => array(
-							'key'     => 'rang',
-							'type'    => 'NUMERIC',
-							'compare' => 'EXISTS',
-						),
-						array(
-							'key'     => 'rang',
-							'compare' => 'NOT EXISTS',
-						),
-					),
-				)
+				'orderby'          => 'date',
+				'order'            => 'DESC',
 			);
-			$query->set(
-				'orderby',
-				array(
-					'rang_clause' => 'ASC',
-					'date'        => 'DESC',
-				)
-			);
+			if ( is_array( $tax ) && $tax ) {
+				$args['tax_query'] = $tax; // phpcs:ignore WordPress.DB.SlowDBQuery
+			}
+			$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
+			$max = 0;
+			foreach ( $ids as $id ) {
+				$max = max( $max, (int) get_post_meta( $id, 'numero', true ) );
+			}
+			if ( $max > 0 ) {
+				$keep = array();
+				foreach ( $ids as $id ) {
+					if ( (int) get_post_meta( $id, 'numero', true ) === $max ) {
+						$rang   = (int) get_post_meta( $id, 'rang', true );
+						$keep[] = array( $rang > 0 ? $rang : PHP_INT_MAX, count( $keep ), $id );
+					}
+				}
+				usort(
+					$keep,
+					function ( $x, $y ) {
+						return array( $x[0], $x[1] ) <=> array( $y[0], $y[1] );
+					}
+				);
+				$query->set( 'tax_query', array() );
+				$query->set( 'post__in', array_column( $keep, 2 ) );
+				$query->set( 'orderby', 'post__in' );
+			}
+		} catch ( \Throwable $e ) {
+			unset( $e );
 		}
+		$running = false;
 	}
 );
 
