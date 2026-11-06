@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /** Numéro de version de la liste de termes : le changer relance la création (les termes existants ne sont jamais modifiés). */
-const ON_VIGNETTES_TERMS_VERSION = '1';
+const ON_VIGNETTES_TERMS_VERSION = '2';
 
 /**
  * Zones : emplacement précis d'une vignette sur la page d'accueil.
@@ -23,6 +23,7 @@ function on_vignettes_default_zones() {
 	return array(
 		'centre-actus'        => 'Centre – Actus',
 		'centre-publications' => 'Centre – Publications',
+		'centre-videos'       => 'Centre – Vidéos',
 		'gauche-fixe'         => 'Gauche – fixe en haut',
 		'gauche-ressources'   => 'Gauche – Ressources',
 		'droite-fixe'         => 'Droite – fixe en haut',

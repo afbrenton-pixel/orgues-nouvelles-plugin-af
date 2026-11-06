@@ -238,8 +238,20 @@ function on_vignettes_needs_image( $post ) {
 	return (bool) preg_match( '#vimeo\.com/#i', (string) $post->post_content ) && ! preg_match( '#\.mp3#i', (string) $post->post_content );
 }
 
+/** Ressource dont le contenu est une vidéo Vimeo (et pas des MP3). */
+function on_vignettes_is_video( $post ) {
+	if ( 'ressource' !== $post->post_type ) {
+		return false;
+	}
+	$c = (string) $post->post_content;
+	return (bool) preg_match( '#vimeo\.com/#i', $c ) && ! preg_match( '#\.mp3#i', $c );
+}
+
 /** Zone (terme de `zone_vignette`) d'un contenu. */
 function on_vignettes_zone_for( $post ) {
+	if ( on_vignettes_is_video( $post ) ) {
+		return 'centre-videos'; // toutes les vidéos ont leur rubrique.
+	}
 	if ( 'product' === $post->post_type || 'cd' === $post->post_type ) {
 		return 'centre-publications';
 	}
@@ -610,4 +622,37 @@ add_action(
 		update_option( 'on_vignettes_quality_done', '1' );
 	},
 	140
+);
+
+/** Une seule fois : les vignettes de ressources vidéo existantes passent dans la zone « Centre – Vidéos ». */
+add_action(
+	'init',
+	function () {
+		if ( '1' === get_option( 'on_vignettes_videozone_done' ) || ! post_type_exists( ON_VIGNETTES_CPT ) || ! taxonomy_exists( 'zone_vignette' ) ) {
+			return;
+		}
+		$zone = get_term_by( 'slug', 'centre-videos', 'zone_vignette' );
+		if ( ! $zone ) {
+			return; // le terme est créé au chargement suivant.
+		}
+		$ids = get_posts(
+			array(
+				'post_type'        => ON_VIGNETTES_CPT,
+				'post_status'      => array( 'publish', 'draft' ),
+				'numberposts'      => -1,
+				'fields'           => 'ids',
+				'suppress_filters' => true,
+				'meta_key'         => '_onv_source_type', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_value'       => 'ressource', // phpcs:ignore WordPress.DB.SlowDBQuery
+			)
+		);
+		foreach ( $ids as $id ) {
+			$source = get_post( (int) get_post_meta( $id, '_onv_source_id', true ) );
+			if ( $source && on_vignettes_is_video( $source ) ) {
+				wp_set_object_terms( $id, array( (int) $zone->term_id ), 'zone_vignette' );
+			}
+		}
+		update_option( 'on_vignettes_videozone_done', '1' );
+	},
+	150
 );
