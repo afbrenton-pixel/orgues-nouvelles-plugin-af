@@ -63,6 +63,7 @@ function on_load_plugin() {
     if (is_plugin_active('woocommerce/woocommerce.php') && is_plugin_active('pods/init.php')) {
         require_once(__DIR__ . '/includes/products/product-free-for-plans.php');
         require_once(__DIR__ . '/includes/products/restrict-magazines.php');
+        require_once(__DIR__ . '/includes/products/read-online.php');
     }
 
     // Charger les modules Pods transverses.
