@@ -71,6 +71,7 @@ function decorate(){
         var row=document.createElement('div');row.className='onv-trow';
         tagw.parentNode.insertBefore(row,tagw);row.appendChild(tagw);
         var pc=document.createElement('span');pc.className='onv-picto onv-picto-'+info.kind;pc.innerHTML=PICTO[info.kind];row.appendChild(pc);
+        try{var te=tagw.querySelector('.elementor-widget-container *')||tagw;pc.style.fontSize=getComputedStyle(te).fontSize;}catch(e){}
       }
     }
   }
