@@ -33,7 +33,7 @@
             "menu_position": "21",
             "menu_icon": "dashicons-screenoptions",
             "show_in_admin_bar": "0",
-            "show_in_nav_menus": "0",
+            "show_in_nav_menus": "1",
             "label_add_new": "Ajouter une vignette",
             "label_add_new_item": "Ajouter une nouvelle vignette",
             "built_in_taxonomies_zone_vignette": "1",

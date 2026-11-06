@@ -31,3 +31,7 @@ La photo est l'image à la une de WordPress. Les valeurs internes `_onv_source_i
 ## Termes à créer
 
 Les termes des deux taxonomies ne font pas partie du paquet Pods (un paquet ne contient pas les termes). Ils seront créés par le code d'installation et la commande de migration.
+
+## Remarque : source du Loop Grid
+
+Le type de contenu doit avoir `show_in_nav_menus` = oui (réglage Pods « Afficher dans les menus de navigation »), sinon Elementor Pro ne le propose pas comme source dans le Loop Grid.
