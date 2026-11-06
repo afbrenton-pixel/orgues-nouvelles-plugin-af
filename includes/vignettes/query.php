@@ -199,3 +199,16 @@ add_action(
 		}
 	}
 );
+
+/** Mise en page des colonnes de la page d'accueil (titres de section, colonnes fixes, pubs). */
+add_action(
+	'wp_enqueue_scripts',
+	function () {
+		wp_enqueue_style(
+			'on-vignettes-accueil',
+			plugin_dir_url( dirname( __DIR__ ) . '/orgues-nouvelles-plugin.php' ) . 'assets/css/vignettes-accueil.css',
+			array(),
+			'1.0'
+		);
+	}
+);
