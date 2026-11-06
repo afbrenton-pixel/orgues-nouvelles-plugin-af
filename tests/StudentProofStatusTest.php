@@ -65,7 +65,7 @@ class StudentProofStatusTest extends TestCase {
         $this->assertSame( 1, $order->saves );
     }
 
-    public function test_unpaid_approval_restores_gateway_status() {
+    public function test_unpaid_approval_waits_for_payment() {
         $order = new ON_Student_Proof_Test_Order();
         $order->status = 'on-hold';
         on_student_proof_before_save( $order );
@@ -73,7 +73,7 @@ class StudentProofStatusTest extends TestCase {
         $this->assertNull( $order->paid );
         $this->assertContains( 'awaiting-proof', on_student_proof_payment_statuses( array(), $order ) );
         on_student_proof_approve( $order, 12 );
-        $this->assertSame( 'on-hold', $order->status );
+        $this->assertSame( 'pending', $order->status );
         $this->assertNull( $order->paid );
         $this->assertSame( 'processing', on_student_proof_paid_status( 'completed', 123, $order ) );
         $order->status = 'processing';
@@ -178,6 +178,35 @@ class StudentProofStatusTest extends TestCase {
         on_student_proof_approve( $order, 12 );
         $this->assertSame( array(), on_student_proof_preview_actions( array(), $order ) );
         $this->assertFalse( on_student_proof_authorize_approval( false, 'anything' ) );
+    }
+
+    public function test_order_details_button_only_appears_for_authorized_waiting_orders() {
+        $order = new ON_Student_Proof_Test_Order();
+        on_student_proof_before_save( $order );
+        $order->id = 123;
+        ob_start();
+        on_student_proof_order_details_button( $order );
+        $html = ob_get_clean();
+        $this->assertStringContainsString( 'Valider le justificatif', $html );
+        $this->assertStringContainsString( 'order_id=123', $html );
+        $this->assertStringContainsString( '_wpnonce=', $html );
+
+        $GLOBALS['on_proof_test_can_edit'] = false;
+        ob_start();
+        on_student_proof_order_details_button( $order );
+        $this->assertSame( '', ob_get_clean() );
+
+        $GLOBALS['on_proof_test_can_edit'] = true;
+        $order->status = 'on-hold';
+        ob_start();
+        on_student_proof_order_details_button( $order );
+        $this->assertSame( '', ob_get_clean() );
+
+        $order->status = 'awaiting-proof';
+        on_student_proof_approve( $order, 12 );
+        ob_start();
+        on_student_proof_order_details_button( $order );
+        $this->assertSame( '', ob_get_clean() );
     }
 
     public function test_renewal_metadata_excludes_all_proof_bookkeeping() {

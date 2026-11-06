@@ -78,6 +78,38 @@ function on_student_proof_before_save( $order ) {
 }
 add_action( 'woocommerce_before_order_object_save', 'on_student_proof_before_save', 100, 1 );
 
+/** Treat an authorized manual processing transition as proof approval. */
+function on_student_proof_manual_processing( $order_id, $status ) {
+    if ( 'processing' !== $status ) {
+        return;
+    }
+    $order = wc_get_order( $order_id );
+    if ( ! on_student_proof_is_waiting( $order ) || ! on_student_proof_can_edit( $order ) ) {
+        return;
+    }
+    $order->update_meta_data( '_on_student_proof_approved_at', gmdate( 'Y-m-d H:i:s' ) );
+    $order->update_meta_data( '_on_student_proof_approved_by', get_current_user_id() );
+    $order->save_meta_data();
+    $order->add_order_note( __( 'Justificatif étudiant validé.', 'orgues-nouvelles' ) );
+}
+add_action( 'woocommerce_order_edit_status', 'on_student_proof_manual_processing', 10, 2 );
+
+/** Include the custom transition in WooCommerce's transactional mail pipeline. */
+function on_student_proof_email_actions( $actions ) {
+    $actions[] = 'woocommerce_order_status_awaiting-proof_to_processing';
+    return $actions;
+}
+add_filter( 'woocommerce_email_actions', 'on_student_proof_email_actions' );
+
+/** Send the native processing email after proof approval. */
+function on_student_proof_processing_email( $order_id, $order ) {
+    $emails = WC()->mailer()->get_emails();
+    if ( isset( $emails['WC_Email_Customer_Processing_Order'] ) ) {
+        $emails['WC_Email_Customer_Processing_Order']->trigger( $order_id, $order );
+    }
+}
+add_action( 'woocommerce_order_status_awaiting-proof_to_processing_notification', 'on_student_proof_processing_email', 10, 2 );
+
 /** Allow payment of unpaid proof orders and native activation after approval. */
 function on_student_proof_payment_statuses( $statuses, $order ) {
     if ( $order instanceof WC_Order && 'yes' === $order->get_meta( '_on_student_proof_required', true )
@@ -111,9 +143,7 @@ function on_student_proof_approve( $order, $user_id ) {
     }
     $order->update_meta_data( '_on_student_proof_approved_at', gmdate( 'Y-m-d H:i:s' ) );
     $order->update_meta_data( '_on_student_proof_approved_by', absint( $user_id ) );
-    $status = $order->get_meta( '_on_student_proof_unpaid_status', true );
-    $status = in_array( $status, array( 'pending', 'on-hold' ), true ) ? $status : 'pending';
-    $order->set_status( $order->get_date_paid( 'edit' ) ? 'processing' : $status );
+    $order->set_status( $order->get_date_paid( 'edit' ) ? 'processing' : 'pending' );
     $order->save();
     $order->add_order_note( __( 'Justificatif étudiant validé.', 'orgues-nouvelles' ) );
     return true;
@@ -214,6 +244,17 @@ function on_student_proof_list_actions( $actions, $order ) {
     return $actions;
 }
 add_filter( 'woocommerce_admin_order_actions', 'on_student_proof_list_actions', 10, 2 );
+
+function on_student_proof_order_details_button( $order ) {
+    if ( ! $order->has_status( 'awaiting-proof' ) ) {
+        return;
+    }
+    $action = on_student_proof_admin_action( $order );
+    if ( $action ) {
+        echo '<p class="form-field form-field-wide"><a class="button button-primary" href="' . esc_url( $action['url'] ) . '">' . esc_html( $action['name'] ) . '</a></p>';
+    }
+}
+add_action( 'woocommerce_admin_order_data_after_order_details', 'on_student_proof_order_details_button' );
 
 /** Add the same command to quick previews (grouped WooCommerce format). */
 function on_student_proof_preview_actions( $actions, $order ) {

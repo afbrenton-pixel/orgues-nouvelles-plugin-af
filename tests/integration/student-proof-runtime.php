@@ -169,7 +169,7 @@ try {
     list( $unpaid, $unpaid_subscription ) = on_student_proof_runtime_pair( $product, $customer_id );
     $unpaid->update_status( 'on-hold' );
     on_student_proof_approve( $unpaid, 1 );
-    on_student_proof_runtime_expect( $unpaid->has_status( 'on-hold' ) && ! $unpaid->get_date_paid() && wcs_get_subscription( $unpaid_subscription->get_id() )->has_status( 'pending' ), 'Unpaid approval restores on-hold without activation.' );
+    on_student_proof_runtime_expect( $unpaid->has_status( 'pending' ) && ! $unpaid->get_date_paid() && wcs_get_subscription( $unpaid_subscription->get_id() )->has_status( 'pending' ), 'Unpaid approval waits for payment without activation.' );
     $unpaid->payment_complete();
     on_student_proof_runtime_expect( $unpaid->has_status( 'processing' ) && wcs_get_subscription( $unpaid_subscription->get_id() )->has_status( 'active' ), 'Later native payment activates and keeps processing.' );
 
