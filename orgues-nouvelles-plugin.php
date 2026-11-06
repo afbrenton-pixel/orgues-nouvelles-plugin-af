@@ -70,6 +70,9 @@ function on_load_plugin() {
         require_once(__DIR__ . '/includes/core/pods-pick-field-labels.php');
         require_once(__DIR__ . '/includes/vignettes/terms.php');
         require_once(__DIR__ . '/includes/vignettes/auto-create.php');
+        if ( is_admin() ) {
+            require_once(__DIR__ . '/includes/vignettes/migration.php');
+        }
     }
     
     // Charger les modules frontend
