@@ -38,7 +38,7 @@ function startVideo(card){
   var w=document.createElement('div');w.className='onv-vwrap';
   var f=document.createElement('iframe');f.src=u;f.setAttribute('allow','autoplay; fullscreen; picture-in-picture');f.setAttribute('allowfullscreen','');f.setAttribute('title','Vidéo');
   w.appendChild(f);
-  var x=document.createElement('button');x.type='button';x.className='onv-vclose';x.setAttribute('aria-label','Fermer la vidéo');x.setAttribute('title','Fermer la vidéo');x.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/></svg>';w.appendChild(x);m.appendChild(w);
+  var x=document.createElement('button');x.type='button';x.className='onv-vclose';x.setAttribute('aria-label','Fermer la vidéo');x.setAttribute('title','Fermer la vidéo');x.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="4.6" stroke-linecap="butt" fill="none"/></svg>';w.appendChild(x);m.appendChild(w);
   card.classList.add('onv-video-on','onv-playing');
   cur={el:card,type:'video'};
   setTimeout(function(){try{card.scrollIntoView({behavior:'smooth',block:'nearest'});}catch(e){}},50);
