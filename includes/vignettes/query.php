@@ -54,14 +54,21 @@ add_action(
 add_action(
 	'elementor/query/vignettes_centre',
 	function ( $query ) {
-		$ids = get_posts(
-			array(
+		static $running = false;
+		if ( $running ) {
+			return;
+		}
+		$running = true;
+		try {
+			$tax_query = $query->get( 'tax_query' );
+			$args      = array(
 				'post_type'        => 'vignette_accueil',
 				'post_status'      => 'publish',
-				'posts_per_page'   => -1,
+				'posts_per_page'   => 200,
 				'fields'           => 'ids',
-				'tax_query'        => $query->get( 'tax_query' ), // phpcs:ignore WordPress.DB.SlowDBQuery
-				'meta_query'       => array(
+				'no_found_rows'    => true,
+				'suppress_filters' => true,
+				'meta_query'       => array( // phpcs:ignore WordPress.DB.SlowDBQuery
 					'relation'    => 'OR',
 					'rang_clause' => array(
 						'key'     => 'rang',
@@ -72,39 +79,50 @@ add_action(
 						'key'     => 'rang',
 						'compare' => 'NOT EXISTS',
 					),
-				), // phpcs:ignore WordPress.DB.SlowDBQuery
+				),
 				'orderby'          => array(
 					'rang_clause' => 'ASC',
 					'date'        => 'DESC',
 				),
-				'suppress_filters' => false,
-			)
-		);
-
-		$places = apply_filters( 'on_vignettes_grandes_places', array( 1, 6 ) );
-		$bigs   = array();
-		foreach ( $ids as $id ) {
-			if ( 'large' === get_post_meta( $id, 'format', true ) ) {
-				$bigs[] = $id;
+			);
+			if ( is_array( $tax_query ) && $tax_query ) {
+				$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery
 			}
-		}
-		$bigs   = array_slice( $bigs, 0, count( $places ) );
-		$others = array_values( array_diff( $ids, $bigs ) );
-
-		$result = array();
-		$total  = count( $ids );
-		for ( $slot = 1; $slot <= $total; $slot++ ) {
-			if ( in_array( $slot, $places, true ) && $bigs ) {
-				$result[] = array_shift( $bigs );
-			} elseif ( $others ) {
-				$result[] = array_shift( $others );
+			if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
+				$args['lang'] = pll_current_language();
+				$args['suppress_filters'] = false;
 			}
-		}
-		$result = array_merge( $result, $bigs, $others );
+			$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
 
-		$query->set( 'meta_query', array() );
-		$query->set( 'tax_query', array() );
-		$query->set( 'post__in', $result ? $result : array( 0 ) );
-		$query->set( 'orderby', 'post__in' );
+			$places = (array) apply_filters( 'on_vignettes_grandes_places', array( 1, 6 ) );
+			$bigs   = array();
+			foreach ( $ids as $id ) {
+				if ( 'large' === get_post_meta( $id, 'format', true ) ) {
+					$bigs[] = $id;
+				}
+			}
+			$bigs   = array_slice( $bigs, 0, count( $places ) );
+			$others = array_values( array_diff( $ids, $bigs ) );
+
+			$result = array();
+			$total  = count( $ids );
+			for ( $slot = 1; $slot <= $total; $slot++ ) {
+				if ( in_array( $slot, $places, true ) && $bigs ) {
+					$result[] = array_shift( $bigs );
+				} elseif ( $others ) {
+					$result[] = array_shift( $others );
+				}
+			}
+			$result = array_merge( $result, $bigs, $others );
+
+			$query->set( 'meta_query', array() );
+			$query->set( 'tax_query', array() );
+			$query->set( 'post__in', $result ? $result : array( 0 ) );
+			$query->set( 'orderby', 'post__in' );
+		} catch ( \Throwable $e ) {
+			// En cas de problème, on garde la requête d'origine.
+			unset( $e );
+		}
+		$running = false;
 	}
 );
