@@ -205,7 +205,7 @@ add_action(
 			'on-vignettes-accueil',
 			plugins_url( 'assets/css/vignettes-accueil.css', dirname( __DIR__, 2 ) . '/orgues-nouvelles-plugin.php' ),
 			array(),
-			'1.0'
+			(string) filemtime( dirname( __DIR__, 2 ) . '/assets/css/vignettes-accueil.css' )
 		);
 	}
 );

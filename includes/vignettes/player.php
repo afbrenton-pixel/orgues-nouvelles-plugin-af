@@ -78,7 +78,7 @@ add_action(
 			return;
 		}
 		$main = dirname( __DIR__, 2 ) . '/orgues-nouvelles-plugin.php';
-		wp_enqueue_script( 'on-vignettes-player', plugins_url( 'assets/js/vignettes-player.js', $main ), array(), '1.0', true );
+		wp_enqueue_script( 'on-vignettes-player', plugins_url( 'assets/js/vignettes-player.js', $main ), array(), (string) filemtime( dirname( __DIR__, 2 ) . '/assets/js/vignettes-player.js' ), true );
 		wp_add_inline_script( 'on-vignettes-player', 'window.ONV_MEDIA=' . wp_json_encode( $map ) . ';', 'before' );
 	}
 );
