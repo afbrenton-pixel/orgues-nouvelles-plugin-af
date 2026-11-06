@@ -114,6 +114,13 @@ function on_vignettes_find( $source_id ) {
  * @return int Identifiant de la pièce jointe, 0 si aucune.
  */
 function on_vignettes_image_id( $post ) {
+	// Ressource vidéo : la miniature Vimeo est le premier choix (sinon l'image de la ressource).
+	if ( 'ressource' === $post->post_type ) {
+		$vimeo = on_vignettes_vimeo_image_id( $post );
+		if ( $vimeo ) {
+			return $vimeo;
+		}
+	}
 	$thumb = (int) get_post_thumbnail_id( $post->ID );
 	if ( $thumb ) {
 		return $thumb;
@@ -129,6 +136,57 @@ function on_vignettes_image_id( $post ) {
 		}
 	}
 	return 0;
+}
+
+/**
+ * Miniature Vimeo d'une ressource vidéo, importée dans la médiathèque (une seule fois).
+ * Retourne l'identifiant de l'image, ou 0 s'il n'y a pas de vidéo Vimeo ou si Vimeo ne répond pas.
+ */
+function on_vignettes_vimeo_image_id( $post ) {
+	$c = (string) $post->post_content;
+	if ( preg_match( '#player\.vimeo\.com/video/(\d+)#i', $c, $v ) || preg_match( '#vimeo\.com/(\d+)#i', $c, $v ) ) {
+		$vid = $v[1];
+	} else {
+		return 0;
+	}
+	if ( preg_match( '#https?://[^"\'\s<>]+?\.mp3#i', $c ) ) {
+		return 0; // une ressource audio garde son image.
+	}
+	$cached = (int) get_post_meta( $post->ID, '_onv_vimeo_thumb_' . $vid, true );
+	if ( $cached && 'attachment' === get_post_type( $cached ) ) {
+		return $cached;
+	}
+	if ( get_transient( 'onv_vimeo_fail_' . $vid ) ) {
+		return 0;
+	}
+	$hash = '';
+	if ( preg_match( '#vimeo\.com/(?:video/)?' . $vid . '(?:/|\?h=)([0-9a-f]+)#i', $c, $h ) ) {
+		$hash = $h[1];
+	}
+	$url = 'https://vimeo.com/' . $vid . ( $hash ? '/' . $hash : '' );
+	$res = wp_remote_get( 'https://vimeo.com/api/oembed.json?width=1280&url=' . rawurlencode( $url ), array( 'timeout' => 8 ) );
+	$thumb = '';
+	if ( ! is_wp_error( $res ) && 200 === (int) wp_remote_retrieve_response_code( $res ) ) {
+		$data  = json_decode( wp_remote_retrieve_body( $res ), true );
+		$thumb = is_array( $data ) && ! empty( $data['thumbnail_url'] ) ? $data['thumbnail_url'] : '';
+	}
+	if ( ! $thumb ) {
+		set_transient( 'onv_vimeo_fail_' . $vid, 1, HOUR_IN_SECONDS );
+		return 0;
+	}
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	$att = media_sideload_image( preg_replace( '#_\d+x\d+(\.\w+)?$#', '_1280$1', $thumb ), 0, get_the_title( $post ) . ' (miniature Vimeo)', 'id' );
+	if ( is_wp_error( $att ) || ! $att ) {
+		$att = media_sideload_image( $thumb, 0, get_the_title( $post ) . ' (miniature Vimeo)', 'id' );
+	}
+	if ( is_wp_error( $att ) || ! $att ) {
+		set_transient( 'onv_vimeo_fail_' . $vid, 1, HOUR_IN_SECONDS );
+		return 0;
+	}
+	update_post_meta( $post->ID, '_onv_vimeo_thumb_' . $vid, (int) $att );
+	return (int) $att;
 }
 
 /** Zone (terme de `zone_vignette`) d'un contenu. */
@@ -398,4 +456,53 @@ add_action(
 		update_option( 'on_vignettes_images_done', '2' );
 	},
 	120
+);
+
+/**
+ * Une seule fois : les vignettes de ressources vidéo non modifiées à la main prennent la miniature Vimeo
+ * (quelques-unes à chaque affichage, pour ne pas ralentir le site). Une vignette dont on change l'image
+ * à la main est verrouillée et n'est plus touchée.
+ */
+add_action(
+	'init',
+	function () {
+		if ( '1' === get_option( 'on_vignettes_vimeo_done' ) || ! post_type_exists( ON_VIGNETTES_CPT ) ) {
+			return;
+		}
+		$ids = get_posts(
+			array(
+				'post_type'        => ON_VIGNETTES_CPT,
+				'post_status'      => 'publish',
+				'numberposts'      => -1,
+				'fields'           => 'ids',
+				'suppress_filters' => true,
+				'meta_key'         => '_onv_source_type', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_value'       => 'ressource', // phpcs:ignore WordPress.DB.SlowDBQuery
+			)
+		);
+		$budget = 4;
+		$left   = false;
+		foreach ( $ids as $id ) {
+			if ( get_post_meta( $id, '_onv_vimeo_checked', true ) || get_post_meta( $id, '_onv_locked', true ) ) {
+				continue;
+			}
+			if ( $budget <= 0 ) {
+				$left = true;
+				break;
+			}
+			$source = get_post( (int) get_post_meta( $id, '_onv_source_id', true ) );
+			if ( $source ) {
+				$image = on_vignettes_vimeo_image_id( $source );
+				if ( $image ) {
+					set_post_thumbnail( $id, $image );
+					--$budget;
+				}
+			}
+			update_post_meta( $id, '_onv_vimeo_checked', 1 );
+		}
+		if ( ! $left ) {
+			update_option( 'on_vignettes_vimeo_done', '1' );
+		}
+	},
+	130
 );
