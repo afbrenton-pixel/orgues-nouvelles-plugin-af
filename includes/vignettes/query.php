@@ -115,6 +115,15 @@ add_action(
 			}
 			$result = array_merge( $result, $bigs, $others );
 
+			// Dernière rangée complète : après la dernière grande vignette, un multiple de trois vignettes.
+			$last_big = max( $places );
+			$n        = count( $result );
+			if ( $n > $last_big ) {
+				$result = array_slice( $result, 0, $last_big + 3 * (int) floor( ( $n - $last_big ) / 3 ) );
+			} elseif ( $n > 1 ) {
+				$result = array_slice( $result, 0, 1 + 3 * (int) floor( ( $n - 1 ) / 3 ) );
+			}
+
 			$query->set( 'meta_query', array() );
 			$query->set( 'tax_query', array() );
 			$query->set( 'post__in', $result ? $result : array( 0 ) );
