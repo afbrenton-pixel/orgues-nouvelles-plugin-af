@@ -104,3 +104,8 @@
 .onv-mini .onv-count { order: 4; flex: 0 0 auto; font-size: .7rem; font-weight: 700; color: #5b6377; }
 .onv-mini .onv-next { order: 5; }
 .onv-barfull .onv-mini { width: 100%; margin: 10px 0 0; }
+
+/* Croix : x gras blanc, sans cadre (neutralise bordure/contour des boutons du thème) */
+.onv-vwrap button.onv-vclose, .onv-vwrap button.onv-vclose:hover, .onv-vwrap button.onv-vclose:focus, .onv-vwrap button.onv-vclose:active { border: 0 !important; outline: none !important; box-shadow: none !important; background: transparent !important; color: #fff !important; border-radius: 0; padding: 0; min-width: 0; min-height: 0; -webkit-appearance: none; appearance: none; }
+.onv-vwrap button.onv-vclose { width: 24px; height: 24px; top: 4px; right: 4px; }
+.onv-vwrap button.onv-vclose svg { width: 15px; height: 15px; }
