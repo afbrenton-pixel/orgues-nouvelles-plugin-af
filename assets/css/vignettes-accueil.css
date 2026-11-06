@@ -1,5 +1,6 @@
 /*
  * Page d'accueil : mise en page des colonnes (reprise de l'ancien plugin « Vignettes d'accueil »).
+ * Les parties fixes (newsletter, calendrier) utilisent l'option « Sticky » d'Elementor Pro sur un conteneur.
  * Classes à mettre dans « Classes CSS » des conteneurs Elementor :
  *   onv-col-centre (colonne centrale), onv-col-bonus (colonne de gauche), onv-col-pubs (colonne de droite).
  * Titres de section : <h3 class="onv-sep-title">.
@@ -25,25 +26,6 @@
 @media (min-width: 1025px) {
 	/* Les trois colonnes occupent toute la largeur */
 	.e-con:has(> .onv-col-centre) { justify-content: space-between; }
-
-	/* Seules la newsletter (gauche) et la pub fixe (droite) restent en haut pendant le défilement */
-	.onv-col-bonus,
-	.onv-col-pubs {
-		position: static;
-		align-self: stretch;
-		max-height: none;
-		overflow: visible;
-	}
-	.onv-col-bonus > .elementor-widget:first-child,
-	.onv-col-pubs > .elementor-widget:first-child {
-		position: sticky;
-		top: 170px;
-		z-index: 3;
-		background: #e0e4ed;
-		box-shadow: 0 20px 0 0 #e0e4ed;
-		height: 330px;
-		overflow: hidden;
-	}
 
 	/* Pubs : 3 visibles sur ordinateur */
 	.onv-col-pubs .e-loop-item:nth-child(n+4) { display: none; }
