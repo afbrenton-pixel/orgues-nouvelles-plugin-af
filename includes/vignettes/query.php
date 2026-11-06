@@ -94,7 +94,7 @@ add_action(
 			}
 			$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
 
-			$places = (array) apply_filters( 'on_vignettes_grandes_places', array( 1, 6 ) );
+			$places = (array) apply_filters( 'on_vignettes_grandes_places', array( 1, 14 ) );
 			$bigs   = array();
 			foreach ( $ids as $id ) {
 				if ( 'large' === get_post_meta( $id, 'format', true ) ) {
