@@ -37,7 +37,8 @@ function startVideo(card){
   var a=q(m,':scope > a');if(a)a.style.display='none';
   var w=document.createElement('div');w.className='onv-vwrap';
   var f=document.createElement('iframe');f.src=u;f.setAttribute('allow','autoplay; fullscreen; picture-in-picture');f.setAttribute('allowfullscreen','');f.setAttribute('title','Vidéo');
-  w.appendChild(f);m.appendChild(w);
+  w.appendChild(f);
+  var x=document.createElement('button');x.type='button';x.className='onv-vclose';x.setAttribute('aria-label','Fermer la vidéo');x.setAttribute('title','Fermer la vidéo');x.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/></svg>';w.appendChild(x);m.appendChild(w);
   card.classList.add('onv-video-on','onv-playing');
   cur={el:card,type:'video'};
   setTimeout(function(){try{card.scrollIntoView({behavior:'smooth',block:'nearest'});}catch(e){}},50);
@@ -96,6 +97,7 @@ document.addEventListener('click',function(e){
   var bar=e.target.closest('.onv-bar');
   if(bar&&!(cur&&cur.el===card)){e.preventDefault();toggleAudio(card);return;}
   if(bar&&cur&&cur.el===card&&cur.type==='audio'&&audio.duration){var r=bar.getBoundingClientRect();audio.currentTime=audio.duration*Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));e.preventDefault();return;}
+  if(e.target.closest('.onv-vclose')){e.preventDefault();stopAll();return;}
   var nb=e.target.closest('.onv-nbtn');
   if(nb){e.preventDefault();if(cur&&cur.el===card&&cur.type==='audio'){var nx=cur.i+(nb.classList.contains('onv-next')?1:-1);if(nx>=0&&nx<cur.tracks.length){cur.i=nx;setIcon(card,true);loadTrack(cur);}}return;}
   if(e.target.closest('.onv-mbtn')){e.preventDefault();toggleAudio(card);return;}
@@ -106,5 +108,6 @@ document.addEventListener('click',function(e){
     if(card.classList.contains('onv-has-video'))startVideo(card);else toggleAudio(card);
   }
 });
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&cur&&cur.type==='video')stopAll();});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
