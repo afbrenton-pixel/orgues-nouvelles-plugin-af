@@ -1,0 +1,63 @@
+/*
+ * Page d'accueil : mise en page des colonnes (reprise de l'ancien plugin « Vignettes d'accueil »).
+ * Classes à mettre dans « Classes CSS » des conteneurs Elementor :
+ *   onv-col-centre (colonne centrale), onv-col-bonus (colonne de gauche), onv-col-pubs (colonne de droite).
+ * Titres de section : <h3 class="onv-sep-title">.
+ */
+.onv-sep-title {
+	margin: 0;
+	text-align: center;
+	font-size: 1.15rem;
+	line-height: 1.2;
+	letter-spacing: .3em;
+	text-transform: uppercase;
+	color: #444;
+	font-weight: 600;
+}
+
+/* Tablette et mobile : ordre centre, ressources, pubs */
+@media (max-width: 1024px) {
+	.onv-col-centre { order: 1; }
+	.onv-col-bonus { order: 2; }
+	.onv-col-pubs { order: 3; }
+}
+
+@media (min-width: 1025px) {
+	/* Les trois colonnes occupent toute la largeur */
+	.e-con:has(> .onv-col-centre) { justify-content: space-between; }
+
+	/* Seules la newsletter (gauche) et la pub fixe (droite) restent en haut pendant le défilement */
+	.onv-col-bonus,
+	.onv-col-pubs {
+		position: static;
+		align-self: stretch;
+		max-height: none;
+		overflow: visible;
+	}
+	.onv-col-bonus > .elementor-widget:first-child,
+	.onv-col-pubs > .elementor-widget:first-child {
+		position: sticky;
+		top: 170px;
+		z-index: 3;
+		background: #e0e4ed;
+		box-shadow: 0 20px 0 0 #e0e4ed;
+		height: 330px;
+		overflow: hidden;
+	}
+
+	/* Pubs : 3 visibles sur ordinateur */
+	.onv-col-pubs .e-loop-item:nth-child(n+4) { display: none; }
+}
+
+/* Newsletter et pubs : même rapport qu'une vignette produit, image entière */
+.onv-col-bonus .elementor-widget-loop-grid:first-child img,
+.onv-col-pubs .e-loop-item img {
+	aspect-ratio: 1 / 1.3;
+	object-fit: contain;
+	width: 100%;
+}
+
+/* Téléphone : pubs en 2 colonnes, format portrait */
+@media (max-width: 767px) {
+	.onv-col-pubs .e-loop-item img { aspect-ratio: 1 / 1.285; }
+}
