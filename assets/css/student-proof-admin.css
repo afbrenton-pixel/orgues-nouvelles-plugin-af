@@ -1,0 +1,4 @@
+.wc-action-button-on-approve-proof::after {
+    font-family: dashicons;
+    content: "\f147";
+}

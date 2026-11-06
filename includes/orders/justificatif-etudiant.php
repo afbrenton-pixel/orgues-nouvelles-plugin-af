@@ -13,13 +13,11 @@ if (!class_exists('WC_Email_Justificatif_Etudiant')):
             $this->description = __('Cet email est envoyé lorsqu\'un abonné choisit le tarif étudiant pour lui demander d\'envoyer un justificatif.', 'orgues-nouvelles');
             $this->template_html = 'emails/justificatif_etudiant.php';
             $this->template_plain = 'emails/plain/justificatif_etudiant.php';
-            $this->template_base = plugin_dir_path(__FILE__) . 'templates/';
+            $this->template_base = ORGUES_NOUVELLES_PLUGIN_DIR . 'templates/';
             $this->placeholders = array(
                 '{order_date}' => '',
                 '{order_number}' => '',
             );
-
-            add_action('woocommerce_checkout_order_created', array($this, 'trigger'));
 
             // Call parent constructor
             parent::__construct();
@@ -27,37 +25,23 @@ if (!class_exists('WC_Email_Justificatif_Etudiant')):
 
         function trigger($order)
         {
-            if (!$this->is_enabled() || !is_a($order, 'WC_Order')) {
+            if (!$this->is_enabled() || !on_student_proof_is_waiting($order) || $order->get_meta('_on_student_proof_request_sent', true)) {
                 return;
             }
             $this->setup_locale();
-
-            $items = $order->get_items();
-            $demande_justif = false;
-
-            foreach ($items as $item) {
-                $variation_id = $item->get_variation_id();
-
-                if ($variation_id) {
-                    $demande = get_post_meta($variation_id, '_demande_justificatif', true); // Récupère la valeur de la métadonnée
-                    if ($demande === "yes") { // Vérifie si la valeur est 'yes'
-                        $demande_justif = true;
-                        break;
-                    }
-                }
-            }
-
-            if ($demande_justif) {
-
+            try {
                 $this->object = $order;
                 $customer_email = $order->get_billing_email();
                 $this->recipient = $customer_email;
                 $this->placeholders['{order_date}'] = wc_format_datetime($this->object->get_date_created());
                 $this->placeholders['{order_number}'] = $this->object->get_order_number();
-                $this->send($this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments());
+                if ($this->send($this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments())) {
+                    $order->update_meta_data('_on_student_proof_request_sent', gmdate('Y-m-d H:i:s'));
+                    $order->save();
+                }
+            } finally {
+                $this->restore_locale();
             }
-
-            $this->restore_locale();
         }
 
         public function get_headers()
@@ -201,7 +185,7 @@ if (!class_exists('WC_Email_Justificatif_Etudiant')):
 
             ob_start();
 
-            wc_get_template($this->template_html, array_merge($args, $this->get_template_args($args)),'', $this->template_base);
+            wc_get_template($this->template_html, array_merge($args, $this->get_template_args($args)), '', $this->template_base);
 
             return ob_get_clean();
         }
@@ -221,7 +205,7 @@ if (!class_exists('WC_Email_Justificatif_Etudiant')):
 
             ob_start();
 
-            wc_get_template($this->template_html, array_merge($args, $this->get_template_args($args)),'', $this->template_base);
+            wc_get_template($this->template_plain, array_merge($args, $this->get_template_args($args)), '', $this->template_base);
 
             return ob_get_clean();
         }

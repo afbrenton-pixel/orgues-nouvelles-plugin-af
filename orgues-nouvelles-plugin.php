@@ -46,6 +46,7 @@ function on_load_plugin() {
         require_once(__DIR__ . '/includes/orders/complete-order.php');
         require_once(__DIR__ . '/includes/orders/check-abonnement-france.php');
         require_once(__DIR__ . '/includes/orders/require-shipping-formule-on.php');
+        require_once(__DIR__ . '/includes/orders/student-proof-status.php');
         require_once(__DIR__ . '/includes/orders/justificatif-etudiant.php');
         require_once(__DIR__ . '/includes/orders/phone-orders.php');
         require_once(__DIR__ . '/includes/orders/email-subscription-info.php');
