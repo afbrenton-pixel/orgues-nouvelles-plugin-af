@@ -227,10 +227,6 @@ function on_vignettes_upsert( $post ) {
 	}
 
 	$image_id   = on_vignettes_image_id( $post );
-	if ( ! $image_id && 'ressource' === $post->post_type ) {
-		// Ressource sans photo : couverture du numéro du magazine.
-		$image_id = on_vignettes_cover_id( (int) get_post_meta( $post->ID, 'numero', true ), function_exists( 'pll_get_post_language' ) ? (string) pll_get_post_language( $post->ID ) : '' );
-	}
 	$needs_img  = 'ressource' !== $post->post_type;
 	$new_status = ( $needs_img && ! $image_id ) ? 'draft' : 'publish';
 
@@ -359,48 +355,20 @@ function on_vignettes_menu_badge() {
 
 
 /**
- * Couverture du magazine d'un numéro (image à la une du magazine, même langue,
- * sinon version française).
- */
-function on_vignettes_cover_id( $num, $lang = '' ) {
-	static $covers = null;
-	if ( $num < 1 ) {
-		return 0;
-	}
-	if ( null === $covers ) {
-		$covers = array();
-		$mags   = get_posts(
-			array(
-				'post_type'        => 'magazine',
-				'post_status'      => 'publish',
-				'numberposts'      => -1,
-				'suppress_filters' => true,
-			)
-		);
-		foreach ( $mags as $mag ) {
-			$l = function_exists( 'pll_get_post_language' ) ? (string) pll_get_post_language( $mag->ID ) : '';
-			$covers[ $l . '|' . (int) $mag->menu_order ] = (int) get_post_thumbnail_id( $mag->ID );
-		}
-	}
-	if ( ! empty( $covers[ $lang . '|' . $num ] ) ) {
-		return $covers[ $lang . '|' . $num ];
-	}
-	return ! empty( $covers[ 'fr|' . $num ] ) ? $covers['fr|' . $num] : 0;
-}
-
-/**
- * Une seule fois : les vignettes de ressources sans image prennent la couverture de leur numéro.
+ * Une seule fois : les vignettes sans image (hors colonne ressources) prennent la première
+ * image du contenu d'origine (ex. galerie d'une ressource photo) ; s'il n'y en a pas,
+ * elles passent en brouillon avec la pastille rouge.
  */
 add_action(
 	'init',
 	function () {
-		if ( '1' === get_option( 'on_vignettes_covers_done' ) || ! post_type_exists( ON_VIGNETTES_CPT ) ) {
+		if ( '2' === get_option( 'on_vignettes_images_done' ) || ! post_type_exists( ON_VIGNETTES_CPT ) ) {
 			return;
 		}
 		$ids = get_posts(
 			array(
 				'post_type'        => ON_VIGNETTES_CPT,
-				'post_status'      => array( 'publish', 'draft' ),
+				'post_status'      => 'publish',
 				'numberposts'      => -1,
 				'fields'           => 'ids',
 				'suppress_filters' => true,
@@ -410,17 +378,24 @@ add_action(
 			if ( has_post_thumbnail( $id ) ) {
 				continue;
 			}
-			$num = (int) get_post_meta( $id, 'numero', true );
-			if ( $num < 1 ) {
+			if ( has_term( array( 'gauche-ressources', 'gauche-fixe', 'droite-fixe' ), 'zone_vignette', $id ) ) {
 				continue;
 			}
-			$lang  = function_exists( 'pll_get_post_language' ) ? (string) pll_get_post_language( $id ) : '';
-			$cover = on_vignettes_cover_id( $num, $lang );
-			if ( $cover ) {
-				set_post_thumbnail( $id, $cover );
+			$source = (int) get_post_meta( $id, '_onv_source_id', true );
+			$image  = $source && get_post( $source ) ? on_vignettes_image_id( get_post( $source ) ) : 0;
+			if ( $image ) {
+				set_post_thumbnail( $id, $image );
+			} else {
+				wp_update_post(
+					array(
+						'ID'          => $id,
+						'post_status' => 'draft',
+					)
+				);
+				update_post_meta( $id, '_onv_sans_image', 1 );
 			}
 		}
-		update_option( 'on_vignettes_covers_done', '1' );
+		update_option( 'on_vignettes_images_done', '2' );
 	},
 	120
 );
