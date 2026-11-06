@@ -133,7 +133,7 @@ function on_vignettes_image_id( $post ) {
 
 /** Zone (terme de `zone_vignette`) d'un contenu. */
 function on_vignettes_zone_for( $post ) {
-	if ( 'product' === $post->post_type ) {
+	if ( 'product' === $post->post_type || 'cd' === $post->post_type ) {
 		return 'centre-publications';
 	}
 	if ( 'ressource' === $post->post_type ) {
