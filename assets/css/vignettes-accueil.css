@@ -43,3 +43,40 @@
 @media (max-width: 767px) {
 	.onv-col-pubs .e-loop-item img { aspect-ratio: 1 / 1.285; }
 }
+
+/* ---- Lecteur audio / vidéo des vignettes (voir assets/js/vignettes-player.js) ---- */
+.onv-has-audio .onv-media > a,
+.onv-has-video .onv-media > a { position: relative; display: block; cursor: pointer; }
+.onv-play { position: absolute; left: 50%; top: 50%; width: 54px; height: 54px; margin: -27px 0 0 -27px; pointer-events: none; opacity: .95; transition: transform .15s; }
+.onv-has-audio .onv-media > a:hover .onv-play,
+.onv-has-video .onv-media > a:hover .onv-play { transform: scale(1.1); }
+.onv-has-audio.onv-playing .onv-play { display: none; }
+.onv-has-audio.onv-active .onv-media > a::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 3px #f0502a; pointer-events: none; }
+.onv-mini { display: none; align-items: center; gap: 7px; margin: 10px 0 4px; }
+.onv-active .onv-mini { display: inline-flex; }
+.onv-mbtn { width: 26px; height: 26px; padding: 0; border: 2px solid #f0502a; border-radius: 50%; background: #fff; color: #f0502a; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; line-height: 1; }
+.onv-mbtn:hover { background: #f0502a; color: #fff; }
+.onv-bar { display: inline-block; width: 64px; height: 7px; background: #cfd4e0; border-radius: 4px; overflow: hidden; cursor: pointer; }
+.onv-fill { display: block; height: 100%; width: 0; background: #f0502a; }
+.onv-count { font-size: .7rem; color: #5b6377; font-weight: 700; }
+.onv-nbtn { display: none; width: 22px; height: 22px; padding: 0; border: 0; background: transparent; color: #f0502a; cursor: pointer; align-items: center; justify-content: center; }
+.onv-multi .onv-nbtn { display: inline-flex; }
+.onv-nbtn:hover { color: #1f2a44; }
+.onv-multi .onv-mini { gap: 4px; }
+.onv-multi .onv-bar { width: 40px; }
+
+/* Vidéo : la vignette prend toute la rangée, le lecteur remplace l'image */
+.e-loop-item.onv-video-on { grid-column: 1 / -1; }
+.onv-video-on .onv-media { position: relative; width: 100% !important; aspect-ratio: 16 / 9; background: #000; }
+.onv-vwrap { position: absolute; inset: 0; }
+.onv-vwrap iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+/* Ressources compactes : pictogramme à côté de l'étiquette, vraie barre de lecteur */
+.onv-trow { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; }
+.onv-picto { flex: 0 0 26px; width: 26px; height: 26px; color: #1f2a44; display: block; }
+.onv-picto svg { display: block; width: 100%; height: 100%; }
+.onv-has-audio .onv-picto { cursor: pointer; }
+.onv-barfull .onv-mini { display: flex; width: 100%; margin: 10px 0 0; gap: 8px; box-sizing: border-box; }
+.onv-barfull .onv-bar { flex: 1 1 auto; height: 8px; cursor: pointer; }
+.onv-barfull .onv-mbtn { flex: 0 0 auto; }
+.onv-compactcard.onv-active { border-left: 3px solid #f0502a; padding-left: 8px; }
