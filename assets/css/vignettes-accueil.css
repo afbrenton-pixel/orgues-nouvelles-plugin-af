@@ -80,3 +80,7 @@
 .onv-barfull .onv-bar { flex: 1 1 auto; height: 8px; cursor: pointer; }
 .onv-barfull .onv-mbtn { flex: 0 0 auto; }
 .onv-compactcard.onv-active { border-left: 3px solid #f0502a; padding-left: 8px; }
+
+/* Croix pour fermer la vidéo et revenir à la grille */
+.onv-vclose { position: absolute; top: 8px; right: 8px; z-index: 5; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 50%; background: rgba(0,0,0,.65); color: #fff; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; line-height: 1; }
+.onv-vclose:hover { background: #f0502a; }
