@@ -135,3 +135,67 @@ add_action(
 		$running = false;
 	}
 );
+
+/**
+ * Ressources du dernier numéro.
+ *
+ * Dans le Loop Grid, « ID de la requête » : vignettes_numero
+ *
+ * Ne garde que les vignettes dont le champ « numéro » est le plus élevé de la zone choisie
+ * (équivalent de numero="auto" de l'ancien plugin), triées par rang puis par date.
+ */
+add_action(
+	'elementor/query/vignettes_numero',
+	function ( $query ) {
+		global $wpdb;
+		$tax = $query->get( 'tax_query' );
+		$ids = get_posts(
+			array(
+				'post_type'        => 'vignette_accueil',
+				'post_status'      => 'publish',
+				'posts_per_page'   => 200,
+				'fields'           => 'ids',
+				'no_found_rows'    => true,
+				'suppress_filters' => true,
+				'tax_query'        => is_array( $tax ) ? $tax : array(), // phpcs:ignore WordPress.DB.SlowDBQuery
+			)
+		);
+		$max = 0;
+		foreach ( $ids as $id ) {
+			$max = max( $max, (int) get_post_meta( $id, 'numero', true ) );
+		}
+		if ( $max > 0 ) {
+			$query->set(
+				'meta_query',
+				array(
+					'relation'    => 'AND',
+					array(
+						'key'     => 'numero',
+						'value'   => $max,
+						'type'    => 'NUMERIC',
+						'compare' => '=',
+					),
+					array(
+						'relation'    => 'OR',
+						'rang_clause' => array(
+							'key'     => 'rang',
+							'type'    => 'NUMERIC',
+							'compare' => 'EXISTS',
+						),
+						array(
+							'key'     => 'rang',
+							'compare' => 'NOT EXISTS',
+						),
+					),
+				)
+			);
+			$query->set(
+				'orderby',
+				array(
+					'rang_clause' => 'ASC',
+					'date'        => 'DESC',
+				)
+			);
+		}
+	}
+);
