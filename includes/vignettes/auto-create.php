@@ -189,6 +189,55 @@ function on_vignettes_vimeo_image_id( $post ) {
 	return (int) $att;
 }
 
+/**
+ * Contrôle qualité d'une image de vignette : retourne '' si elle est correcte,
+ * sinon la raison ('noire' ou 'blanche') quand l'image est quasi uniforme.
+ * Seuils volontairement stricts pour ne pas écarter une pochette sombre mais réelle.
+ */
+function on_vignettes_image_problem( $image_id ) {
+	$file = $image_id ? get_attached_file( $image_id ) : '';
+	if ( ! $file || ! file_exists( $file ) || ! function_exists( 'imagecreatefromstring' ) ) {
+		return '';
+	}
+	$data = @file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	$im   = $data ? @imagecreatefromstring( $data ) : false;
+	if ( ! $im ) {
+		return '';
+	}
+	$small = imagecreatetruecolor( 24, 24 );
+	imagecopyresampled( $small, $im, 0, 0, 0, 0, 24, 24, imagesx( $im ), imagesy( $im ) );
+	$vals = array();
+	for ( $x = 0; $x < 24; $x++ ) {
+		for ( $y = 0; $y < 24; $y++ ) {
+			$c      = imagecolorat( $small, $x, $y );
+			$vals[] = ( ( ( $c >> 16 ) & 255 ) + ( ( $c >> 8 ) & 255 ) + ( $c & 255 ) ) / 3;
+		}
+	}
+	imagedestroy( $im );
+	imagedestroy( $small );
+	$mean = array_sum( $vals ) / count( $vals );
+	$var  = 0;
+	foreach ( $vals as $v ) {
+		$var += ( $v - $mean ) * ( $v - $mean );
+	}
+	$std = sqrt( $var / count( $vals ) );
+	if ( $mean < 12 && $std < 12 ) {
+		return 'noire';
+	}
+	if ( $mean > 245 && $std < 8 ) {
+		return 'blanche';
+	}
+	return '';
+}
+
+/** Cette source a-t-elle besoin d'une image de qualité ? (tout sauf les ressources audio/textes/partitions) */
+function on_vignettes_needs_image( $post ) {
+	if ( 'ressource' !== $post->post_type ) {
+		return true;
+	}
+	return (bool) preg_match( '#vimeo\.com/#i', (string) $post->post_content ) && ! preg_match( '#\.mp3#i', (string) $post->post_content );
+}
+
 /** Zone (terme de `zone_vignette`) d'un contenu. */
 function on_vignettes_zone_for( $post ) {
 	if ( 'product' === $post->post_type || 'cd' === $post->post_type ) {
@@ -285,7 +334,11 @@ function on_vignettes_upsert( $post ) {
 	}
 
 	$image_id   = on_vignettes_image_id( $post );
-	$needs_img  = 'ressource' !== $post->post_type;
+	$needs_img  = on_vignettes_needs_image( $post );
+	$problem    = ( $needs_img && $image_id ) ? on_vignettes_image_problem( $image_id ) : '';
+	if ( $problem ) {
+		$image_id = 0; // image inutilisable : on la traite comme une image absente.
+	}
 	$new_status = ( $needs_img && ! $image_id ) ? 'draft' : 'publish';
 
 	$args = array(
@@ -328,6 +381,11 @@ function on_vignettes_upsert( $post ) {
 	on_vignettes_busy( false );
 
 	// Brouillon faute d'image : drapeau pour la pastille rouge ; il disparaît dès que l'image est là.
+	if ( $problem ) {
+		update_post_meta( $vid, '_onv_image_probleme', $problem );
+	} else {
+		delete_post_meta( $vid, '_onv_image_probleme' );
+	}
 	if ( 'draft' === $new_status ) {
 		update_post_meta( $vid, '_onv_sans_image', 1 );
 	} else {
@@ -505,4 +563,51 @@ add_action(
 		}
 	},
 	130
+);
+
+/**
+ * Une seule fois : contrôle qualité des images des vignettes déjà en ligne (images noires ou blanches
+ * → brouillon avec la pastille rouge). Les vignettes modifiées à la main ne sont pas touchées.
+ */
+add_action(
+	'init',
+	function () {
+		if ( '1' === get_option( 'on_vignettes_quality_done' ) || ! post_type_exists( ON_VIGNETTES_CPT ) ) {
+			return;
+		}
+		$ids = get_posts(
+			array(
+				'post_type'        => ON_VIGNETTES_CPT,
+				'post_status'      => 'publish',
+				'numberposts'      => -1,
+				'fields'           => 'ids',
+				'suppress_filters' => true,
+			)
+		);
+		foreach ( $ids as $id ) {
+			if ( get_post_meta( $id, '_onv_locked', true ) ) {
+				continue;
+			}
+			$source = get_post( (int) get_post_meta( $id, '_onv_source_id', true ) );
+			$thumb  = get_post_thumbnail_id( $id );
+			if ( ! $source || ! $thumb || ! on_vignettes_needs_image( $source ) ) {
+				continue;
+			}
+			$problem = on_vignettes_image_problem( $thumb );
+			if ( $problem ) {
+				on_vignettes_busy( true );
+				wp_update_post(
+					array(
+						'ID'          => $id,
+						'post_status' => 'draft',
+					)
+				);
+				on_vignettes_busy( false );
+				update_post_meta( $id, '_onv_sans_image', 1 );
+				update_post_meta( $id, '_onv_image_probleme', $problem );
+			}
+		}
+		update_option( 'on_vignettes_quality_done', '1' );
+	},
+	140
 );
