@@ -5,7 +5,7 @@
  *
  * Outil dans « Vignettes accueil > Migration » : une simulation (rien n'est écrit) puis la migration.
  * Les anciennes vignettes ne sont jamais modifiées ni supprimées : la page actuelle reste intacte.
- * Relancer l'outil est sans danger : une vignette déjà migrée est ignorée.
+ * Relancer l'outil est sans danger : une vignette déjà migrée est ignorée. Les brouillons ne sont pas migrés.
  *
  * @package Orgues-Nouvelles Plugin
  */
@@ -190,6 +190,14 @@ function on_vignettes_migrate( $dry ) {
 			'action' => '',
 			'notes'  => array(),
 		);
+
+		// Les brouillons ne sont pas migrés (vignettes de test ou de contenus dépubliés) : ils seront recréés
+		// automatiquement si le contenu d'origine est publié.
+		if ( 'draft' === $o->post_status ) {
+			$row['action'] = 'ignorée : brouillon';
+			$rows[]        = $row;
+			continue;
+		}
 
 		$already = on_vignettes_migration_find_new( $oid );
 		if ( $already ) {
