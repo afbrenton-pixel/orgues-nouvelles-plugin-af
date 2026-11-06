@@ -18,9 +18,9 @@
 
 /* Tablette et mobile : ordre centre, ressources, pubs */
 @media (max-width: 1024px) {
-	.onv-col-centre { order: 1; }
-	.onv-col-bonus { order: 2; }
-	.onv-col-pubs { order: 3; }
+	.e-con.onv-col-centre { order: 1 !important; }
+	.e-con.onv-col-bonus { order: 2 !important; }
+	.e-con.onv-col-pubs { order: 3 !important; }
 }
 
 @media (min-width: 1025px) {
