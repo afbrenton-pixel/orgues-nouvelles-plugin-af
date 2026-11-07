@@ -44,6 +44,9 @@ if ( ! function_exists( 'get_posts' ) ) {
 if ( ! function_exists( '__' ) ) {
     function __( $text, $domain = '' ) { return $text; }
 }
+if ( ! function_exists( 'wp_salt' ) ) {
+    function wp_salt( $scheme = 'auth' ) { return $GLOBALS['on_gratuite_test_salt'] ?? 'salt-de-test-' . $scheme; }
+}
 if ( ! function_exists( 'add_action' ) ) {
     function add_action() {}
 }
@@ -60,6 +63,7 @@ class GratuitePrivateProofStorageTest extends TestCase {
         $GLOBALS['on_gratuite_test_base']    = $this->base;
         $GLOBALS['on_gratuite_test_meta']    = array();
         $GLOBALS['on_gratuite_test_filters'] = array();
+        unset( $GLOBALS['on_gratuite_test_salt'] );
     }
 
     protected function tearDown(): void {
@@ -89,6 +93,7 @@ class GratuitePrivateProofStorageTest extends TestCase {
         $this->assertFileExists( $this->base . '/on-gratuite-prive/' . $result['file'] );
         $this->assertSame( $result['file'], get_post_meta( 10, ON_GRATUITE_META_FILE, true ) );
         $this->assertStringNotContainsString( 'Carte', $result['file'] );
+        $this->assertStringEndsWith( '.enc', $result['file'] );
     }
 
     public function test_private_folder_gets_deny_rules() {
@@ -135,7 +140,7 @@ class GratuitePrivateProofStorageTest extends TestCase {
         update_post_meta( 7, ON_GRATUITE_META_FILE, '../../wp-config.php' );
         $this->assertFalse( on_gratuite_proof_path( 7 ) );
         $this->assertFalse( on_gratuite_is_valid_proof_name( '../a.png' ) );
-        $this->assertTrue( on_gratuite_is_valid_proof_name( str_repeat( 'a', 32 ) . '.pdf' ) );
+        $this->assertTrue( on_gratuite_is_valid_proof_name( str_repeat( 'a', 32 ) . '.enc' ) );
     }
 
     public function test_purge_deletes_only_expired_proofs() {
@@ -150,10 +155,45 @@ class GratuitePrivateProofStorageTest extends TestCase {
 
     public function test_purge_removes_orphan_old_files() {
         $dir = on_gratuite_prepare_proof_dir();
-        $orphan = $dir . '/' . str_repeat( 'b', 32 ) . '.pdf';
+        $orphan = $dir . '/' . str_repeat( 'b', 32 ) . '.enc';
         file_put_contents( $orphan, 'x' );
         touch( $orphan, time() - 90 * DAY_IN_SECONDS );
         $this->assertSame( 1, on_gratuite_purge_expired_proofs() );
         $this->assertFileDoesNotExist( $orphan );
+    }
+
+    public function test_stored_file_is_encrypted_and_not_readable_as_an_image() {
+        $png    = $this->png();
+        $result = on_gratuite_store_proof( $this->make_upload( $png ), 'a.png', 20 );
+        $stored = file_get_contents( $this->base . '/on-gratuite-prive/' . $result['file'] );
+        $this->assertNotSame( $png, $stored );
+        $this->assertStringNotContainsString( 'PNG', $stored );
+        $this->assertStringNotContainsString( $png, $stored );
+    }
+
+    public function test_admin_read_gives_back_the_original_content() {
+        $png = $this->png();
+        on_gratuite_store_proof( $this->make_upload( $png ), 'a.png', 21 );
+        $this->assertSame( $png, on_gratuite_read_proof( 21 ) );
+    }
+
+    public function test_altered_file_is_refused() {
+        $result = on_gratuite_store_proof( $this->make_upload( $this->png() ), 'a.png', 22 );
+        $path   = $this->base . '/on-gratuite-prive/' . $result['file'];
+        $blob   = file_get_contents( $path );
+        file_put_contents( $path, substr( $blob, 0, -1 ) . chr( ord( substr( $blob, -1 ) ) ^ 1 ) );
+        $this->assertFalse( on_gratuite_read_proof( 22 ) );
+    }
+
+    public function test_changed_site_key_makes_the_file_unreadable() {
+        on_gratuite_store_proof( $this->make_upload( $this->png() ), 'a.png', 23 );
+        $GLOBALS['on_gratuite_test_salt'] = 'un-autre-sel';
+        $this->assertFalse( on_gratuite_read_proof( 23 ) );
+    }
+
+    public function test_two_encryptions_of_the_same_data_differ() {
+        $this->assertNotSame( on_gratuite_encrypt( 'abc' ), on_gratuite_encrypt( 'abc' ) );
+        $this->assertSame( 'abc', on_gratuite_decrypt( on_gratuite_encrypt( 'abc' ) ) );
+        $this->assertFalse( on_gratuite_decrypt( 'pas chiffré du tout, mais assez long pour passer la taille minimale' ) );
     }
 }
