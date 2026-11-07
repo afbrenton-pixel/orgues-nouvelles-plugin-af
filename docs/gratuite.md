@@ -244,6 +244,8 @@ prénom+nom, fiches de même date de naissance (affichés, **jamais bloquants**)
 
 La création est déclenchée par le bouton **Accepter** de la fiche (étape 4).
 
+**Première connexion** : la page native des cadeaux (`/mon-compte/new-recipient-account/`) demande prénom, nom, pays et adresse. Prénom et nom sont **préremplis** par notre code (filtre `wcsg_new_recipient_account_details_fields`) ; le filtre `wcsg_need_shipping_address_details_for_recipient` permettrait de supprimer la demande d'adresse (non fait, à décider).
+
 Vérifié dans le code de WooCommerce Subscriptions 9.0 (7 novembre) : définir un destinataire ne crée pas son compte
 (d'où l'appel explicite) ; `is_gifted_subscription` se fonde sur `_recipient_user`.
 
@@ -266,7 +268,7 @@ supprime le justificatif ; fiche « refusée » ; e-mail de refus. Rien n'est cr
 **E-mails** (WooCommerce > Réglages > E-mails, activés, objet/titre/texte modifiables en français et en anglais) :
 « Gratuité -26 ans : demande acceptée » et « … demande refusée ». Espaces réservés : `{first_name}`, `{end_date}`,
 `{account_url}`, `{form_url}`, `{contact}`, `{reason}`. Envoyés à la personne bénéficiaire (adresse de la demande).
-Limite connue : dans une demande pour une autre personne, le demandeur ne reçoit pas de copie.
+Dans une demande pour une autre personne, le **demandeur reçoit une copie** (décidé le 7 novembre), précédée d'une ligne « Copie pour information : voici la décision concernant la demande que vous avez faite pour … ».
 
 Réglage ajouté : `form_page_id` (49840), page du formulaire citée dans l'e-mail de refus (traduction trouvée par Polylang).
 

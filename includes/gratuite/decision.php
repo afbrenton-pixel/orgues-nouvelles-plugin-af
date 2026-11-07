@@ -56,7 +56,19 @@ function on_gratuite_send_decision( $kind, $post_id, array $extra = array() ) {
         'form_url'    => on_gratuite_form_url( $d['langue'] ),
         'contact'     => on_gratuite_settings()['notify_email'],
     ), $extra );
-    return (bool) $email->trigger( $post_id, $d, $vars );
+    $sent = (bool) $email->trigger( $post_id, $d, $vars );
+
+    // Request made for another person: the requester gets a copy.
+    $requester = ( ! empty( $d['pour_autre'] ) && ! empty( $d['demandeur_id'] ) ) ? get_userdata( (int) $d['demandeur_id'] ) : false;
+    if ( $requester && strtolower( $requester->user_email ) !== strtolower( $d['email'] ) ) {
+        $email->trigger( $post_id, $d, $vars, array(
+            'to'         => $requester->user_email,
+            'first_name' => $requester->first_name ?: $requester->display_name,
+            'name'       => trim( $d['prenom'] . ' ' . mb_strtoupper( $d['nom'] ) ),
+            'email'      => $d['email'],
+        ) );
+    }
+    return $sent;
 }
 
 /** Record the decision on the fiche. */

@@ -194,3 +194,21 @@ function on_gratuite_provision( $post_id ) {
         'duplicates'      => $duplicates,
     );
 }
+
+/**
+ * First login of a gift recipient (page /mon-compte/new-recipient-account/): the extension shows empty
+ * first/last name fields. Our accounts already have them: pre-fill.
+ */
+function on_gratuite_prefill_recipient_names( $fields ) {
+    $user = wp_get_current_user();
+    if ( ! $user || ! $user->ID ) {
+        return $fields;
+    }
+    foreach ( array( 'first_name' => $user->first_name, 'last_name' => $user->last_name ) as $key => $value ) {
+        if ( isset( $fields[ $key ] ) && '' !== (string) $value && empty( $fields[ $key ]['default'] ) ) {
+            $fields[ $key ]['default'] = $value;
+        }
+    }
+    return $fields;
+}
+add_filter( 'wcsg_new_recipient_account_details_fields', 'on_gratuite_prefill_recipient_names' );

@@ -71,3 +71,10 @@ function on_gratuite_fill_decision_text( $text, array $vars, $lang = 'fr' ) {
         '{reason}'      => '' === $reason ? '' : "\n" . $label . $reason,
     ) );
 }
+
+/** First line of the copy sent to the person who made the request for someone else. */
+function on_gratuite_copy_intro( $lang, $name, $email ) {
+    return 'en' === $lang
+        ? sprintf( 'Copy for your information: this is the decision about the request you made for %s (%s).', $name, $email )
+        : sprintf( 'Copie pour information : voici la décision concernant la demande que vous avez faite pour %s (%s).', $name, $email );
+}
