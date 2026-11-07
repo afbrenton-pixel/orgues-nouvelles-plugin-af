@@ -11,7 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /** Find the account of an address, or create it (WooCommerce "new account" e-mail included). */
-function on_gratuite_ensure_account( $email, $first, $last ) {
+function on_gratuite_ensure_account( $email, $first, $last, $lang = 'fr' ) {
     $user = get_user_by( 'email', $email );
     if ( $user ) {
         return array( (int) $user->ID, false );
@@ -23,7 +23,12 @@ function on_gratuite_ensure_account( $email, $first, $last ) {
         return 'yes';
     };
     add_filter( 'pre_option_woocommerce_registration_generate_password', $force );
-    $user_id = wc_create_new_customer( $email, $login, '' );
+    // The "new account" e-mail is sent here: write it in the language of the request.
+    $switched = function_exists( 'switch_to_locale' ) ? switch_to_locale( 'en' === $lang ? 'en_US' : 'fr_FR' ) : false;
+    $user_id  = wc_create_new_customer( $email, $login, '' );
+    if ( $switched ) {
+        restore_previous_locale();
+    }
     remove_filter( 'pre_option_woocommerce_registration_generate_password', $force );
     if ( is_wp_error( $user_id ) ) {
         return $user_id;
@@ -111,7 +116,7 @@ function on_gratuite_provision( $post_id ) {
         return new WP_Error( 'on_gratuite_variation', 'Variation d\'abonnement introuvable : ' . $plan['variation_id'] );
     }
 
-    $account = on_gratuite_ensure_account( $d['email'], $d['prenom'], $d['nom'] );
+    $account = on_gratuite_ensure_account( $d['email'], $d['prenom'], $d['nom'], $d['langue'] );
     if ( is_wp_error( $account ) ) {
         return $account;
     }
@@ -128,6 +133,10 @@ function on_gratuite_provision( $post_id ) {
     if ( is_wp_error( $order ) ) {
         return $order;
     }
+    // A free student order always waits for the proof, whatever the variation says (the English
+    // variation 30365 carries _demande_justificatif = no on the test site).
+    $order->update_meta_data( '_on_student_proof_scope', 'yes' );
+    $order->update_meta_data( '_on_student_proof_required', 'yes' );
     $order->add_product( $variation, 1 );
     $fee = on_gratuite_fee_amount( $variation->get_price(), on_gratuite_settings()['discount_percent'] );
     on_gratuite_add_fee( $order, $fee );

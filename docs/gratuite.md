@@ -226,10 +226,12 @@ et une seule fois (refus si `abonnement_id` est déjà rempli). Elle crée :
 
 1. **Le compte** du bénéficiaire s'il n'existe pas : `wc_create_new_customer()` avec mot de passe généré par WooCommerce (identifiant unique
    tiré de l'adresse, e-mail « nouveau compte » avec lien pour choisir son mot de passe, personne invitée à compléter ses informations
-   à la première connexion), puis prénom/nom. S'il existe déjà (même adresse), il est réutilisé.
+   à la première connexion), puis prénom/nom ; l'e-mail est écrit dans la langue de la demande. S'il existe déjà (même adresse), il est réutilisé.
 2. **La commande parente** : variation FR (257) ou EN (30365) selon la langue de la demande, ligne de frais
    négative « Gratuité -26 ans » (total 0 €), statut demandé `pending`, ce que le module du webmaster
-   (`student-proof-status.php`) transforme en **« Attente justificatif »** (la variation porte `_demande_justificatif`).
+   (`student-proof-status.php`) transforme en **« Attente justificatif »**. La commande est marquée « justificatif requis »
+   par le code, sans dépendre de la variation (sur le site de test la variation EN 30365 porte `_demande_justificatif = no` :
+   à signaler au webmaster, l'abonnement Étudiant payant en anglais ne demande donc pas de justificatif).
    Aucun e-mail de demande de justificatif n'est envoyé (l'équipe a déjà le justificatif).
 3. **L'abonnement** : mêmes lignes, période 1 an, **aucun prochain paiement**, fin à +1 an, statut `pending`
    jusqu'à l'étape 4. Numéros de début/fin et formule : fonction du webmaster `on_initialize_subscription_number_bounds()`.
