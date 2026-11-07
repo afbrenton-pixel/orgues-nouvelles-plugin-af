@@ -45,11 +45,11 @@ function on_gratuite_render_subscription_metabox( $post ) {
         $accept = wp_nonce_url( admin_url( 'admin-post.php?action=on_gratuite_accept&fiche=' . (int) $post->ID ), 'on_gratuite_decide_' . $post->ID );
         echo '<p><a class="button button-primary" href="' . esc_url( $accept ) . '">' . esc_html__( 'Accepter la demande', 'orgues-nouvelles' ) . '</a></p>';
         echo '<p class="description">' . esc_html__( 'Crée le compte si besoin, active l\'abonnement pour un an, supprime le justificatif et prévient la personne.', 'orgues-nouvelles' ) . '</p><hr>';
-        wp_nonce_field( 'on_gratuite_decide_' . $post->ID, 'on_gratuite_decide_nonce', false );
         echo '<p><label for="on_gratuite_motif">' . esc_html__( 'Motif du refus (facultatif, transmis à la personne)', 'orgues-nouvelles' ) . '</label>';
-        echo '<textarea id="on_gratuite_motif" name="on_gratuite_motif" rows="3" style="width:100%"></textarea></p>';
-        $refuse = admin_url( 'admin-post.php?action=on_gratuite_refuse&fiche=' . (int) $post->ID );
-        echo '<p><button type="submit" class="button" formmethod="post" formaction="' . esc_url( $refuse ) . '">' . esc_html__( 'Refuser la demande', 'orgues-nouvelles' ) . '</button></p>';
+        echo '<textarea id="on_gratuite_motif" rows="3" style="width:100%"></textarea></p>';
+        // The edit form already has a field named "action": the reason travels in the address instead.
+        $refuse = wp_nonce_url( admin_url( 'admin-post.php?action=on_gratuite_refuse&fiche=' . (int) $post->ID ), 'on_gratuite_decide_' . $post->ID );
+        echo '<p><a class="button" id="on_gratuite_refuse" href="' . esc_url( $refuse ) . '" onclick="this.href=this.href+\'&amp;motif=\'+encodeURIComponent(document.getElementById(\'on_gratuite_motif\').value);">' . esc_html__( 'Refuser la demande', 'orgues-nouvelles' ) . '</a></p>';
         echo '<p class="description">' . esc_html__( 'Supprime le justificatif et prévient la personne, qui pourra redéposer une demande tout de suite.', 'orgues-nouvelles' ) . '</p>';
     } elseif ( 'acceptee' === $status || 'refusee' === $status ) {
         $when = (string) get_post_meta( $post->ID, 'date_decision', true );
@@ -87,8 +87,8 @@ function on_gratuite_handle_accept() {
 add_action( 'admin_post_on_gratuite_accept', 'on_gratuite_handle_accept' );
 
 function on_gratuite_handle_refuse() {
-    $post_id = on_gratuite_decision_request( isset( $_POST['on_gratuite_decide_nonce'] ) ? $_POST['on_gratuite_decide_nonce'] : '' );
-    $reason  = isset( $_POST['on_gratuite_motif'] ) ? sanitize_textarea_field( wp_unslash( $_POST['on_gratuite_motif'] ) ) : '';
+    $post_id = on_gratuite_decision_request( isset( $_GET['_wpnonce'] ) ? $_GET['_wpnonce'] : '' );
+    $reason  = isset( $_GET['motif'] ) ? sanitize_textarea_field( wp_unslash( $_GET['motif'] ) ) : '';
     on_gratuite_decision_redirect( $post_id, on_gratuite_refuse( $post_id, get_current_user_id(), $reason ), 'refused' );
 }
 add_action( 'admin_post_on_gratuite_refuse', 'on_gratuite_handle_refuse' );
