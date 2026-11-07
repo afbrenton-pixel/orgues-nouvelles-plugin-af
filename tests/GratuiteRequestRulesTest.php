@@ -136,4 +136,8 @@ class GratuiteRequestRulesTest extends TestCase {
             $this->assertNotSame( on_gratuite_message( $key, 'fr', 0, 'a@b.c' ), on_gratuite_message( $key, 'en', 0, 'a@b.c' ) );
         }
     }
+    public function test_pending_message_does_not_hide_a_more_precise_address_error() {
+        $r = $this->request( array( 'logged_in' => true, 'account_email' => 'moi@example.org', 'typed_email' => 'autre@example.org', 'has_pending' => true ) );
+        $this->assertStringContainsString( 'moi@example.org', $r['errors']['email'] );
+    }
 }
