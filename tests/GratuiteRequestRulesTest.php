@@ -99,4 +99,41 @@ class GratuiteRequestRulesTest extends TestCase {
         $this->assertSame( array( 'on_gratuite', 'redirect' ), on_gratuite_filter_submit_actions( array( 'save-to-database', 'email', 'on_gratuite', 'webhook', 'redirect' ) ) );
         $this->assertSame( array( 'email', 'redirect' ), on_gratuite_filter_submit_actions( array( 'email', 'redirect' ) ) );
     }
+    public function test_logged_in_person_cannot_type_another_address_for_herself() {
+        $base = array( 'logged_in' => true, 'account_email' => 'moi@example.org' );
+        $r    = $this->request( array_merge( $base, array( 'typed_email' => 'autre@example.org' ) ) );
+        $this->assertArrayHasKey( 'email', $r['errors'] );
+        $this->assertStringContainsString( 'moi@example.org', $r['errors']['email'] );
+        $this->assertSame( array(), $this->request( array_merge( $base, array( 'typed_email' => 'MOI@example.org' ) ) )['errors'] );
+        $this->assertSame( array(), $this->request( array_merge( $base, array( 'typed_email' => '' ) ) )['errors'] );
+    }
+
+    public function test_request_for_another_person_needs_a_logged_in_requester() {
+        $r = $this->request( array( 'for_other' => true, 'typed_email' => 'jeune@example.org' ) );
+        $this->assertArrayHasKey( 'pour_autre', $r['errors'] );
+        $this->assertArrayNotHasKey( 'email', $r['errors'] );
+    }
+
+    public function test_request_for_another_person_needs_a_different_address() {
+        $r = $this->request( array( 'for_other' => true, 'logged_in' => true, 'account_email' => 'moi@example.org', 'typed_email' => 'Moi@example.org' ) );
+        $this->assertArrayHasKey( 'email', $r['errors'] );
+        $this->assertSame( array(), $this->request( array( 'for_other' => true, 'logged_in' => true, 'account_email' => 'moi@example.org', 'typed_email' => 'jeune@example.org' ) )['errors'] );
+    }
+
+    public function test_beneficiary_with_an_existing_account_is_accepted_for_a_gift() {
+        $r = $this->request( array( 'for_other' => true, 'logged_in' => true, 'account_email' => 'moi@example.org', 'typed_email' => 'jeune@example.org', 'email_has_account' => true ) );
+        $this->assertSame( array(), $r['errors'] );
+    }
+
+    public function test_age_is_checked_on_the_beneficiary_date_of_birth() {
+        $r = $this->request( array( 'for_other' => true, 'logged_in' => true, 'account_email' => 'moi@example.org', 'typed_email' => 'adulte@example.org', 'dob' => '1990-01-01' ) );
+        $this->assertArrayHasKey( 'date_naissance', $r['errors'] );
+    }
+
+    public function test_new_messages_exist_in_both_languages() {
+        foreach ( array( 'email_mismatch', 'login_for_other', 'same_email' ) as $key ) {
+            $this->assertNotSame( '', on_gratuite_message( $key, 'fr', 0, 'a@b.c' ) );
+            $this->assertNotSame( on_gratuite_message( $key, 'fr', 0, 'a@b.c' ), on_gratuite_message( $key, 'en', 0, 'a@b.c' ) );
+        }
+    }
 }

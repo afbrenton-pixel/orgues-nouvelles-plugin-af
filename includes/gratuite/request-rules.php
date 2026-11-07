@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /** Messages shown to the visitor, in French and English. */
-function on_gratuite_message( $key, $lang = 'fr', $limit = 0 ) {
+function on_gratuite_message( $key, $lang = 'fr', $limit = 0, $extra = '' ) {
     $en = ( 'en' === $lang );
     $messages = array(
         'bad_dob'     => array( 'Date de naissance non valide.', 'Invalid date of birth.' ),
@@ -19,6 +19,18 @@ function on_gratuite_message( $key, $lang = 'fr', $limit = 0 ) {
         'login_first' => array(
             'Un compte existe déjà avec cette adresse. Connectez-vous d\'abord à votre compte, puis refaites votre demande depuis cette page.',
             'An account already exists with this address. Please log in to your account first, then submit your request again from this page.',
+        ),
+        'email_mismatch' => array(
+            sprintf( 'Vous êtes connecté(e) : la demande se fait avec l\'adresse de votre compte (%s). Pour demander pour une autre personne, cochez la case prévue.', $extra ),
+            sprintf( 'You are logged in: the request is made with the address of your account (%s). To apply for someone else, tick the box provided.', $extra ),
+        ),
+        'login_for_other' => array(
+            'Pour faire une demande pour une autre personne, connectez-vous d\'abord à votre compte.',
+            'To apply for another person, please log in to your account first.',
+        ),
+        'same_email'  => array(
+            'Cette adresse est celle de votre compte. Décochez la case « pour une autre personne », ou indiquez l\'adresse de la personne concernée.',
+            'This is the address of your account. Untick the "for another person" box, or enter the address of the person concerned.',
         ),
         'pending'     => array(
             'Une demande est déjà en cours d\'examen pour cette adresse.',
@@ -65,6 +77,9 @@ function on_gratuite_parse_date( $value ) {
  *     @type string                 $lang              'fr' or 'en'.
  *     @type bool                   $logged_in         The visitor is logged in.
  *     @type bool                   $email_has_account An account exists for the typed address.
+ *     @type bool                   $for_other         The request is made for another person (the typed address is theirs).
+ *     @type string                 $typed_email       Address typed in the form.
+ *     @type string                 $account_email     Address of the logged-in account.
  *     @type bool                   $has_accepted      The customer already had an accepted authorization (=> renewal).
  *     @type bool                   $has_pending       An authorization is already waiting for this address.
  *     @type DateTimeImmutable|null $today             For tests.
@@ -89,7 +104,21 @@ function on_gratuite_evaluate_request( array $in ) {
             $errors['date_naissance'] = on_gratuite_message( 'too_old', $lang, $limit );
         }
     }
-    if ( empty( $in['logged_in'] ) && ! empty( $in['email_has_account'] ) ) {
+    $typed   = strtolower( trim( isset( $in['typed_email'] ) ? (string) $in['typed_email'] : '' ) );
+    $account = strtolower( trim( isset( $in['account_email'] ) ? (string) $in['account_email'] : '' ) );
+    if ( ! empty( $in['for_other'] ) ) {
+        // Request for someone else: the typed address is the beneficiary's. Requires a logged-in requester.
+        if ( empty( $in['logged_in'] ) ) {
+            $errors['pour_autre'] = on_gratuite_message( 'login_for_other', $lang );
+        } elseif ( '' !== $account && $typed === $account ) {
+            $errors['email'] = on_gratuite_message( 'same_email', $lang );
+        }
+    } elseif ( ! empty( $in['logged_in'] ) ) {
+        // For oneself: the account's address is always used, so a different typed address is refused (never ignored silently).
+        if ( '' !== $account && '' !== $typed && $typed !== $account ) {
+            $errors['email'] = on_gratuite_message( 'email_mismatch', $lang, 0, $account );
+        }
+    } elseif ( ! empty( $in['email_has_account'] ) ) {
         $errors['email'] = on_gratuite_message( 'login_first', $lang );
     }
     if ( ! empty( $in['has_pending'] ) ) {

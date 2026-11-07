@@ -21,8 +21,9 @@ Spécification complète : plan technique du 7 novembre 2026 (Anne-Françoise).
 | --- | --- | --- |
 | 1 | Stockage privé et chiffré des justificatifs, affichage admin, suppression | **Fait** |
 | 1 | Type de contenu « Autorisation » et ses champs | **Fait** sur le site de test (Pods, sans code) |
-| 2 | Action du formulaire Elementor : contrôle d'âge, fiche, justificatif chiffré, notification | **Code fait** ; formulaire et test de bout en bout à faire sur le site de test |
-| 3 | Compte, abonnement et commande | À faire |
+| 2 | Action du formulaire Elementor : contrôle d'âge, fiche, justificatif chiffré | **Fait et testé de bout en bout** sur le site de test (7 novembre) |
+| 2b | Confirmation de l'adresse e-mail (lien, statut « à confirmer », purge manuelle) | **Code fait** (7 novembre) ; test à faire |
+| 3 | Compte, abonnement et commande **à l'acceptation** (le compte n'est plus créé à la demande) | À faire |
 | 4 | Accepter / Refuser | À faire |
 | 5 | Renouvellement annuel | À faire |
 
@@ -96,6 +97,7 @@ des champs** (onglet Avancé de chaque champ), à respecter exactement :
 | `date_naissance` | Date | Obligatoire ; format AAAA-MM-JJ (champ date natif) |
 | `justificatif` | Envoi de fichier | **1 fichier**, formats pdf, jpg, jpeg, png, 5 Mo ; obligatoire |
 | `newsletter` | Case à cocher | Facultatif ; seul l'indicateur est enregistré |
+| `pour_autre` | Acceptation | Facultatif : « Je fais cette demande pour une autre personne » (voir « Demande pour une autre personne ») |
 | `consentement` | Acceptation | Obligatoire (traitement des données, durée de conservation) |
 | `langue` | Champ caché | Valeur `fr` ou `en` (une valeur par page) |
 
@@ -112,17 +114,36 @@ Style : réglages globaux d'Elementor uniquement (règle 14).
    de 5 demandes par heure et par connexion (seul un hachage de l'adresse IP est gardé 1 h).
    Les erreurs s'affichent sous le champ concerné, en français ou en anglais selon `langue`.
    Si l'une échoue, **aucun fichier n'est enregistré**.
-2. **À l'envoi** : création de la fiche (statut « en attente »), déplacement du justificatif
+2. **À l'envoi** : création de la fiche (statut « **à confirmer** »), déplacement du justificatif
    dans le stockage privé chiffré, suppression du fichier de la partie publique
-   d'Elementor (y compris en cas d'erreur), notification à l'adresse de l'équipe
-   **sans pièce jointe ni lien vers le fichier**.
+   d'Elementor (y compris en cas d'erreur), puis **e-mail de confirmation à la personne**
+   (voir étape 2b). Une nouvelle demande de la même adresse remplace (efface) une demande
+   non confirmée précédente. L'équipe n'est prévenue qu'après la confirmation.
+
+### Demande pour une autre personne (décidé le 7 novembre, option B)
+
+Le site propose déjà d'offrir un abonnement (extension WooCommerce Subscriptions Gifting, destinataire
+`_recipient_user`). La gratuité suit la même logique :
+
+- **Pour soi-même** : la personne connectée est le bénéficiaire ; l'adresse de son compte est toujours
+  utilisée. Une adresse différente tapée dans le formulaire est **refusée** avec un message (jamais ignorée
+  sans le dire). Une personne non connectée dont l'adresse a déjà un compte doit d'abord se connecter.
+- **Pour une autre personne** (case `pour_autre`) : il faut être **connecté** ; l'adresse, la date de naissance,
+  le nom et le justificatif sont ceux du **bénéficiaire**. Son adresse doit différer de celle du compte
+  du demandeur. Le bénéficiaire peut déjà avoir un compte (comme pour un cadeau). L'e-mail de confirmation
+  part chez le bénéficiaire (« une demande a été faite pour vous par un utilisateur de notre site »).
+- La fiche garde le bénéficiaire (`client_id`, `email`) et le demandeur (`demandeur_id`) ; la notification à
+  l'équipe indique le demandeur. **Étape 3** : l'abonnement est un abonnement cadeau (acheteur = demandeur,
+  destinataire = bénéficiaire, compte créé s'il n'existe pas) ; les renouvellements suivent le bénéficiaire.
+- L'âge est contrôlé sur la date de naissance du bénéficiaire (première demande : moins de 26 ans ; renouvellement : moins de 27 ans).
+- Texte du formulaire : les champs prénom, nom, e-mail et date de naissance sont ceux de la personne concernée.
 
 ### Règles appliquées
 
 - Première demande : moins de **26 ans** à la date de naissance exacte (le jour du 26e anniversaire est refusé).
 - Renouvellement (le client connecté a déjà une autorisation acceptée) : moins de **27 ans**.
 - Une adresse qui a déjà un compte : la personne doit d'abord se connecter (message), puis refaire sa demande.
-- Une demande en attente pour la même adresse empêche d'en déposer une autre.
+- Une demande **confirmée et en attente de décision** pour la même adresse empêche d'en déposer une autre (une demande seulement « à confirmer » est remplacée).
 - **Pas encore faits** : création du compte, de l'abonnement et de la commande (étape 3),
   boutons Accepter / Refuser (étape 4), fenêtre des 60 jours avant la fin (étape 5).
 
@@ -146,6 +167,37 @@ Champs Pods : `prenom`, `nom`, `email`, `date_naissance`, `langue`, `type_demand
 à 26 et 27 ans), dates invalides, compte existant, demande en attente, messages FR et EN,
 réglages, contrôle du fichier, actions retirées.
 Commande : `vendor/bin/phpunit tests/GratuiteRequestRulesTest.php`.
+
+## Étape 2b : confirmation de l'adresse e-mail
+
+Fichiers : `includes/gratuite/confirmation.php` (règles et envoi, testés dans
+`tests/GratuiteConfirmationTest.php`) et `includes/gratuite/confirmation-admin.php`
+(liste d'administration). Décision du 7 novembre : une adresse fantaisiste ne doit pas
+laisser de compte ni de justificatif.
+
+- **Statuts** : `a_confirmer` (à la demande) → `en_attente` (après le clic) → `acceptee` ou `refusee`.
+- **E-mail à la personne** (texte brut, français ou anglais selon `langue`) : lien
+  `/?on_gratuite_confirm=<n° de fiche>&k=<jeton>` valable **7 jours** (réglage `confirm_days`).
+  Il ne mentionne ni ne joint le justificatif.
+- **Jeton** : 32 caractères aléatoires, jamais conservés : seule une empreinte (HMAC) est
+  enregistrée (`_on_gratuite_token_hash`), effacée à la confirmation. Date d'envoi :
+  `_on_gratuite_created` ; date de confirmation : `_on_gratuite_confirmed_at`.
+- **Clic** : une page simple confirme (ou dit : déjà confirmée, lien expiré, lien non valable). La fiche passe
+  en `en_attente` et **l'équipe est alors notifiée** (adresse `etudiant@…`).
+  Un robot de messagerie qui suit le lien confirme l'adresse à la place de la personne :
+  accepté (le justificatif reste contrôlé à la main).
+- **Liste « Gratuité -26 ans »** : les demandes à confirmer sont **cachées de la liste normale** et visibles sous
+  le filtre « À confirmer (n) ». Action de ligne **« Annuler la demande »** (supprime la fiche
+  et son justificatif). Lien **« Supprimer les demandes non confirmées de plus de 7 jours (n) »**
+  (purge manuelle, avec confirmation).
+- **Purge automatique** : désactivée (`auto_purge_unconfirmed` = faux). Si on l'active, une tâche
+  quotidienne WordPress (`on_gratuite_purge_unconfirmed_event`) fait la même chose.
+  **À vérifier avec le webmaster** : le site utilise-t-il la tâche planifiée de WordPress
+  (dépend des visites) ou une vraie tâche du serveur ? La purge des justificatifs à 60 jours
+  (étape 1) a la même dépendance.
+- **Limite connue** : une personne peut déclencher l'envoi d'e-mails de confirmation à une adresse qui
+  n'est pas la sienne (5 demandes par heure et par connexion au maximum).
+- **Page du formulaire** : le message de succès doit dire de cliquer sur le lien reçu par e-mail.
 
 ## À vérifier sur le site de test
 
@@ -177,9 +229,11 @@ d'autres rôles que les administrateurs peuvent accéder à l'administration.
 | `date_naissance` | date | Sert au contrôle d'âge et aux renouvellements |
 | `langue` | choix | `fr` ou `en` |
 | `type_demande` | choix | `premiere` ou `renouvellement` |
-| `statut` | choix | `en_attente`, `acceptee` ou `refusee` |
+| `statut` | choix | `a_confirmer`, `en_attente`, `acceptee` ou `refusee` |
 | `age_demande` | nombre | Âge au jour de la demande |
-| `client_id` | nombre | Compte client |
+| `client_id` | nombre | Compte du **bénéficiaire** (0 s'il n'en a pas encore) |
+| `demandeur_id` | nombre | Compte de la personne qui a rempli le formulaire (0 si non connectée) |
+| `pour_autre` | oui/non | Demande faite pour une autre personne |
 | `abonnement_id` | nombre | Abonnement créé |
 | `commande_id` | nombre | Commande parente ou de renouvellement |
 | `abonnement_existant` | oui/non | Signale un abonnement déjà en cours (suivi) |

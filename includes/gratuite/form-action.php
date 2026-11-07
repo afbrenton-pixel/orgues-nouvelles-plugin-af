@@ -5,7 +5,8 @@
  * The form is a normal Elementor "Form" widget (built in Elementor, no shortcode).
  * Field IDs expected (Advanced tab of each field):
  *   prenom, nom, email, date_naissance, justificatif (Upload, 1 file), newsletter (optional),
- *   consentement (Acceptance, required), langue (Hidden, value "fr" or "en").
+ *   pour_autre (Acceptance, optional: request for another person), consentement (Acceptance, required),
+ *   langue (Hidden, value "fr" or "en").
  * In "Actions After Submit", choose only "Gratuité -26 ans (autorisation)" (and Redirect if wanted).
  * Other actions are removed by on_gratuite_filter_submit_actions(): they would copy
  * personal data or the proof's address.
@@ -67,18 +68,32 @@ function on_gratuite_rate_key() {
     return 'on_gratuite_rl_' . substr( wp_hash( $ip ), 0, 20 );
 }
 
-/** Build the data given to on_gratuite_evaluate_request(). */
+/**
+ * Build the data given to on_gratuite_evaluate_request().
+ *
+ * "email" is the address the request is for: the beneficiary's. For oneself it is the account's
+ * address when logged in; for another person it is the typed address (requester must be logged in).
+ */
 function on_gratuite_request_input( array $values ) {
-    $user  = wp_get_current_user();
-    $email = $user->exists() ? $user->user_email : strtolower( $values['email'] ?? '' );
+    $user      = wp_get_current_user();
+    $typed     = strtolower( $values['email'] ?? '' );
+    $for_other = ! empty( $values['pour_autre'] );
+    $account   = $user->exists() ? strtolower( $user->user_email ) : '';
+    $email     = ( $for_other || ! $user->exists() ) ? $typed : $account;
+    $target_id = $for_other ? ( '' !== $typed ? (int) email_exists( $typed ) : 0 ) : ( $user->exists() ? (int) $user->ID : 0 );
     return array(
         'dob'               => $values['date_naissance'] ?? '',
         'lang'              => ( $values['langue'] ?? 'fr' ) === 'en' ? 'en' : 'fr',
         'logged_in'         => $user->exists(),
-        'email_has_account' => '' !== $email && (bool) email_exists( $email ),
-        'has_accepted'      => $user->exists() && on_gratuite_customer_has_accepted( $user->ID ),
+        'for_other'         => $for_other,
+        'typed_email'       => $typed,
+        'account_email'     => $account,
+        'email_has_account' => '' !== $typed && (bool) email_exists( $typed ),
+        'has_accepted'      => $target_id > 0 && on_gratuite_customer_has_accepted( $target_id ),
         'has_pending'       => on_gratuite_email_has_pending( $email ),
         'email'             => $email,
+        'target_user_id'    => $target_id,
+        'requester_id'      => $user->exists() ? (int) $user->ID : 0,
     );
 }
 
@@ -154,9 +169,12 @@ function on_gratuite_process_submission( $record, $ajax_handler ) {
         'langue'         => $lang,
         'type_demande'   => $result['type'],
         'age_demande'    => $result['age'],
-        'client_id'      => get_current_user_id(),
+        'client_id'      => (int) $input['target_user_id'],
+        'demandeur_id'   => (int) $input['requester_id'],
+        'pour_autre'     => ! empty( $input['for_other'] ),
         'newsletter'     => ! empty( $values['newsletter'] ),
     );
+    on_gratuite_erase_unconfirmed_for( $data['email'] ); // A new request replaces an earlier unconfirmed one.
     $post_id = on_gratuite_create_authorization( $data );
     if ( is_wp_error( $post_id ) ) {
         return $fail( 'technical' );
@@ -169,6 +187,10 @@ function on_gratuite_process_submission( $record, $ajax_handler ) {
     on_gratuite_remove_public_files( $record ); // Extra files, if any.
     $count = (int) get_transient( on_gratuite_rate_key() );
     set_transient( on_gratuite_rate_key(), $count + 1, HOUR_IN_SECONDS );
-    on_gratuite_notify_new_request( $post_id, $data );
+    // The team is notified when the applicant confirms the address (confirmation.php).
+    if ( ! on_gratuite_send_confirmation( $post_id, $data ) ) {
+        on_gratuite_erase_request( $post_id );
+        return $fail( 'technical' );
+    }
     return $post_id;
 }
