@@ -20,5 +20,7 @@ function on_gratuite_settings() {
         'fee_label'          => 'Gratuité -26 ans',
         'notify_email'       => 'etudiant@orgues-nouvelles.org',
         'rate_limit_per_hour' => 5,   // Requests per IP and per hour.
+        'confirm_days'       => 7,    // The e-mail confirmation link is valid this many days.
+        'auto_purge_unconfirmed' => false, // false = manual purge only (decision of 7 November; automatic purge to check with the webmaster).
     ) );
 }

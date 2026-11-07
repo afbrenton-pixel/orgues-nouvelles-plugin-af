@@ -40,7 +40,7 @@ function on_gratuite_email_has_pending( $email ) {
 }
 
 /**
- * Create the authorization record, status "waiting".
+ * Create the authorization record, status "to confirm" (the applicant must click the e-mail link first).
  *
  * @param array $d { prenom, nom, email, date_naissance, langue, type_demande, age_demande, client_id, newsletter }
  * @return int|WP_Error Post id.
@@ -62,7 +62,7 @@ function on_gratuite_create_authorization( array $d ) {
         'date_naissance' => $d['date_naissance'],
         'langue'        => $d['langue'],
         'type_demande'  => $d['type_demande'],
-        'statut'        => 'en_attente',
+        'statut'        => 'a_confirmer',
         'age_demande'   => (int) $d['age_demande'],
         'client_id'     => (int) $d['client_id'],
         'newsletter'    => empty( $d['newsletter'] ) ? '0' : '1',

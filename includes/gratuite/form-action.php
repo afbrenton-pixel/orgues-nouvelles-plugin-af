@@ -157,6 +157,7 @@ function on_gratuite_process_submission( $record, $ajax_handler ) {
         'client_id'      => get_current_user_id(),
         'newsletter'     => ! empty( $values['newsletter'] ),
     );
+    on_gratuite_erase_unconfirmed_for( $data['email'] ); // A new request replaces an earlier unconfirmed one.
     $post_id = on_gratuite_create_authorization( $data );
     if ( is_wp_error( $post_id ) ) {
         return $fail( 'technical' );
@@ -169,6 +170,10 @@ function on_gratuite_process_submission( $record, $ajax_handler ) {
     on_gratuite_remove_public_files( $record ); // Extra files, if any.
     $count = (int) get_transient( on_gratuite_rate_key() );
     set_transient( on_gratuite_rate_key(), $count + 1, HOUR_IN_SECONDS );
-    on_gratuite_notify_new_request( $post_id, $data );
+    // The team is notified when the applicant confirms the address (confirmation.php).
+    if ( ! on_gratuite_send_confirmation( $post_id, $data ) ) {
+        on_gratuite_erase_request( $post_id );
+        return $fail( 'technical' );
+    }
     return $post_id;
 }
