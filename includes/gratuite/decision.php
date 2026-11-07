@@ -22,8 +22,10 @@ function on_gratuite_form_url( $lang ) {
 
 /** "My account" page in the person's language (found through Polylang, like the form page). */
 function on_gratuite_account_url( $lang ) {
-    // The raw option: WooCommerce's helper goes through Polylang, which answers nothing outside a page view.
-    $id = (int) get_option( 'woocommerce_myaccount_page_id' );
+    // The value stored in the database, read directly: WooCommerce's helper and get_option() go through
+    // Polylang filters, which answer nothing outside a page view (admin button, scheduled task).
+    global $wpdb;
+    $id = (int) $wpdb->get_var( $wpdb->prepare( "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s", 'woocommerce_myaccount_page_id' ) );
     if ( $id > 0 && function_exists( 'pll_get_post' ) ) {
         $translated = pll_get_post( $id, 'en' === $lang ? 'en' : 'fr' );
         $id         = $translated ? (int) $translated : $id;
