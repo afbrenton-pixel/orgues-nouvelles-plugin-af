@@ -21,7 +21,7 @@ Spécification complète : plan technique du 7 novembre 2026 (Anne-Françoise).
 | --- | --- | --- |
 | 1 | Stockage privé et chiffré des justificatifs, affichage admin, suppression | **Fait** |
 | 1 | Type de contenu « Autorisation » et ses champs | **Fait** sur le site de test (Pods, sans code) |
-| 2 | Action du formulaire Elementor : contrôle d'âge, fiche | À faire |
+| 2 | Action du formulaire Elementor : contrôle d'âge, fiche, justificatif chiffré, notification | **Code fait** ; formulaire et test de bout en bout à faire sur le site de test |
 | 3 | Compte, abonnement et commande | À faire |
 | 4 | Accepter / Refuser | À faire |
 | 5 | Renouvellement annuel | À faire |
@@ -79,6 +79,74 @@ Fichier : `includes/gratuite/private-proof-storage.php`.
 (horodatage), `_on_gratuite_justificatif_supprime` (horodatage de suppression),
 `_on_gratuite_justificatif_acces` (une ligne par lecture : `horodatage|utilisateur`).
 
+## Étape 2 : formulaire Elementor et action « Gratuité -26 ans (autorisation) »
+
+Fichiers : `includes/gratuite/` : `settings.php`, `request-rules.php`, `authorization.php`,
+`form-action.php`, `class-form-action.php`.
+
+### Le formulaire (dans Elementor, sans code court)
+
+Widget « Formulaire » d'Elementor Pro, dans la page FR et dans la page EN. **Identifiants
+des champs** (onglet Avancé de chaque champ), à respecter exactement :
+
+| Identifiant | Type de champ | Remarque |
+| --- | --- | --- |
+| `prenom`, `nom` | Texte | Obligatoires |
+| `email` | E-mail | Obligatoire |
+| `date_naissance` | Date | Obligatoire ; format AAAA-MM-JJ (champ date natif) |
+| `justificatif` | Envoi de fichier | **1 fichier**, formats pdf, jpg, jpeg, png, 5 Mo ; obligatoire |
+| `newsletter` | Case à cocher | Facultatif ; seul l'indicateur est enregistré |
+| `consentement` | Acceptation | Obligatoire (traitement des données, durée de conservation) |
+| `langue` | Champ caché | Valeur `fr` ou `en` (une valeur par page) |
+
+Dans « Actions après soumission », choisir **uniquement** « Gratuité -26 ans (autorisation) »
+(et « Redirection » si besoin). Les autres actions (E-mail, Collecter les envois, Webhook,
+etc.) sont **retirées automatiquement** : elles copieraient des données personnelles ou
+l'adresse du justificatif. Ajouter le champ anti-robot d'Elementor (piège invisible ou reCAPTCHA).
+Style : réglages globaux d'Elementor uniquement (règle 14).
+
+### Ce que fait l'action
+
+1. **Avant l'envoi du fichier** (validation) : contrôle de la date de naissance (voir règles),
+   présence et format du justificatif, adresse déjà connue, demande déjà en cours, limite
+   de 5 demandes par heure et par connexion (seul un hachage de l'adresse IP est gardé 1 h).
+   Les erreurs s'affichent sous le champ concerné, en français ou en anglais selon `langue`.
+   Si l'une échoue, **aucun fichier n'est enregistré**.
+2. **À l'envoi** : création de la fiche (statut « en attente »), déplacement du justificatif
+   dans le stockage privé chiffré, suppression du fichier de la partie publique
+   d'Elementor (y compris en cas d'erreur), notification à l'adresse de l'équipe
+   **sans pièce jointe ni lien vers le fichier**.
+
+### Règles appliquées
+
+- Première demande : moins de **26 ans** à la date de naissance exacte (le jour du 26e anniversaire est refusé).
+- Renouvellement (le client connecté a déjà une autorisation acceptée) : moins de **27 ans**.
+- Une adresse qui a déjà un compte : la personne doit d'abord se connecter (message), puis refaire sa demande.
+- Une demande en attente pour la même adresse empêche d'en déposer une autre.
+- **Pas encore faits** : création du compte, de l'abonnement et de la commande (étape 3),
+  boutons Accepter / Refuser (étape 4), fenêtre des 60 jours avant la fin (étape 5).
+
+### Réglages : provisoirement en dur
+
+`includes/gratuite/settings.php` (fonction `on_gratuite_settings()`) : 26 ans, 27 ans,
+60 jours, variations 257 et 30365 (identifiants du site de test), 100 %, libellé des frais,
+adresse de notification etudiant@orgues-nouvelles.org, 5 demandes par heure. Décision du
+7 novembre : l'opération n'est pas destinée à être permanente, donc pas de page de réglages
+pour l'instant ; elle pourra remplacer cette fonction plus tard sans toucher au reste.
+
+### Données enregistrées sur la fiche
+
+Champs Pods : `prenom`, `nom`, `email`, `date_naissance`, `langue`, `type_demande`,
+`statut` (`en_attente`), `age_demande`, `client_id` (0 si la personne n'a pas encore de compte),
+`newsletter`.
+
+### Tests
+
+`tests/GratuiteRequestRulesTest.php` : âges (veille et jour du 26e anniversaire, renouvellement
+à 26 et 27 ans), dates invalides, compte existant, demande en attente, messages FR et EN,
+réglages, contrôle du fichier, actions retirées.
+Commande : `vendor/bin/phpunit tests/GratuiteRequestRulesTest.php`.
+
 ## À vérifier sur le site de test
 
 1. Le serveur du site de test est **Nginx** : le `.htaccess` ne protège pas. Le chiffrement
@@ -86,7 +154,7 @@ Fichier : `includes/gratuite/private-proof-storage.php`.
    fichier réel qu'une lecture directe par le web ne donne qu'un contenu illisible
    (ou un refus), jamais l'image.
 2. Définir `ON_GRATUITE_PROOF_KEY` dans `wp-config.php` en production.
-3. Elementor ne conserve ni le fichier ni son adresse (voir étape 2).
+3. Elementor ne conserve ni le fichier ni son adresse (voir étape 2) : vérifier le dossier `wp-content/uploads/elementor/forms/` et la page des envois après un essai.
 
 ## Pods (hors code)
 
