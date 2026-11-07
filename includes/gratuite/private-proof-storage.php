@@ -20,7 +20,7 @@ const ON_GRATUITE_FILE_PATTERN   = '/^[a-f0-9]{32}\.(pdf|jpg|jpeg|png)$/';
 
 /** Post type holding the authorizations (created with Pods). */
 function on_gratuite_post_type() {
-    return apply_filters( 'on_gratuite_post_type', 'on_autorisation' );
+    return apply_filters( 'on_gratuite_post_type', 'on_abon_autorisation' );
 }
 
 /** Capability required to read or delete a proof. */

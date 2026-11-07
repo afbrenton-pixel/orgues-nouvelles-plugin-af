@@ -59,7 +59,7 @@ Fichier : `includes/gratuite/private-proof-storage.php`.
 
 | Filtre | Défaut |
 | --- | --- |
-| `on_gratuite_post_type` | `on_autorisation` (à aligner avec l'identifiant du type Pods) |
+| `on_gratuite_post_type` | `on_abon_autorisation` (identifiant du type Pods, 20 caractères au maximum) |
 | `on_gratuite_capability` | `manage_woocommerce` |
 | `on_gratuite_retention_days` | 60 |
 | `on_gratuite_proof_types` | pdf, jpg, jpeg, png |
