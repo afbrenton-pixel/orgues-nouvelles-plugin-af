@@ -13,3 +13,4 @@ require_once __DIR__ . '/authorization.php';
 require_once __DIR__ . '/form-action.php';
 require_once __DIR__ . '/confirmation.php';
 require_once __DIR__ . '/confirmation-admin.php';
+require_once __DIR__ . '/emails.php';

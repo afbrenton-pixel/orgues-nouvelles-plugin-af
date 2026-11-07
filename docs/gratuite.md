@@ -199,6 +199,23 @@ laisser de compte ni de justificatif.
   n'est pas la sienne (5 demandes par heure et par connexion au maximum).
 - **Page du formulaire** : le message de succès doit dire de cliquer sur le lien reçu par e-mail.
 
+### E-mails au format du site (étape 2c, décidé le 7 novembre)
+
+Fichiers : `includes/gratuite/emails.php`, `class-emails.php`, `templates/emails/gratuite-*.php` (et `plain/`).
+Même mécanisme que l'e-mail « Demande de justificatif étudiant » du webmaster : classes d'e-mail WooCommerce,
+donc logo, couleurs et pied de page du site, version texte brute de secours.
+
+- **`ON_Gratuite_Email_Confirmation`** (au bénéficiaire) et **`ON_Gratuite_Email_Notification`** (à l'équipe, adresse réglable).
+  Les deux apparaissent dans **WooCommerce > Réglages > E-mails** : activer/désactiver, objet, titre, texte.
+- **Langues** : objet, titre et texte existent en français et en anglais (champs séparés), avec une variante
+  de texte pour « demande pour une autre personne ». Espaces réservés : `{first_name}`, `{link}`, `{days}`.
+  Les textes par défaut viennent de `on_gratuite_confirmation_texts()`.
+- **Repli** : si le système d'e-mails de WooCommerce n'est pas disponible, les e-mails partent en texte brut (comme avant).
+- Si l'e-mail de confirmation est **désactivé** dans WooCommerce, la demande échoue avec le message technique
+  (personne ne pourrait confirmer) : ne pas le désactiver.
+- Toujours : jamais de justificatif joint ni cité ; la notification à l'équipe ne contient pas de lien vers le fichier.
+- Les e-mails d'acceptation et de refus (étape 4) suivront le même modèle.
+
 ## À vérifier sur le site de test
 
 1. Le serveur du site de test est **Nginx** : le `.htaccess` ne protège pas. Le chiffrement
