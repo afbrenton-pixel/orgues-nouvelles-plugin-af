@@ -62,12 +62,14 @@ if ( ! class_exists( 'ON_Gratuite_Email_Confirmation' ) ) {
         }
 
         public function get_subject() {
-            $subject = $this->get_option( $this->on_gratuite_key( 'subject' ) );
+            $texts   = on_gratuite_confirmation_texts( $this->lang, $this->for_other );
+            $subject = $this->get_option( $this->on_gratuite_key( 'subject' ), $texts['subject'] ); // WooCommerce's own field has an empty default.
             return apply_filters( 'woocommerce_email_subject_' . $this->id, $this->format_string( $subject ), $this->object, $this );
         }
 
         public function get_heading() {
-            $heading = $this->get_option( $this->on_gratuite_key( 'heading' ) );
+            $texts   = on_gratuite_confirmation_texts( $this->lang, $this->for_other );
+            $heading = $this->get_option( $this->on_gratuite_key( 'heading' ), $texts['heading'] );
             return apply_filters( 'woocommerce_email_heading_' . $this->id, $this->format_string( $heading ), $this->object, $this );
         }
 
