@@ -25,6 +25,14 @@ function on_gratuite_admin_views( $views ) {
         return $views;
     }
     $counts  = on_gratuite_unconfirmed_counts();
+    // "Tous" and "Publié" do not count the unconfirmed requests (they are hidden from the normal list).
+    foreach ( array( 'all', 'publish' ) as $key ) {
+        if ( isset( $views[ $key ] ) ) {
+            $views[ $key ] = preg_replace_callback( '/\((\d+)\)/', function ( $m ) use ( $counts ) {
+                return '(' . max( 0, (int) $m[1] - $counts['all'] ) . ')';
+            }, $views[ $key ], 1 );
+        }
+    }
     $current = isset( $_GET['on_gratuite_statut'] ) && 'a_confirmer' === $_GET['on_gratuite_statut']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
     $url     = add_query_arg( array( 'post_type' => on_gratuite_post_type(), 'on_gratuite_statut' => 'a_confirmer' ), admin_url( 'edit.php' ) );
     $views['on_gratuite_a_confirmer'] = sprintf(

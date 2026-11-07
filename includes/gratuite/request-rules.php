@@ -121,8 +121,8 @@ function on_gratuite_evaluate_request( array $in ) {
     } elseif ( ! empty( $in['email_has_account'] ) ) {
         $errors['email'] = on_gratuite_message( 'login_first', $lang );
     }
-    if ( ! empty( $in['has_pending'] ) ) {
-        $errors['email'] = on_gratuite_message( 'pending', $lang );
+    if ( ! empty( $in['has_pending'] ) && ! isset( $errors['email'] ) ) {
+        $errors['email'] = on_gratuite_message( 'pending', $lang ); // Never hides a more precise message on the address.
     }
     return array( 'type' => $type, 'age' => $age, 'errors' => $errors );
 }
