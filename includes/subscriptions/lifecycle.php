@@ -323,7 +323,7 @@ if (!function_exists('on_exclude_custom_meta_from_renewal_order_copy')) {
             }
 
             $meta_key = isset($meta_item['meta_key']) ? (string) $meta_item['meta_key'] : '';
-            if ('' !== $meta_key && in_array($meta_key, $excluded_keys, true)) {
+            if ('' !== $meta_key && (in_array($meta_key, $excluded_keys, true) || 0 === strpos($meta_key, '_on_student_proof_'))) {
                 unset($order_meta[$index]);
             }
         }

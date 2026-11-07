@@ -2,6 +2,7 @@
 
 function on_complete_order($order_id, $from, $to, $order) {
     if ($to !== 'processing') return;
+    if (function_exists('on_student_proof_is_waiting') && on_student_proof_is_waiting($order)) return;
     $has_to_shipping = false;
 
     // Check if the order contains a physical product

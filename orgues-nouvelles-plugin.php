@@ -40,12 +40,18 @@ function on_load_plugin() {
             require_once(__DIR__ . '/includes/subscriptions/wp-cli-sync-memberships.php');
         }
     }
+
+    // Charger l'intégration AcyMailing (déclencheurs WooCommerce Subscriptions)
+    if (is_plugin_active('acymailing/index.php') && is_plugin_active('woocommerce-subscriptions/woocommerce-subscriptions.php')) {
+        require_once(__DIR__ . '/includes/acymailing/bootstrap.php');
+    }
     
     // Charger les modules de gestion des commandes WooCommerce
     if (is_plugin_active('woocommerce/woocommerce.php')) {
         require_once(__DIR__ . '/includes/orders/complete-order.php');
         require_once(__DIR__ . '/includes/orders/check-abonnement-france.php');
         require_once(__DIR__ . '/includes/orders/require-shipping-formule-on.php');
+        require_once(__DIR__ . '/includes/orders/student-proof-status.php');
         require_once(__DIR__ . '/includes/orders/justificatif-etudiant.php');
         require_once(__DIR__ . '/includes/orders/phone-orders.php');
         require_once(__DIR__ . '/includes/orders/email-subscription-info.php');
