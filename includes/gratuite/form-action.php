@@ -40,14 +40,25 @@ function on_gratuite_record_values( $record ) {
 function on_gratuite_uploaded_proof() {
     // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Elementor verifies the request.
     $f = isset( $_FILES['form_fields'] ) ? $_FILES['form_fields'] : null;
-    if ( ! $f || ! isset( $f['name']['justificatif'] ) ) {
+    if ( ! is_array( $f ) ) {
         return null;
     }
-    $pick = function ( $key ) use ( $f ) {
-        $v = $f[ $key ]['justificatif'];
-        return is_array( $v ) ? reset( $v ) : $v;
-    };
-    return array( 'name' => (string) $pick( 'name' ), 'size' => (int) $pick( 'size' ), 'error' => (int) $pick( 'error' ) );
+    // Elementor Pro reshapes $_FILES to ['justificatif'][0]['name'] before validation; PHP's raw shape is ['name']['justificatif'].
+    if ( isset( $f['justificatif'] ) && is_array( $f['justificatif'] ) ) {
+        $e = $f['justificatif'];
+        $e = isset( $e[0] ) && is_array( $e[0] ) ? $e[0] : $e;
+        if ( isset( $e['name'] ) ) {
+            return array( 'name' => (string) $e['name'], 'size' => (int) ( $e['size'] ?? 0 ), 'error' => (int) ( $e['error'] ?? UPLOAD_ERR_NO_FILE ) );
+        }
+    }
+    if ( isset( $f['name']['justificatif'] ) ) {
+        $pick = function ( $key ) use ( $f ) {
+            $v = $f[ $key ]['justificatif'];
+            return is_array( $v ) ? reset( $v ) : $v;
+        };
+        return array( 'name' => (string) $pick( 'name' ), 'size' => (int) $pick( 'size' ), 'error' => (int) $pick( 'error' ) );
+    }
+    return null;
 }
 
 /** Rate limit per IP (only a hash is kept, for one hour). */
