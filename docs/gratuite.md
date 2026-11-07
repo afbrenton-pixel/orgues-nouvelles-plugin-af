@@ -97,6 +97,7 @@ des champs** (onglet Avancé de chaque champ), à respecter exactement :
 | `date_naissance` | Date | Obligatoire ; format AAAA-MM-JJ (champ date natif) |
 | `justificatif` | Envoi de fichier | **1 fichier**, formats pdf, jpg, jpeg, png, 5 Mo ; obligatoire |
 | `newsletter` | Case à cocher | Facultatif ; seul l'indicateur est enregistré |
+| `pour_autre` | Acceptation | Facultatif : « Je fais cette demande pour une autre personne » (voir « Demande pour une autre personne ») |
 | `consentement` | Acceptation | Obligatoire (traitement des données, durée de conservation) |
 | `langue` | Champ caché | Valeur `fr` ou `en` (une valeur par page) |
 
@@ -118,6 +119,24 @@ Style : réglages globaux d'Elementor uniquement (règle 14).
    d'Elementor (y compris en cas d'erreur), puis **e-mail de confirmation à la personne**
    (voir étape 2b). Une nouvelle demande de la même adresse remplace (efface) une demande
    non confirmée précédente. L'équipe n'est prévenue qu'après la confirmation.
+
+### Demande pour une autre personne (décidé le 7 novembre, option B)
+
+Le site propose déjà d'offrir un abonnement (extension WooCommerce Subscriptions Gifting, destinataire
+`_recipient_user`). La gratuité suit la même logique :
+
+- **Pour soi-même** : la personne connectée est le bénéficiaire ; l'adresse de son compte est toujours
+  utilisée. Une adresse différente tapée dans le formulaire est **refusée** avec un message (jamais ignorée
+  sans le dire). Une personne non connectée dont l'adresse a déjà un compte doit d'abord se connecter.
+- **Pour une autre personne** (case `pour_autre`) : il faut être **connecté** ; l'adresse, la date de naissance,
+  le nom et le justificatif sont ceux du **bénéficiaire**. Son adresse doit différer de celle du compte
+  du demandeur. Le bénéficiaire peut déjà avoir un compte (comme pour un cadeau). L'e-mail de confirmation
+  part chez le bénéficiaire (« une demande a été faite pour vous par un utilisateur de notre site »).
+- La fiche garde le bénéficiaire (`client_id`, `email`) et le demandeur (`demandeur_id`) ; la notification à
+  l'équipe indique le demandeur. **Étape 3** : l'abonnement est un abonnement cadeau (acheteur = demandeur,
+  destinataire = bénéficiaire, compte créé s'il n'existe pas) ; les renouvellements suivent le bénéficiaire.
+- L'âge est contrôlé sur la date de naissance du bénéficiaire (première demande : moins de 26 ans ; renouvellement : moins de 27 ans).
+- Texte du formulaire : les champs prénom, nom, e-mail et date de naissance sont ceux de la personne concernée.
 
 ### Règles appliquées
 
@@ -212,7 +231,9 @@ d'autres rôles que les administrateurs peuvent accéder à l'administration.
 | `type_demande` | choix | `premiere` ou `renouvellement` |
 | `statut` | choix | `a_confirmer`, `en_attente`, `acceptee` ou `refusee` |
 | `age_demande` | nombre | Âge au jour de la demande |
-| `client_id` | nombre | Compte client |
+| `client_id` | nombre | Compte du **bénéficiaire** (0 s'il n'en a pas encore) |
+| `demandeur_id` | nombre | Compte de la personne qui a rempli le formulaire (0 si non connectée) |
+| `pour_autre` | oui/non | Demande faite pour une autre personne |
 | `abonnement_id` | nombre | Abonnement créé |
 | `commande_id` | nombre | Commande parente ou de renouvellement |
 | `abonnement_existant` | oui/non | Signale un abonnement déjà en cours (suivi) |

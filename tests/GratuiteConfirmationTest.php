@@ -95,4 +95,11 @@ class GratuiteConfirmationTest extends TestCase {
         }
         $this->assertSame( on_gratuite_confirmation_page_message( 'invalid' ), on_gratuite_confirmation_page_message( 'unknown' ) );
     }
+    public function test_mail_for_another_person_says_so() {
+        $fr = on_gratuite_confirmation_mail( 'fr', 'Léa', 'https://x.test/?k=1', 7, true );
+        $en = on_gratuite_confirmation_mail( 'en', 'Lea', 'https://x.test/?k=1', 7, true );
+        $this->assertStringContainsString( 'faite pour vous', $fr['body'] );
+        $this->assertStringContainsString( 'made for you', $en['body'] );
+        $this->assertStringNotContainsString( 'faite pour vous', on_gratuite_confirmation_mail( 'fr', 'Léa', 'u', 7 )['body'] );
+    }
 }

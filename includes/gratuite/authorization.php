@@ -42,7 +42,7 @@ function on_gratuite_email_has_pending( $email ) {
 /**
  * Create the authorization record, status "to confirm" (the applicant must click the e-mail link first).
  *
- * @param array $d { prenom, nom, email, date_naissance, langue, type_demande, age_demande, client_id, newsletter }
+ * @param array $d { prenom, nom, email, date_naissance, langue, type_demande, age_demande, client_id, demandeur_id, pour_autre, newsletter }
  * @return int|WP_Error Post id.
  */
 function on_gratuite_create_authorization( array $d ) {
@@ -65,6 +65,8 @@ function on_gratuite_create_authorization( array $d ) {
         'statut'        => 'a_confirmer',
         'age_demande'   => (int) $d['age_demande'],
         'client_id'     => (int) $d['client_id'],
+        'demandeur_id'  => (int) ( $d['demandeur_id'] ?? 0 ),
+        'pour_autre'    => empty( $d['pour_autre'] ) ? '0' : '1',
         'newsletter'    => empty( $d['newsletter'] ) ? '0' : '1',
     );
     foreach ( $meta as $key => $value ) {
@@ -85,9 +87,15 @@ function on_gratuite_notify_new_request( $post_id, array $d ) {
         'Date de naissance : ' . $d['date_naissance'] . ' (' . (int) $d['age_demande'] . ' ans)',
         'Type : ' . ( 'renouvellement' === $d['type_demande'] ? 'renouvellement annuel' : 'première demande' ),
         'Langue : ' . ( 'en' === $d['langue'] ? 'anglais' : 'français' ),
+    );
+    if ( ! empty( $d['pour_autre'] ) ) {
+        $requester = ! empty( $d['demandeur_id'] ) ? get_userdata( (int) $d['demandeur_id'] ) : false;
+        $lines[]   = 'Demande faite pour une autre personne, par : ' . ( $requester ? $requester->display_name . ' <' . $requester->user_email . '>' : 'compte inconnu' );
+    }
+    $lines = array_merge( $lines, array(
         '',
         'Fiche (le justificatif se consulte uniquement depuis cette fiche, une fois connecté) :',
         admin_url( 'post.php?post=' . (int) $post_id . '&action=edit' ),
-    );
+    ) );
     return wp_mail( $settings['notify_email'], $subject, implode( "\n", $lines ), array( 'Content-Type: text/plain; charset=UTF-8' ) );
 }

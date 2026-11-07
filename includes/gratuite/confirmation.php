@@ -80,14 +80,14 @@ function on_gratuite_confirmation_page_message( $result, $lang = 'fr' ) {
  *
  * @return array { subject, body }
  */
-function on_gratuite_confirmation_mail( $lang, $first_name, $url, $days ) {
+function on_gratuite_confirmation_mail( $lang, $first_name, $url, $days, $for_other = false ) {
     if ( 'en' === $lang ) {
         return array(
             'subject' => 'Orgues Nouvelles: please confirm your request',
             'body'    => implode( "\n", array(
                 'Hello ' . $first_name . ',',
                 '',
-                'We received your request for the free digital subscription for people under 26.',
+                $for_other ? 'A request for the free digital subscription for people under 26 was made for you by a user of our website.' : 'We received your request for the free digital subscription for people under 26.',
                 'To confirm that this e-mail address is yours, please click the link below:',
                 '',
                 $url,
@@ -106,7 +106,7 @@ function on_gratuite_confirmation_mail( $lang, $first_name, $url, $days ) {
         'body'    => implode( "\n", array(
             'Bonjour ' . $first_name . ',',
             '',
-            'Nous avons bien reçu votre demande d\'abonnement numérique gratuit pour les moins de 26 ans.',
+            $for_other ? 'Une demande d\'abonnement numérique gratuit pour les moins de 26 ans a été faite pour vous par un utilisateur de notre site.' : 'Nous avons bien reçu votre demande d\'abonnement numérique gratuit pour les moins de 26 ans.',
             'Pour confirmer que cette adresse e-mail est bien la vôtre, cliquez sur le lien ci-dessous :',
             '',
             $url,
@@ -141,14 +141,14 @@ function on_gratuite_send_confirmation( $post_id, array $d ) {
     $token = on_gratuite_new_token();
     update_post_meta( $post_id, '_on_gratuite_token_hash', on_gratuite_token_hash( $token, $post_id, on_gratuite_confirmation_key() ) );
     update_post_meta( $post_id, '_on_gratuite_created', time() );
-    $mail = on_gratuite_confirmation_mail( $d['langue'], $d['prenom'], on_gratuite_confirmation_url( $post_id, $token ), $days );
+    $mail = on_gratuite_confirmation_mail( $d['langue'], $d['prenom'], on_gratuite_confirmation_url( $post_id, $token ), $days, ! empty( $d['pour_autre'] ) );
     return (bool) wp_mail( $d['email'], $mail['subject'], $mail['body'], array( 'Content-Type: text/plain; charset=UTF-8' ) );
 }
 
 /** The data of a stored request, in the shape used by on_gratuite_notify_new_request(). */
 function on_gratuite_request_data( $post_id ) {
     $d = array();
-    foreach ( array( 'prenom', 'nom', 'email', 'date_naissance', 'langue', 'type_demande', 'age_demande' ) as $key ) {
+    foreach ( array( 'prenom', 'nom', 'email', 'date_naissance', 'langue', 'type_demande', 'age_demande', 'demandeur_id', 'pour_autre' ) as $key ) {
         $d[ $key ] = (string) get_post_meta( $post_id, $key, true );
     }
     return $d;
