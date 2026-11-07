@@ -22,7 +22,8 @@ function on_gratuite_form_url( $lang ) {
 
 /** "My account" page in the person's language (found through Polylang, like the form page). */
 function on_gratuite_account_url( $lang ) {
-    $id = function_exists( 'wc_get_page_id' ) ? (int) wc_get_page_id( 'myaccount' ) : 0;
+    // The raw option: WooCommerce's helper goes through Polylang, which answers nothing outside a page view.
+    $id = (int) get_option( 'woocommerce_myaccount_page_id' );
     if ( $id > 0 && function_exists( 'pll_get_post' ) ) {
         $translated = pll_get_post( $id, 'en' === $lang ? 'en' : 'fr' );
         $id         = $translated ? (int) $translated : $id;
@@ -63,15 +64,16 @@ function on_gratuite_record_decision( $post_id, $status, $user_id ) {
     update_post_meta( $post_id, '_on_gratuite_decide_par', (int) $user_id );
 }
 
-/** Customer e-mails about the order itself are replaced by our own message. */
+/**
+ * While a decision is applied, WooCommerce and its extensions must not send their own order e-mails
+ * (processing, completed, new order, gift recipient, cancelled subscription): ours replaces them.
+ * Nothing else is legitimately sent during that time, so every outgoing mail is held back.
+ */
 function on_gratuite_mute_order_emails( $mute ) {
-    // The last two: WooCommerce Subscriptions' "gift recipient" order e-mail and its cancelled-subscription notice.
-    foreach ( array( 'customer_completed_order', 'customer_processing_order', 'new_order', 'recipient_new_initial_order', 'cancelled_subscription' ) as $id ) {
-        if ( $mute ) {
-            add_filter( 'woocommerce_email_enabled_' . $id, '__return_false', 99 );
-        } else {
-            remove_filter( 'woocommerce_email_enabled_' . $id, '__return_false', 99 );
-        }
+    if ( $mute ) {
+        add_filter( 'pre_wp_mail', '__return_true', 99 );
+    } else {
+        remove_filter( 'pre_wp_mail', '__return_true', 99 );
     }
 }
 
