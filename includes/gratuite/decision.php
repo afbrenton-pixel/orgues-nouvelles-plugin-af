@@ -20,6 +20,26 @@ function on_gratuite_form_url( $lang ) {
     return $id ? (string) get_permalink( $id ) : home_url( '/' );
 }
 
+/** "My account" page in the person's language (found through Polylang, like the form page). */
+function on_gratuite_account_url( $lang ) {
+    $id = function_exists( 'wc_get_page_id' ) ? (int) wc_get_page_id( 'myaccount' ) : 0;
+    if ( $id > 0 && function_exists( 'pll_get_post' ) ) {
+        $translated = pll_get_post( $id, 'en' === $lang ? 'en' : 'fr' );
+        $id         = $translated ? (int) $translated : $id;
+    }
+    return $id > 0 ? (string) get_permalink( $id ) : home_url( '/' );
+}
+
+/** A date written in the language of the request (month names included). */
+function on_gratuite_format_date( $timestamp, $lang ) {
+    $switched = function_exists( 'switch_to_locale' ) ? switch_to_locale( 'en' === $lang ? 'en_US' : 'fr_FR' ) : false;
+    $text     = wp_date( 'en' === $lang ? 'F j, Y' : 'j F Y', $timestamp );
+    if ( $switched ) {
+        restore_previous_locale();
+    }
+    return $text;
+}
+
 /** Send the acceptance or refusal e-mail. @return bool */
 function on_gratuite_send_decision( $kind, $post_id, array $extra = array() ) {
     $class = 'accepted' === $kind ? 'ON_Gratuite_Email_Accepted' : 'ON_Gratuite_Email_Refused';
@@ -29,7 +49,7 @@ function on_gratuite_send_decision( $kind, $post_id, array $extra = array() ) {
     }
     $d    = on_gratuite_request_data( $post_id );
     $vars = array_merge( array(
-        'account_url' => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/' ),
+        'account_url' => on_gratuite_account_url( $d['langue'] ),
         'form_url'    => on_gratuite_form_url( $d['langue'] ),
         'contact'     => on_gratuite_settings()['notify_email'],
     ), $extra );
@@ -45,7 +65,8 @@ function on_gratuite_record_decision( $post_id, $status, $user_id ) {
 
 /** Customer e-mails about the order itself are replaced by our own message. */
 function on_gratuite_mute_order_emails( $mute ) {
-    foreach ( array( 'customer_completed_order', 'customer_processing_order', 'new_order' ) as $id ) {
+    // The last two: WooCommerce Subscriptions' "gift recipient" order e-mail and its cancelled-subscription notice.
+    foreach ( array( 'customer_completed_order', 'customer_processing_order', 'new_order', 'recipient_new_initial_order', 'cancelled_subscription' ) as $id ) {
         if ( $mute ) {
             add_filter( 'woocommerce_email_enabled_' . $id, '__return_false', 99 );
         } else {
@@ -129,7 +150,7 @@ function on_gratuite_accept( $post_id, $user_id ) {
 
     on_gratuite_delete_proof( $post_id );
     on_gratuite_record_decision( $post_id, 'acceptee', $user_id );
-    $end_label = wp_date( get_option( 'date_format' ), strtotime( $end . ' UTC' ) );
+    $end_label = on_gratuite_format_date( strtotime( $end . ' UTC' ), (string) get_post_meta( $post_id, 'langue', true ) );
     $sent      = on_gratuite_send_decision( 'accepted', $post_id, array( 'end_date' => $end_label ) );
 
     return array( 'subscription_id' => $sub_id, 'order_id' => $order_id, 'end_date' => $end, 'mail_sent' => $sent );
