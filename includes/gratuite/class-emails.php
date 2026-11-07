@@ -232,16 +232,23 @@ if ( ! class_exists( 'ON_Gratuite_Email_Decision' ) ) {
          * @param array $d       Request data (on_gratuite_request_data()).
          * @param array $vars    end_date, account_url, form_url, contact, reason.
          */
-        public function trigger( $post_id, array $d, array $vars = array() ) {
+        public function trigger( $post_id, array $d, array $vars = array(), $copy_for = null ) {
             if ( ! $this->is_enabled() ) {
                 return false;
             }
             $this->setup_locale();
             try {
                 $this->lang      = 'en' === $d['langue'] ? 'en' : 'fr';
+                $recipient       = $d['email'];
+                if ( is_array( $copy_for ) ) {
+                    // Copy for the person who made the request on behalf of someone else: addressed to them.
+                    $vars['copy_intro'] = on_gratuite_copy_intro( $this->lang, $copy_for['name'], $copy_for['email'] );
+                    $recipient          = $copy_for['to'];
+                    $d['prenom']        = $copy_for['first_name'];
+                }
                 $vars['first_name'] = $d['prenom'];
                 $this->object    = array( 'post_id' => $post_id, 'data' => $d, 'vars' => $vars );
-                $this->recipient = $d['email'];
+                $this->recipient = $recipient;
                 return (bool) $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
             } finally {
                 $this->restore_locale();
@@ -306,6 +313,9 @@ if ( ! class_exists( 'ON_Gratuite_Email_Decision' ) ) {
                 $text = on_gratuite_decision_texts( $this->kind, $this->lang )['body'];
             }
             $text = on_gratuite_fill_decision_text( $text, $this->object['vars'], $this->lang );
+            if ( ! empty( $this->object['vars']['copy_intro'] ) ) {
+                $text = $this->object['vars']['copy_intro'] . "\n\n" . $text;
+            }
             if ( $plain ) {
                 return $text;
             }

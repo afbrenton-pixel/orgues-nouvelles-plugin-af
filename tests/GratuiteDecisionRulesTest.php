@@ -45,4 +45,11 @@ class GratuiteDecisionRulesTest extends TestCase {
         $en = on_gratuite_fill_decision_text( on_gratuite_decision_texts( 'refused', 'en' )['body'], $vars + array( 'reason' => 'Unreadable' ), 'en' );
         $this->assertStringContainsString( 'Reason: Unreadable', $en );
     }
+
+    public function test_copy_intro_names_the_beneficiary_in_both_languages() {
+        $fr = on_gratuite_copy_intro( 'fr', 'Jules DUPONT', 'j@x.org' );
+        $this->assertStringContainsString( 'Jules DUPONT (j@x.org)', $fr );
+        $this->assertStringContainsString( 'Copie', $fr );
+        $this->assertStringContainsString( 'Copy for your information', on_gratuite_copy_intro( 'en', 'A B', 'a@b.c' ) );
+    }
 }
