@@ -1,0 +1,184 @@
+<?php
+/**
+ * Free student subscription, step 3: account, subscription and parent order.
+ *
+ * Called when a request is accepted (the Accept button of step 4 calls
+ * on_gratuite_provision(); until then a temporary button of the fiche does).
+ * Everything created here is traceable from the fiche (client_id, abonnement_id,
+ * commande_id) and the order stays in the webmaster's "Attente justificatif" status:
+ * step 4 validates it with on_student_proof_approve().
+ */
+defined( 'ABSPATH' ) || exit;
+
+/** Find the account of an address, or create it (WooCommerce "new account" e-mail included). */
+function on_gratuite_ensure_account( $email, $first, $last ) {
+    $user = get_user_by( 'email', $email );
+    if ( $user ) {
+        return array( (int) $user->ID, false );
+    }
+    if ( class_exists( 'WCS_Gifting' ) && is_callable( array( 'WCS_Gifting', 'create_recipient_user' ) ) ) {
+        // Same function as a normal gift purchase: unique login, password, "complete your account" flag on first login.
+        $user_id = WCS_Gifting::create_recipient_user( $email );
+    } else {
+        $login   = on_gratuite_username_from_email( $email, 'username_exists' );
+        $user_id = wc_create_new_customer( $email, $login, wp_generate_password() );
+    }
+    if ( is_wp_error( $user_id ) ) {
+        return $user_id;
+    }
+    wp_update_user( array( 'ID' => $user_id, 'first_name' => $first, 'last_name' => $last, 'display_name' => trim( $first . ' ' . $last ) ) );
+    update_user_meta( $user_id, 'billing_first_name', $first );
+    update_user_meta( $user_id, 'billing_last_name', $last );
+    update_user_meta( $user_id, 'billing_email', $email );
+    return array( (int) $user_id, true );
+}
+
+/** Other accounts or fiches that look like the same person (reported, never blocking). */
+function on_gratuite_find_duplicates( $post_id, $user_id, array $d ) {
+    $hints = array();
+    $users = get_users( array(
+        'meta_query' => array(
+            array( 'key' => 'last_name', 'value' => $d['nom'], 'compare' => '=' ),
+        ),
+        'exclude' => array( (int) $user_id ),
+        'number'  => 20,
+    ) );
+    foreach ( $users as $u ) {
+        if ( on_gratuite_same_name( $d['prenom'], $d['nom'], $u->first_name, $u->last_name ) ) {
+            $hints[] = array( 'kind' => 'Compte', 'id' => $u->ID, 'label' => $u->user_email );
+        }
+    }
+    $fiches = get_posts( array(
+        'post_type'   => on_gratuite_post_type(),
+        'post_status' => 'any',
+        'numberposts' => 20,
+        'exclude'     => array( (int) $post_id ),
+        'meta_query'  => array(
+            array( 'key' => 'date_naissance', 'value' => $d['date_naissance'] ),
+            array( 'key' => 'statut', 'value' => array( 'en_attente', 'acceptee' ), 'compare' => 'IN' ),
+        ),
+    ) );
+    foreach ( $fiches as $f ) {
+        if ( on_gratuite_same_name( $d['prenom'], $d['nom'], get_post_meta( $f->ID, 'prenom', true ), get_post_meta( $f->ID, 'nom', true ) )
+            && (int) get_post_meta( $f->ID, 'client_id', true ) !== (int) $user_id ) {
+            $hints[] = array( 'kind' => 'Fiche', 'id' => $f->ID, 'label' => (string) get_post_meta( $f->ID, 'email', true ) );
+        }
+    }
+    return $hints;
+}
+
+/** Add the -100 % line (negative fee, no tax) to an order or a subscription. */
+function on_gratuite_add_fee( $target, $amount ) {
+    $fee = new WC_Order_Item_Fee();
+    $fee->set_name( on_gratuite_settings()['fee_label'] );
+    $fee->set_amount( $amount );
+    $fee->set_total( $amount );
+    $fee->set_tax_status( 'none' );
+    $fee->add_meta_data( '_on_gratuite_fee', '1', true );
+    $target->add_item( $fee );
+}
+
+/**
+ * Create account, subscription and parent order for an accepted request. Safe to call twice
+ * (a request that already has a subscription is left alone).
+ *
+ * @return array|WP_Error { user_id, account_created, subscription_id, order_id, duplicates }
+ */
+function on_gratuite_provision( $post_id ) {
+    if ( ! function_exists( 'wcs_create_subscription' ) || ! function_exists( 'wc_create_order' ) ) {
+        return new WP_Error( 'on_gratuite_no_woocommerce', 'WooCommerce Subscriptions est requis.' );
+    }
+    $post_id = (int) $post_id;
+    if ( on_gratuite_post_type() !== get_post_type( $post_id ) ) {
+        return new WP_Error( 'on_gratuite_bad_post', 'Fiche introuvable.' );
+    }
+    if ( (int) get_post_meta( $post_id, 'abonnement_id', true ) > 0 ) {
+        return new WP_Error( 'on_gratuite_already', 'Un abonnement existe déjà pour cette fiche.' );
+    }
+    $status = (string) get_post_meta( $post_id, 'statut', true );
+    if ( 'en_attente' !== $status ) {
+        return new WP_Error( 'on_gratuite_status', 'La demande doit être « en attente » (confirmée par e-mail).' );
+    }
+
+    $d                = on_gratuite_request_data( $post_id );
+    $d['client_id']   = (int) get_post_meta( $post_id, 'client_id', true );
+    $plan             = on_gratuite_subscription_plan( $d, on_gratuite_settings() );
+    $variation        = wc_get_product( $plan['variation_id'] );
+    if ( ! $variation ) {
+        return new WP_Error( 'on_gratuite_variation', 'Variation d\'abonnement introuvable : ' . $plan['variation_id'] );
+    }
+
+    $account = on_gratuite_ensure_account( $d['email'], $d['prenom'], $d['nom'] );
+    if ( is_wp_error( $account ) ) {
+        return $account;
+    }
+    list( $beneficiary_id, $created ) = $account;
+    $buyer_id = $plan['gift'] ? $plan['buyer_id'] : $beneficiary_id;
+    $buyer    = get_userdata( $buyer_id );
+    if ( ! $buyer ) {
+        return new WP_Error( 'on_gratuite_buyer', 'Compte du demandeur introuvable.' );
+    }
+    update_post_meta( $post_id, 'client_id', $beneficiary_id );
+
+    // Parent order: the price of the subscription, cancelled by a negative line.
+    $order = wc_create_order( array( 'customer_id' => $buyer_id, 'created_via' => 'on_gratuite' ) );
+    if ( is_wp_error( $order ) ) {
+        return $order;
+    }
+    $order->add_product( $variation, 1 );
+    $fee = on_gratuite_fee_amount( $variation->get_price(), on_gratuite_settings()['discount_percent'] );
+    on_gratuite_add_fee( $order, $fee );
+    $order->set_billing_first_name( $plan['gift'] ? (string) $buyer->first_name : $d['prenom'] );
+    $order->set_billing_last_name( $plan['gift'] ? (string) $buyer->last_name : $d['nom'] );
+    $order->set_billing_email( $plan['gift'] ? $buyer->user_email : $d['email'] );
+    $order->update_meta_data( '_on_gratuite_request', $post_id );
+    $order->calculate_totals( false );
+    $order->set_status( 'pending' ); // Becomes "Attente justificatif" through the webmaster's module.
+    $order->save();
+
+    // Subscription: one year, no next payment, pending until step 4.
+    $start        = time();
+    $subscription = wcs_create_subscription( array(
+        'order_id'         => $order->get_id(),
+        'customer_id'      => $buyer_id,
+        'billing_period'   => 'year',
+        'billing_interval' => 1,
+        'start_date'       => gmdate( 'Y-m-d H:i:s', $start ),
+        'created_via'      => 'on_gratuite',
+        'status'           => 'pending',
+    ) );
+    if ( is_wp_error( $subscription ) ) {
+        $order->add_order_note( 'Création de l\'abonnement impossible : ' . $subscription->get_error_message() );
+        return $subscription;
+    }
+    $subscription->add_product( $variation, 1 );
+    on_gratuite_add_fee( $subscription, $fee );
+    if ( function_exists( 'wcs_copy_order_address' ) ) {
+        wcs_copy_order_address( $order, $subscription );
+    }
+    $subscription->update_meta_data( '_on_gratuite_request', $post_id );
+    $subscription->calculate_totals( false );
+    $subscription->save();
+    $subscription->update_dates( array( 'next_payment' => 0, 'end' => on_gratuite_end_date( $start ) ) );
+
+    if ( $plan['gift'] && class_exists( 'WCS_Gifting' ) ) {
+        WCS_Gifting::set_recipient_user( $subscription, $beneficiary_id, 'save', 0, $order );
+    }
+    if ( function_exists( 'on_initialize_subscription_number_bounds' ) ) {
+        on_initialize_subscription_number_bounds( $subscription ); // First/last magazine number and formula (webmaster's code).
+    }
+
+    $duplicates = on_gratuite_find_duplicates( $post_id, $beneficiary_id, $d );
+    update_post_meta( $post_id, 'abonnement_id', $subscription->get_id() );
+    update_post_meta( $post_id, 'commande_id', $order->get_id() );
+    update_post_meta( $post_id, '_on_gratuite_doublons', on_gratuite_duplicate_lines( $duplicates ) );
+    $order->add_order_note( sprintf( 'Créée pour la demande de gratuité n° %d (abonnement %d).', $post_id, $subscription->get_id() ) );
+
+    return array(
+        'user_id'         => $beneficiary_id,
+        'account_created' => $created,
+        'subscription_id' => $subscription->get_id(),
+        'order_id'        => $order->get_id(),
+        'duplicates'      => $duplicates,
+    );
+}

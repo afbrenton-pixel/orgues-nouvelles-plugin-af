@@ -216,6 +216,36 @@ donc logo, couleurs et pied de page du site, version texte brute de secours.
 - Toujours : jamais de justificatif joint ni cité ; la notification à l'équipe ne contient pas de lien vers le fichier.
 - Les e-mails d'acceptation et de refus (étape 4) suivront le même modèle.
 
+## Étape 3 : compte, abonnement et commande (à l'acceptation)
+
+`includes/gratuite/subscription.php` (création), `subscription-rules.php` (règles pures, testées),
+`subscription-admin.php` (boîte « Compte et abonnement » de la fiche).
+
+`on_gratuite_provision( $fiche_id )` ne s'exécute que pour une fiche **« en attente »** (adresse confirmée)
+et une seule fois (refus si `abonnement_id` est déjà rempli). Elle crée :
+
+1. **Le compte** du bénéficiaire s'il n'existe pas : `WCS_Gifting::create_recipient_user()` (identifiant unique
+   tiré de l'adresse, e-mail « nouveau compte » de WooCommerce, personne invitée à compléter ses informations
+   à la première connexion), puis prénom/nom. S'il existe déjà (même adresse), il est réutilisé.
+2. **La commande parente** : variation FR (257) ou EN (30365) selon la langue de la demande, ligne de frais
+   négative « Gratuité -26 ans » (total 0 €), statut demandé `pending`, ce que le module du webmaster
+   (`student-proof-status.php`) transforme en **« Attente justificatif »** (la variation porte `_demande_justificatif`).
+   Aucun e-mail de demande de justificatif n'est envoyé (l'équipe a déjà le justificatif).
+3. **L'abonnement** : mêmes lignes, période 1 an, **aucun prochain paiement**, fin à +1 an, statut `pending`
+   jusqu'à l'étape 4. Numéros de début/fin et formule : fonction du webmaster `on_initialize_subscription_number_bounds()`.
+4. **Demande pour une autre personne** : acheteur = demandeur, destinataire = bénéficiaire via
+   `WCS_Gifting::set_recipient_user()` (donnée `_recipient_user`, lue par le code du webmaster). Pour soi-même,
+   le client de l'abonnement est le bénéficiaire.
+
+La fiche reçoit `client_id`, `abonnement_id`, `commande_id`, et `_on_gratuite_doublons` : comptes de même
+prénom+nom, fiches de même date de naissance (affichés, **jamais bloquants**).
+
+Bouton **provisoire** « Préparer le compte et l'abonnement » dans la boîte de la fiche ; l'étape 4
+(Accepter) appellera la même fonction puis `on_student_proof_approve()` et fixera les dates de début/fin à la date d'acceptation.
+
+Vérifié dans le code de WooCommerce Subscriptions 9.0 (7 novembre) : définir un destinataire ne crée pas son compte
+(d'où l'appel explicite) ; `is_gifted_subscription` se fonde sur `_recipient_user`.
+
 ## À vérifier sur le site de test
 
 1. Le serveur du site de test est **Nginx** : le `.htaccess` ne protège pas. Le chiffrement
