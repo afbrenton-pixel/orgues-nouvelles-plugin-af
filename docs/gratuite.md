@@ -20,7 +20,7 @@ Spécification complète : plan technique du 7 novembre 2026 (Anne-Françoise).
 | Étape | Contenu | État |
 | --- | --- | --- |
 | 1 | Stockage privé des justificatifs, affichage admin, suppression | **Fait** (cette branche) |
-| 1 | Type de contenu « Autorisation » et ses champs | À créer dans Pods (pas de code) |
+| 1 | Type de contenu « Autorisation » et ses champs | **Fait** sur le site de test (Pods, sans code) |
 | 2 | Action du formulaire Elementor : contrôle d'âge, fiche | À faire |
 | 3 | Compte, abonnement et commande | À faire |
 | 4 | Accepter / Refuser | À faire |
@@ -82,8 +82,37 @@ Fichier : `includes/gratuite/private-proof-storage.php`.
 
 ## Pods (hors code)
 
-Le type de contenu « Autorisation » et les champs sont créés avec Pods (base de
-données, pas dans le code) : à exporter et à documenter ici dès leur création.
+Le type de contenu et ses champs sont créés avec Pods : ils sont enregistrés dans la
+**base de données** du site, pas dans le code. À refaire (ou exporter avec Pods >
+Composants > Migrer : packages) sur le vrai site.
+
+Créé le 7 novembre 2026 sur le site de test (pod n° 50542).
+
+**Type de contenu** `on_abon_autorisation` : libellé « Autorisations gratuité », menu
+« Gratuité -26 ans », stockage en méta, titre seulement (pas d'éditeur), **non public**
+(pas de page publique, pas d'archive, pas de recherche), **API REST désactivée**
+(données personnelles). Les droits sont ceux des articles : à restreindre si
+d'autres rôles que les administrateurs peuvent accéder à l'administration.
+
+| Champ | Type | Contenu |
+| --- | --- | --- |
+| `prenom`, `nom` | texte | Identité |
+| `email` | e-mail | Adresse de la demande |
+| `date_naissance` | date | Sert au contrôle d'âge et aux renouvellements |
+| `langue` | choix | `fr` ou `en` |
+| `type_demande` | choix | `premiere` ou `renouvellement` |
+| `statut` | choix | `en_attente`, `acceptee` ou `refusee` |
+| `age_demande` | nombre | Âge au jour de la demande |
+| `client_id` | nombre | Compte client |
+| `abonnement_id` | nombre | Abonnement créé |
+| `commande_id` | nombre | Commande parente ou de renouvellement |
+| `abonnement_existant` | oui/non | Signale un abonnement déjà en cours (suivi) |
+| `newsletter` | oui/non | Consentement newsletter (indicateur seulement) |
+| `date_decision` | date et heure | Acceptation ou refus |
+| `note_interne` | paragraphe | Notes d'Anne-Françoise |
+
+Les données du justificatif (`_on_gratuite_justificatif*`) ne sont pas des champs Pods :
+elles sont gérées par le code (voir ci-dessus) et ne s'affichent pas en saisie libre.
 
 ## Tests
 
