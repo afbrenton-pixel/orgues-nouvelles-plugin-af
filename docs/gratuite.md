@@ -224,8 +224,8 @@ donc logo, couleurs et pied de page du site, version texte brute de secours.
 `on_gratuite_provision( $fiche_id )` ne s'exécute que pour une fiche **« en attente »** (adresse confirmée)
 et une seule fois (refus si `abonnement_id` est déjà rempli). Elle crée :
 
-1. **Le compte** du bénéficiaire s'il n'existe pas : `WCS_Gifting::create_recipient_user()` (identifiant unique
-   tiré de l'adresse, e-mail « nouveau compte » de WooCommerce, personne invitée à compléter ses informations
+1. **Le compte** du bénéficiaire s'il n'existe pas : `wc_create_new_customer()` avec mot de passe généré par WooCommerce (identifiant unique
+   tiré de l'adresse, e-mail « nouveau compte » avec lien pour choisir son mot de passe, personne invitée à compléter ses informations
    à la première connexion), puis prénom/nom. S'il existe déjà (même adresse), il est réutilisé.
 2. **La commande parente** : variation FR (257) ou EN (30365) selon la langue de la demande, ligne de frais
    négative « Gratuité -26 ans » (total 0 €), statut demandé `pending`, ce que le module du webmaster
