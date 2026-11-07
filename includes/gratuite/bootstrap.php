@@ -16,4 +16,6 @@ require_once __DIR__ . '/confirmation-admin.php';
 require_once __DIR__ . '/emails.php';
 require_once __DIR__ . '/subscription-rules.php';
 require_once __DIR__ . '/subscription.php';
+require_once __DIR__ . '/decision-rules.php';
+require_once __DIR__ . '/decision.php';
 require_once __DIR__ . '/subscription-admin.php';

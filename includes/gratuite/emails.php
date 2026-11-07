@@ -4,7 +4,8 @@
  * étudiant" e-mail): site logo, colours and footer, texts editable in WooCommerce > Settings > Emails.
  *
  * - ON_Gratuite_Email_Confirmation : to the applicant (French or English, by the request's language);
- * - ON_Gratuite_Email_Notification : to the team when a request is confirmed.
+ * - ON_Gratuite_Email_Notification : to the team when a request is confirmed;
+ * - ON_Gratuite_Email_Accepted / ON_Gratuite_Email_Refused : decision, to the applicant.
  * The classes are defined only when WooCommerce's e-mail system is loaded (class-emails.php).
  */
 defined( 'ABSPATH' ) || exit;
@@ -14,6 +15,8 @@ function on_gratuite_register_emails( $classes ) {
     require_once __DIR__ . '/class-emails.php';
     $classes['ON_Gratuite_Email_Confirmation'] = new ON_Gratuite_Email_Confirmation();
     $classes['ON_Gratuite_Email_Notification'] = new ON_Gratuite_Email_Notification();
+    $classes['ON_Gratuite_Email_Accepted']     = new ON_Gratuite_Email_Accepted();
+    $classes['ON_Gratuite_Email_Refused']      = new ON_Gratuite_Email_Refused();
     return $classes;
 }
 add_filter( 'woocommerce_email_classes', 'on_gratuite_register_emails' );
