@@ -2,10 +2,12 @@
 /**
  * Free student subscription: private storage of proof documents (GDPR).
  *
- * A proof file is moved out of Elementor's public upload folder into a private
- * folder, under a random name. It is only readable through an authenticated
- * admin request, and is deleted on decision and after a retention delay.
- * No filename or URL of a proof is ever put in an e-mail.
+ * A proof file is taken out of Elementor's public upload folder, ENCRYPTED
+ * (libsodium secretbox) and stored in a private folder under a random name.
+ * Encryption keeps the file unreadable even if the web server serves the
+ * folder (Nginx ignores .htaccess). It is only readable, decrypted, through an
+ * authenticated admin request, and is deleted on decision and after a
+ * retention delay. No filename or URL of a proof is ever put in an e-mail.
  */
 defined( 'ABSPATH' ) || exit;
 
@@ -16,7 +18,8 @@ const ON_GRATUITE_META_STORED_AT = '_on_gratuite_justificatif_date';
 const ON_GRATUITE_META_DELETED   = '_on_gratuite_justificatif_supprime';
 const ON_GRATUITE_META_ACCESS    = '_on_gratuite_justificatif_acces';
 const ON_GRATUITE_PURGE_HOOK     = 'on_gratuite_purge_justificatifs';
-const ON_GRATUITE_FILE_PATTERN   = '/^[a-f0-9]{32}\.(pdf|jpg|jpeg|png)$/';
+const ON_GRATUITE_FILE_PATTERN   = '/^[a-f0-9]{32}\.enc$/';
+const ON_GRATUITE_MAGIC          = 'ONG1';
 
 /** Post type holding the authorizations (created with Pods). */
 function on_gratuite_post_type() {
@@ -75,6 +78,34 @@ function on_gratuite_prepare_proof_dir() {
     return $dir;
 }
 
+/**
+ * Encryption key (32 bytes). Derived from the site salts, unless a constant
+ * ON_GRATUITE_PROOF_KEY (64 hex characters) is set in wp-config.php.
+ * If the salts change, stored proofs become unreadable (retention is 60 days).
+ */
+function on_gratuite_proof_key() {
+    if ( defined( 'ON_GRATUITE_PROOF_KEY' ) && 1 === preg_match( '/^[a-f0-9]{64}$/', (string) ON_GRATUITE_PROOF_KEY ) ) {
+        return hex2bin( ON_GRATUITE_PROOF_KEY );
+    }
+    return hash_hkdf( 'sha256', wp_salt( 'secure_auth' ), SODIUM_CRYPTO_SECRETBOX_KEYBYTES, 'on-gratuite-proof-v1' );
+}
+
+/** Encrypt data: magic + nonce + authenticated ciphertext. */
+function on_gratuite_encrypt( $plain ) {
+    $nonce = random_bytes( SODIUM_CRYPTO_SECRETBOX_NONCEBYTES );
+    return ON_GRATUITE_MAGIC . $nonce . sodium_crypto_secretbox( $plain, $nonce, on_gratuite_proof_key() );
+}
+
+/** Decrypt data from on_gratuite_encrypt(); false if altered or wrong key. */
+function on_gratuite_decrypt( $blob ) {
+    $head = strlen( ON_GRATUITE_MAGIC );
+    $n    = SODIUM_CRYPTO_SECRETBOX_NONCEBYTES;
+    if ( ! is_string( $blob ) || strlen( $blob ) < $head + $n + SODIUM_CRYPTO_SECRETBOX_MACBYTES || ON_GRATUITE_MAGIC !== substr( $blob, 0, $head ) ) {
+        return false;
+    }
+    return sodium_crypto_secretbox_open( substr( $blob, $head + $n ), substr( $blob, $head, $n ), on_gratuite_proof_key() );
+}
+
 /** Whether a stored name is a name we generated (blocks any path trick). */
 function on_gratuite_is_valid_proof_name( $name ) {
     return is_string( $name ) && 1 === preg_match( ON_GRATUITE_FILE_PATTERN, $name );
@@ -114,15 +145,17 @@ function on_gratuite_store_proof( $source, $original_name, $post_id ) {
     if ( ! $dir ) {
         return new WP_Error( 'on_gratuite_no_dir', __( 'Le justificatif ne peut pas être enregistré pour le moment.', 'orgues-nouvelles' ) );
     }
+    $plain = file_get_contents( $source );
+    if ( false === $plain || '' === $plain ) {
+        return new WP_Error( 'on_gratuite_no_file', __( 'Le justificatif est introuvable.', 'orgues-nouvelles' ) );
+    }
     on_gratuite_delete_proof( $post_id );
-    $name = bin2hex( random_bytes( 16 ) ) . '.' . $extension;
-    if ( ! @rename( $source, $dir . '/' . $name ) ) {
-        if ( ! copy( $source, $dir . '/' . $name ) ) {
-            return new WP_Error( 'on_gratuite_move_failed', __( 'Le justificatif ne peut pas être enregistré pour le moment.', 'orgues-nouvelles' ) );
-        }
-        @unlink( $source );
+    $name = bin2hex( random_bytes( 16 ) ) . '.enc';
+    if ( false === file_put_contents( $dir . '/' . $name, on_gratuite_encrypt( $plain ), LOCK_EX ) ) {
+        return new WP_Error( 'on_gratuite_move_failed', __( 'Le justificatif ne peut pas être enregistré pour le moment.', 'orgues-nouvelles' ) );
     }
     @chmod( $dir . '/' . $name, 0600 );
+    @unlink( $source );
     update_post_meta( $post_id, ON_GRATUITE_META_FILE, $name );
     update_post_meta( $post_id, ON_GRATUITE_META_NAME, sanitize_file_name( (string) $original_name ) );
     update_post_meta( $post_id, ON_GRATUITE_META_MIME, $allowed[ $extension ] );
@@ -139,6 +172,15 @@ function on_gratuite_proof_path( $post_id ) {
     }
     $path = on_gratuite_proof_dir() . '/' . $name;
     return is_file( $path ) ? $path : false;
+}
+
+/** Decrypted content of the proof of an authorization, or false. */
+function on_gratuite_read_proof( $post_id ) {
+    $path = on_gratuite_proof_path( $post_id );
+    if ( ! $path ) {
+        return false;
+    }
+    return on_gratuite_decrypt( file_get_contents( $path ) );
 }
 
 /**
@@ -172,19 +214,21 @@ function on_gratuite_serve_proof() {
         wp_die( esc_html__( 'Accès refusé.', 'orgues-nouvelles' ), '', array( 'response' => 403 ) );
     }
     check_admin_referer( 'on_gratuite_voir_' . $post_id );
-    $path = on_gratuite_proof_path( $post_id );
-    if ( ! $path ) {
-        wp_die( esc_html__( 'Aucun justificatif conservé pour cette demande.', 'orgues-nouvelles' ), '', array( 'response' => 404 ) );
+    $content = on_gratuite_read_proof( $post_id );
+    if ( false === $content ) {
+        wp_die( esc_html__( 'Aucun justificatif lisible pour cette demande.', 'orgues-nouvelles' ), '', array( 'response' => 404 ) );
     }
     add_post_meta( $post_id, ON_GRATUITE_META_ACCESS, time() . '|' . get_current_user_id() );
-    $mime = get_post_meta( $post_id, ON_GRATUITE_META_MIME, true );
+    $mime  = get_post_meta( $post_id, ON_GRATUITE_META_MIME, true );
+    $exts  = array_flip( array_unique( on_gratuite_proof_allowed_types() ) );
+    $ext   = isset( $exts[ $mime ] ) ? $exts[ $mime ] : 'bin';
     nocache_headers();
-    header( 'Content-Type: ' . ( $mime ? $mime : 'application/octet-stream' ) );
-    header( 'Content-Disposition: inline; filename="justificatif.' . pathinfo( $path, PATHINFO_EXTENSION ) . '"' );
-    header( 'Content-Length: ' . filesize( $path ) );
+    header( 'Content-Type: ' . ( isset( $exts[ $mime ] ) ? $mime : 'application/octet-stream' ) );
+    header( 'Content-Disposition: inline; filename="justificatif.' . $ext . '"' );
+    header( 'Content-Length: ' . strlen( $content ) );
     header( 'X-Content-Type-Options: nosniff' );
     header( 'X-Robots-Tag: noindex, nofollow' );
-    readfile( $path );
+    echo $content; // phpcs:ignore WordPress.Security.EscapeOutput -- binary file for an authenticated admin.
     exit;
 }
 add_action( 'admin_post_on_gratuite_voir_justificatif', 'on_gratuite_serve_proof' );

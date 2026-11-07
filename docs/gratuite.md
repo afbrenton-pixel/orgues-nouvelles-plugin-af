@@ -19,7 +19,7 @@ Spécification complète : plan technique du 7 novembre 2026 (Anne-Françoise).
 
 | Étape | Contenu | État |
 | --- | --- | --- |
-| 1 | Stockage privé des justificatifs, affichage admin, suppression | **Fait** (cette branche) |
+| 1 | Stockage privé et chiffré des justificatifs, affichage admin, suppression | **Fait** |
 | 1 | Type de contenu « Autorisation » et ses champs | **Fait** sur le site de test (Pods, sans code) |
 | 2 | Action du formulaire Elementor : contrôle d'âge, fiche | À faire |
 | 3 | Compte, abonnement et commande | À faire |
@@ -31,15 +31,21 @@ Spécification complète : plan technique du 7 novembre 2026 (Anne-Françoise).
 Fichier : `includes/gratuite/private-proof-storage.php`.
 
 - Dossier : `wp-content/uploads/on-gratuite-prive/`, contenant un `.htaccess`
-  (refus d'accès Apache) et un `index.php` vide.
-- **Attention :** ces règles ne protègent pas sur un serveur Nginx. La protection
-  réelle du dossier doit être **vérifiée sur le site de test** (voir « À vérifier »).
-- Un justificatif est déplacé dans ce dossier sous un nom aléatoire de 32
-  caractères hexadécimaux + extension (PDF, JPG ou PNG). Le nom d'origine n'est
-  gardé que dans la fiche, pour l'administration.
-- Le contenu du fichier est contrôlé (type réel, taille maximale 5 Mo).
+  (refus d'accès Apache, sans effet sur Nginx) et un `index.php` vide.
+- **Chiffrement (protection principale, indépendante du serveur)** : chaque
+  justificatif est chiffré avant d'être écrit (libsodium, `secretbox`, authentifié),
+  sous un nom aléatoire de 32 caractères hexadécimaux + `.enc`. Même si le serveur
+  distribuait le dossier, le fichier serait illisible sans la clé. Le nom d'origine
+  n'est gardé que dans la fiche, pour l'administration.
+- **Clé** : dérivée des clés secrètes du site (`wp_salt`). On peut imposer une clé
+  dans `wp-config.php` avec `define( 'ON_GRATUITE_PROOF_KEY', '<64 caractères hexadécimaux>' );`
+  (recommandé en production). **Si la clé change, les justificatifs déjà stockés
+  deviennent illisibles** (sans gravité : ils sont supprimés au bout de 60 jours).
+  Un fichier modifié est refusé à la lecture.
+- Le contenu du fichier est contrôlé avant chiffrement (type réel, taille maximale 5 Mo).
 - Lecture : uniquement par un administrateur connecté (`manage_woocommerce`), par un
-  lien à usage contrôlé (nonce), sur l'écran de la fiche. Chaque lecture est
+  lien à usage contrôlé (nonce), sur l'écran de la fiche ; le fichier est déchiffré
+  à la volée et n'est jamais écrit en clair sur le serveur. Chaque lecture est
   enregistrée (date et utilisateur).
 - Suppression : à la décision (fonction `on_gratuite_delete_proof`, appelée aux
   étapes 3 et 4), par le lien « Supprimer maintenant », et par une tâche
@@ -52,7 +58,8 @@ Fichier : `includes/gratuite/private-proof-storage.php`.
 | --- | --- |
 | `on_gratuite_store_proof( $source, $nom_origine, $post_id )` | Contrôle et range le fichier, retourne les données ou une `WP_Error` |
 | `on_gratuite_delete_proof( $post_id )` | Supprime le fichier et les données, garde la date de suppression |
-| `on_gratuite_proof_path( $post_id )` | Chemin du fichier, ou `false` |
+| `on_gratuite_proof_path( $post_id )` | Chemin du fichier chiffré, ou `false` |
+| `on_gratuite_read_proof( $post_id )` | Contenu déchiffré, ou `false` (fichier absent, modifié ou clé changée) |
 | `on_gratuite_purge_expired_proofs()` | Tâche quotidienne de suppression |
 
 ### Filtres
@@ -74,10 +81,11 @@ Fichier : `includes/gratuite/private-proof-storage.php`.
 
 ## À vérifier sur le site de test
 
-1. Le dossier `on-gratuite-prive` n'est pas lisible depuis le web, même avec le nom
-   exact d'un fichier (test avec un fichier réel, pas seulement le dossier).
-2. Si l'accès n'est pas bloqué : solution finale à choisir parmi dossier bloqué par le
-   serveur, dossier hors de la partie publique du site, fichier chiffré, ou Drive restreint.
+1. Le serveur du site de test est **Nginx** : le `.htaccess` ne protège pas. Le chiffrement
+   rend le fichier inutilisable même si son adresse est trouvée ; vérifier avec un
+   fichier réel qu'une lecture directe par le web ne donne qu'un contenu illisible
+   (ou un refus), jamais l'image.
+2. Définir `ON_GRATUITE_PROOF_KEY` dans `wp-config.php` en production.
 3. Elementor ne conserve ni le fichier ni son adresse (voir étape 2).
 
 ## Pods (hors code)
@@ -116,6 +124,6 @@ elles sont gérées par le code (voir ci-dessus) et ne s'affichent pas en saisie
 
 ## Tests
 
-`tests/GratuitePrivateProofStorageTest.php` : rangement, refus des mauvais formats,
-nom aléatoire, remplacement, suppression, protection contre les chemins piégés,
-purge à 60 jours. Commande : `vendor/bin/phpunit tests/GratuitePrivateProofStorageTest.php`.
+`tests/GratuitePrivateProofStorageTest.php` : rangement chiffré, refus des mauvais formats,
+nom aléatoire, relecture à l'identique, fichier modifié refusé, clé changée,
+remplacement, suppression, protection contre les chemins piégés, purge à 60 jours. Commande : `vendor/bin/phpunit tests/GratuitePrivateProofStorageTest.php`.
