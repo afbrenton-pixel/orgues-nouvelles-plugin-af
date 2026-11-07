@@ -206,3 +206,150 @@ if ( ! class_exists( 'ON_Gratuite_Email_Notification' ) ) {
         }
     }
 }
+
+if ( ! class_exists( 'ON_Gratuite_Email_Decision' ) ) {
+
+    /** Acceptance or refusal, sent to the applicant (French or English by the request's language). */
+    abstract class ON_Gratuite_Email_Decision extends WC_Email {
+        /** @var string 'accepted' or 'refused'. */
+        protected $kind = 'accepted';
+        /** @var string 'fr' or 'en'. */
+        protected $lang = 'fr';
+
+        protected function on_gratuite_setup( $id, $title, $description ) {
+            $this->id             = $id;
+            $this->customer_email = true;
+            $this->title          = $title;
+            $this->description    = $description;
+            $this->template_html  = 'emails/gratuite-decision.php';
+            $this->template_plain = 'emails/plain/gratuite-decision.php';
+            $this->template_base  = ORGUES_NOUVELLES_PLUGIN_DIR . 'templates/';
+            parent::__construct();
+        }
+
+        /**
+         * @param int   $post_id Authorization record.
+         * @param array $d       Request data (on_gratuite_request_data()).
+         * @param array $vars    end_date, account_url, form_url, contact, reason.
+         */
+        public function trigger( $post_id, array $d, array $vars = array() ) {
+            if ( ! $this->is_enabled() ) {
+                return false;
+            }
+            $this->setup_locale();
+            try {
+                $this->lang      = 'en' === $d['langue'] ? 'en' : 'fr';
+                $vars['first_name'] = $d['prenom'];
+                $this->object    = array( 'post_id' => $post_id, 'data' => $d, 'vars' => $vars );
+                $this->recipient = $d['email'];
+                return (bool) $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+            } finally {
+                $this->restore_locale();
+            }
+        }
+
+        protected function on_gratuite_key( $name ) {
+            return 'en' === $this->lang ? $name . '_en' : $name;
+        }
+
+        public function get_default_subject() {
+            return on_gratuite_decision_texts( $this->kind, 'fr' )['subject'];
+        }
+
+        public function get_default_heading() {
+            return on_gratuite_decision_texts( $this->kind, 'fr' )['heading'];
+        }
+
+        public function get_subject() {
+            $texts   = on_gratuite_decision_texts( $this->kind, $this->lang );
+            $subject = $this->get_option( $this->on_gratuite_key( 'subject' ), $texts['subject'] ); // WooCommerce's own field has an empty default.
+            return apply_filters( 'woocommerce_email_subject_' . $this->id, $this->format_string( $subject ), $this->object, $this );
+        }
+
+        public function get_heading() {
+            $texts   = on_gratuite_decision_texts( $this->kind, $this->lang );
+            $heading = $this->get_option( $this->on_gratuite_key( 'heading' ), $texts['heading'] );
+            return apply_filters( 'woocommerce_email_heading_' . $this->id, $this->format_string( $heading ), $this->object, $this );
+        }
+
+        public function init_form_fields() {
+            parent::init_form_fields();
+            $fr   = on_gratuite_decision_texts( $this->kind, 'fr' );
+            $en   = on_gratuite_decision_texts( $this->kind, 'en' );
+            $help = 'Espaces réservés : {first_name} (prénom), {end_date} (fin de l\'abonnement), {account_url} (Mon compte), {form_url} (page du formulaire), {contact} (adresse de l\'équipe), {reason} (motif du refus, s\'il est saisi). Une ligne vide sépare les paragraphes.';
+            $extra = array(
+                'subject_en' => array( 'title' => 'Objet (anglais)', 'type' => 'text', 'default' => $en['subject'], 'desc_tip' => false ),
+                'heading_en' => array( 'title' => 'Titre (anglais)', 'type' => 'text', 'default' => $en['heading'], 'desc_tip' => false ),
+                'body_fr'    => array( 'title' => 'Texte, français', 'type' => 'textarea', 'css' => 'width:600px; height: 200px;', 'description' => $help, 'default' => $fr['body'] ),
+                'body_en'    => array( 'title' => 'Texte, anglais', 'type' => 'textarea', 'css' => 'width:600px; height: 200px;', 'description' => $help, 'default' => $en['body'] ),
+            );
+            $fields = array();
+            foreach ( $this->form_fields as $key => $value ) {
+                $fields[ $key ] = $value;
+                if ( 'heading' === $key ) {
+                    $fields = array_merge( $fields, $extra );
+                }
+            }
+            $this->form_fields = $fields;
+            if ( isset( $this->form_fields['subject'] ) ) {
+                $this->form_fields['subject']['title'] = 'Objet (français)';
+            }
+            if ( isset( $this->form_fields['heading'] ) ) {
+                $this->form_fields['heading']['title'] = 'Titre (français)';
+            }
+        }
+
+        /** Body for the current language, placeholders replaced (HTML or plain text). */
+        public function on_gratuite_body_text( $plain ) {
+            $text = (string) $this->get_option( 'body_' . $this->lang );
+            if ( '' === trim( $text ) ) {
+                $text = on_gratuite_decision_texts( $this->kind, $this->lang )['body'];
+            }
+            $text = on_gratuite_fill_decision_text( $text, $this->object['vars'], $this->lang );
+            if ( $plain ) {
+                return $text;
+            }
+            return wp_kses_post( wpautop( make_clickable( esc_html( $text ) ) ) );
+        }
+
+        protected function on_gratuite_template_args( $plain ) {
+            return array(
+                'email'              => $this,
+                'email_heading'      => $this->get_heading(),
+                'greeting'           => ( 'en' === $this->lang ? 'Hello ' : 'Bonjour ' ) . $this->object['data']['prenom'] . ',',
+                'email_body'         => $this->on_gratuite_body_text( $plain ),
+                'additional_content' => $this->get_additional_content(),
+                'plain_text'         => $plain,
+                'sent_to_admin'      => false,
+            );
+        }
+
+        public function get_content_html() {
+            ob_start();
+            wc_get_template( $this->template_html, $this->on_gratuite_template_args( false ), '', $this->template_base );
+            return ob_get_clean();
+        }
+
+        public function get_content_plain() {
+            ob_start();
+            wc_get_template( $this->template_plain, $this->on_gratuite_template_args( true ), '', $this->template_base );
+            return ob_get_clean();
+        }
+    }
+
+    class ON_Gratuite_Email_Accepted extends ON_Gratuite_Email_Decision {
+        protected $kind = 'accepted';
+
+        public function __construct() {
+            $this->on_gratuite_setup( 'on_gratuite_accepted', 'Gratuité -26 ans : demande acceptée', 'Envoyé à la personne quand sa demande d\'abonnement gratuit est acceptée (français ou anglais selon la demande).' );
+        }
+    }
+
+    class ON_Gratuite_Email_Refused extends ON_Gratuite_Email_Decision {
+        protected $kind = 'refused';
+
+        public function __construct() {
+            $this->on_gratuite_setup( 'on_gratuite_refused', 'Gratuité -26 ans : demande refusée', 'Envoyé à la personne quand sa demande est refusée ; elle peut redéposer une demande tout de suite.' );
+        }
+    }
+}

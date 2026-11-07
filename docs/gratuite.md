@@ -242,11 +242,33 @@ et une seule fois (refus si `abonnement_id` est déjà rempli). Elle crée :
 La fiche reçoit `client_id`, `abonnement_id`, `commande_id`, et `_on_gratuite_doublons` : comptes de même
 prénom+nom, fiches de même date de naissance (affichés, **jamais bloquants**).
 
-Bouton **provisoire** « Préparer le compte et l'abonnement » dans la boîte de la fiche ; l'étape 4
-(Accepter) appellera la même fonction puis `on_student_proof_approve()` et fixera les dates de début/fin à la date d'acceptation.
+La création est déclenchée par le bouton **Accepter** de la fiche (étape 4).
 
 Vérifié dans le code de WooCommerce Subscriptions 9.0 (7 novembre) : définir un destinataire ne crée pas son compte
 (d'où l'appel explicite) ; `is_gifted_subscription` se fonde sur `_recipient_user`.
+
+## Étape 4 : Accepter / Refuser
+
+`decision.php` (actions), `decision-rules.php` (règles et textes, testés), boîte « Compte et abonnement » de la fiche
+(`subscription-admin.php`). Seule une demande **« en attente »** (adresse confirmée) peut être décidée.
+
+**Accepter** (`on_gratuite_accept`) : crée compte, abonnement et commande si besoin (étape 3) ; valide le justificatif
+avec `on_student_proof_approve()` du webmaster ; paie la commande à 0 € et la termine ; fixe début = aujourd'hui,
+fin = +1 an, aucun prochain paiement, recalcule les numéros de début/fin ; **retire la ligne « Gratuité -26 ans »
+de l'abonnement** (elle reste sur la commande) ; active l'abonnement ; supprime le justificatif ; fiche « acceptée »
+(`date_decision`, `_on_gratuite_decide_par`) ; e-mail d'acceptation. Les e-mails WooCommerce habituels de la commande
+(traitement, terminée, nouvelle commande) sont coupés pendant l'opération : l'e-mail d'acceptation les remplace.
+
+**Refuser** (`on_gratuite_refuse`) : motif facultatif (transmis à la personne, gardé dans `_on_gratuite_motif`) ;
+supprime le justificatif ; fiche « refusée » ; e-mail de refus. Rien n'est créé. La personne peut redéposer une demande
+**tout de suite** (décision du 7 novembre). Si un abonnement et une commande avaient été préparés, ils sont annulés (jamais supprimés).
+
+**E-mails** (WooCommerce > Réglages > E-mails, activés, objet/titre/texte modifiables en français et en anglais) :
+« Gratuité -26 ans : demande acceptée » et « … demande refusée ». Espaces réservés : `{first_name}`, `{end_date}`,
+`{account_url}`, `{form_url}`, `{contact}`, `{reason}`. Envoyés à la personne bénéficiaire (adresse de la demande).
+Limite connue : dans une demande pour une autre personne, le demandeur ne reçoit pas de copie.
+
+Réglage ajouté : `form_page_id` (49840), page du formulaire citée dans l'e-mail de refus (traduction trouvée par Polylang).
 
 ## À vérifier sur le site de test
 

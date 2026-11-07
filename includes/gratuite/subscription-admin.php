@@ -2,8 +2,8 @@
 /**
  * Free student subscription, step 3: "Compte et abonnement" box in the fiche.
  *
- * TEMPORARY button "Préparer le compte et l'abonnement": step 4 replaces it with
- * the Accept button, which calls the same on_gratuite_provision().
+ * Accept / Refuse buttons (step 4) on requests confirmed by e-mail. A decided request
+ * shows the outcome instead.
  */
 defined( 'ABSPATH' ) || exit;
 
@@ -41,28 +41,57 @@ function on_gratuite_render_subscription_metabox( $post ) {
         }
         echo '</ul>';
     }
-    if ( ! $sub_id && 'en_attente' === $status && on_gratuite_can_provision() ) {
-        $url = wp_nonce_url( admin_url( 'admin-post.php?action=on_gratuite_provision&fiche=' . (int) $post->ID ), 'on_gratuite_provision_' . $post->ID );
-        echo '<p><a class="button button-primary" href="' . esc_url( $url ) . '">' . esc_html__( 'Préparer le compte et l\'abonnement', 'orgues-nouvelles' ) . '</a></p>';
-        echo '<p class="description">' . esc_html__( 'Crée le compte (si besoin), l\'abonnement Étudiant à 0 € et la commande « Attente justificatif ». Étape provisoire.', 'orgues-nouvelles' ) . '</p>';
+    if ( on_gratuite_can_decide( $status ) && on_gratuite_can_provision() ) {
+        $accept = wp_nonce_url( admin_url( 'admin-post.php?action=on_gratuite_accept&fiche=' . (int) $post->ID ), 'on_gratuite_decide_' . $post->ID );
+        echo '<p><a class="button button-primary" href="' . esc_url( $accept ) . '">' . esc_html__( 'Accepter la demande', 'orgues-nouvelles' ) . '</a></p>';
+        echo '<p class="description">' . esc_html__( 'Crée le compte si besoin, active l\'abonnement pour un an, supprime le justificatif et prévient la personne.', 'orgues-nouvelles' ) . '</p><hr>';
+        wp_nonce_field( 'on_gratuite_decide_' . $post->ID, 'on_gratuite_decide_nonce', false );
+        echo '<p><label for="on_gratuite_motif">' . esc_html__( 'Motif du refus (facultatif, transmis à la personne)', 'orgues-nouvelles' ) . '</label>';
+        echo '<textarea id="on_gratuite_motif" name="on_gratuite_motif" rows="3" style="width:100%"></textarea></p>';
+        $refuse = admin_url( 'admin-post.php?action=on_gratuite_refuse&fiche=' . (int) $post->ID );
+        echo '<p><button type="submit" class="button" formmethod="post" formaction="' . esc_url( $refuse ) . '">' . esc_html__( 'Refuser la demande', 'orgues-nouvelles' ) . '</button></p>';
+        echo '<p class="description">' . esc_html__( 'Supprime le justificatif et prévient la personne, qui pourra redéposer une demande tout de suite.', 'orgues-nouvelles' ) . '</p>';
+    } elseif ( 'acceptee' === $status || 'refusee' === $status ) {
+        $when = (string) get_post_meta( $post->ID, 'date_decision', true );
+        echo '<p><strong>' . esc_html( 'acceptee' === $status ? __( 'Demande acceptée', 'orgues-nouvelles' ) : __( 'Demande refusée', 'orgues-nouvelles' ) ) . '</strong>' . ( $when ? ' (' . esc_html( $when ) . ')' : '' ) . '</p>';
+        $motif = (string) get_post_meta( $post->ID, '_on_gratuite_motif', true );
+        if ( '' !== $motif ) {
+            echo '<p>' . esc_html__( 'Motif :', 'orgues-nouvelles' ) . ' ' . esc_html( $motif ) . '</p>';
+        }
     } elseif ( ! $sub_id ) {
         echo '<p class="description">' . esc_html__( 'Rien n\'est créé tant que la demande n\'est pas confirmée par e-mail et acceptée.', 'orgues-nouvelles' ) . '</p>';
     }
 }
 
-function on_gratuite_handle_provision() {
+/** Check capability and nonce of a decision; returns the fiche id or dies. */
+function on_gratuite_decision_request( $nonce_value ) {
     $post_id = isset( $_GET['fiche'] ) ? absint( $_GET['fiche'] ) : 0;
-    if ( ! $post_id || ! on_gratuite_can_provision() || ! wp_verify_nonce( isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '', 'on_gratuite_provision_' . $post_id ) ) {
+    if ( ! $post_id || ! on_gratuite_can_provision() || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $nonce_value ) ), 'on_gratuite_decide_' . $post_id ) ) {
         wp_die( esc_html__( 'Action non autorisée.', 'orgues-nouvelles' ), '', array( 'response' => 403 ) );
     }
-    $result = on_gratuite_provision( $post_id );
-    $args   = is_wp_error( $result )
+    return $post_id;
+}
+
+function on_gratuite_decision_redirect( $post_id, $result, $ok_code ) {
+    $args = is_wp_error( $result )
         ? array( 'on_gratuite_msg' => 'err', 'on_gratuite_err' => rawurlencode( $result->get_error_message() ) )
-        : array( 'on_gratuite_msg' => $result['account_created'] ? 'ok_new' : 'ok' );
+        : array( 'on_gratuite_msg' => $ok_code . ( empty( $result['mail_sent'] ) ? '_nomail' : '' ) );
     wp_safe_redirect( add_query_arg( $args, get_edit_post_link( $post_id, 'url' ) ) );
     exit;
 }
-add_action( 'admin_post_on_gratuite_provision', 'on_gratuite_handle_provision' );
+
+function on_gratuite_handle_accept() {
+    $post_id = on_gratuite_decision_request( isset( $_GET['_wpnonce'] ) ? $_GET['_wpnonce'] : '' );
+    on_gratuite_decision_redirect( $post_id, on_gratuite_accept( $post_id, get_current_user_id() ), 'accepted' );
+}
+add_action( 'admin_post_on_gratuite_accept', 'on_gratuite_handle_accept' );
+
+function on_gratuite_handle_refuse() {
+    $post_id = on_gratuite_decision_request( isset( $_POST['on_gratuite_decide_nonce'] ) ? $_POST['on_gratuite_decide_nonce'] : '' );
+    $reason  = isset( $_POST['on_gratuite_motif'] ) ? sanitize_textarea_field( wp_unslash( $_POST['on_gratuite_motif'] ) ) : '';
+    on_gratuite_decision_redirect( $post_id, on_gratuite_refuse( $post_id, get_current_user_id(), $reason ), 'refused' );
+}
+add_action( 'admin_post_on_gratuite_refuse', 'on_gratuite_handle_refuse' );
 
 function on_gratuite_provision_notice() {
     if ( empty( $_GET['on_gratuite_msg'] ) || ! on_gratuite_can_provision() ) {
@@ -72,9 +101,16 @@ function on_gratuite_provision_notice() {
     if ( 'err' === $msg ) {
         $text = isset( $_GET['on_gratuite_err'] ) ? rawurldecode( sanitize_text_field( wp_unslash( $_GET['on_gratuite_err'] ) ) ) : 'Erreur.';
         echo '<div class="notice notice-error"><p>' . esc_html( $text ) . '</p></div>';
-    } elseif ( in_array( $msg, array( 'ok', 'ok_new' ), true ) ) {
-        $text = 'ok_new' === $msg ? 'Compte, abonnement et commande créés (e-mail « nouveau compte » envoyé).' : 'Abonnement et commande créés sur le compte existant.';
-        echo '<div class="notice notice-success"><p>' . esc_html( $text ) . '</p></div>';
+    } else {
+        $texts = array(
+            'accepted'        => 'Demande acceptée : abonnement activé, justificatif supprimé, e-mail envoyé.',
+            'accepted_nomail' => 'Demande acceptée : abonnement activé, justificatif supprimé. ATTENTION : l\'e-mail n\'a pas pu être envoyé (e-mail désactivé dans WooCommerce > Réglages > E-mails ?).',
+            'refused'         => 'Demande refusée : justificatif supprimé, e-mail envoyé.',
+            'refused_nomail'  => 'Demande refusée : justificatif supprimé. ATTENTION : l\'e-mail n\'a pas pu être envoyé.',
+        );
+        if ( isset( $texts[ $msg ] ) ) {
+            echo '<div class="notice ' . ( substr( $msg, -6 ) === 'nomail' ? 'notice-warning' : 'notice-success' ) . '"><p>' . esc_html( $texts[ $msg ] ) . '</p></div>';
+        }
     }
 }
 add_action( 'admin_notices', 'on_gratuite_provision_notice' );
