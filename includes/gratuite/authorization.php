@@ -75,11 +75,9 @@ function on_gratuite_create_authorization( array $d ) {
     return (int) $id;
 }
 
-/** Notify the team. Never attaches or links the proof. */
-function on_gratuite_notify_new_request( $post_id, array $d ) {
-    $settings = on_gratuite_settings();
-    $subject  = sprintf( '[Gratuité -26 ans] Nouvelle demande : %s %s', mb_strtoupper( $d['nom'] ), $d['prenom'] );
-    $lines    = array(
+/** Lines of the e-mail sent to the team. Never contains the proof or a link to it. */
+function on_gratuite_notification_lines( $post_id, array $d ) {
+    $lines = array(
         'Une nouvelle demande de gratuité est en attente de décision.',
         '',
         'Nom : ' . mb_strtoupper( $d['nom'] ) . ' ' . $d['prenom'],
@@ -92,10 +90,20 @@ function on_gratuite_notify_new_request( $post_id, array $d ) {
         $requester = ! empty( $d['demandeur_id'] ) ? get_userdata( (int) $d['demandeur_id'] ) : false;
         $lines[]   = 'Demande faite pour une autre personne, par : ' . ( $requester ? $requester->display_name . ' <' . $requester->user_email . '>' : 'compte inconnu' );
     }
-    $lines = array_merge( $lines, array(
+    return array_merge( $lines, array(
         '',
         'Fiche (le justificatif se consulte uniquement depuis cette fiche, une fois connecté) :',
         admin_url( 'post.php?post=' . (int) $post_id . '&action=edit' ),
     ) );
-    return wp_mail( $settings['notify_email'], $subject, implode( "\n", $lines ), array( 'Content-Type: text/plain; charset=UTF-8' ) );
+}
+
+/** Notify the team: WooCommerce e-mail if available (logo, colours, editable), plain text otherwise. */
+function on_gratuite_notify_new_request( $post_id, array $d ) {
+    $email = on_gratuite_wc_email( 'ON_Gratuite_Email_Notification' );
+    if ( $email ) {
+        return (bool) $email->trigger( $post_id, $d );
+    }
+    $settings = on_gratuite_settings();
+    $subject  = sprintf( '[Gratuité -26 ans] Nouvelle demande : %s %s', mb_strtoupper( $d['nom'] ), $d['prenom'] );
+    return wp_mail( $settings['notify_email'], $subject, implode( "\n", on_gratuite_notification_lines( $post_id, $d ) ), array( 'Content-Type: text/plain; charset=UTF-8' ) );
 }

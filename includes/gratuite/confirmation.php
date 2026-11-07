@@ -76,48 +76,57 @@ function on_gratuite_confirmation_page_message( $result, $lang = 'fr' ) {
 }
 
 /**
- * The e-mail sent to the applicant. Plain text, never mentions or attaches the proof.
+ * Default texts of the confirmation e-mail, with {first_name}, {link} and {days} placeholders.
+ * They are the starting values of the fields in WooCommerce > Settings > Emails, where they can be edited.
+ *
+ * @return array { subject, heading, body } Paragraphs of the body are separated by a blank line.
+ */
+function on_gratuite_confirmation_texts( $lang, $for_other = false ) {
+    if ( 'en' === $lang ) {
+        $first = $for_other
+            ? 'A request for the free digital subscription for people under 26 was made for you by a user of our website.'
+            : 'We received your request for the free digital subscription for people under 26.';
+        return array(
+            'subject' => 'Orgues Nouvelles: please confirm your request',
+            'heading' => 'Please confirm your request',
+            'body'    => $first . "\n" . 'To confirm that this e-mail address is yours, please click the link below:' . "\n\n"
+                . '{link}' . "\n\n"
+                . 'The link is valid for {days} days. Without confirmation, your request and the document you sent are deleted.' . "\n"
+                . 'Once confirmed, we check your document and reply by e-mail.' . "\n\n"
+                . 'If you did not make this request, simply ignore this message.',
+        );
+    }
+    $first = $for_other
+        ? 'Une demande d\'abonnement numérique gratuit pour les moins de 26 ans a été faite pour vous par un utilisateur de notre site.'
+        : 'Nous avons bien reçu votre demande d\'abonnement numérique gratuit pour les moins de 26 ans.';
+    return array(
+        'subject' => 'Orgues Nouvelles : merci de confirmer votre demande',
+        'heading' => 'Confirmez votre demande',
+        'body'    => $first . "\n" . 'Pour confirmer que cette adresse e-mail est bien la vôtre, cliquez sur le lien ci-dessous :' . "\n\n"
+            . '{link}' . "\n\n"
+            . 'Le lien est valable {days} jours. Sans confirmation, votre demande et le document envoyé sont supprimés.' . "\n"
+            . 'Une fois confirmée, nous examinons votre justificatif et nous vous répondons par e-mail.' . "\n\n"
+            . 'Si vous n\'êtes pas à l\'origine de cette demande, ignorez simplement ce message.',
+    );
+}
+
+/** Replace the placeholders of a confirmation text. */
+function on_gratuite_fill_confirmation_text( $text, $first_name, $url, $days ) {
+    return strtr( (string) $text, array( '{first_name}' => $first_name, '{link}' => $url, '{days}' => (string) (int) $days ) );
+}
+
+/**
+ * Plain-text version of the e-mail (fallback when WooCommerce e-mails are not available).
+ * Never mentions or attaches the proof.
  *
  * @return array { subject, body }
  */
 function on_gratuite_confirmation_mail( $lang, $first_name, $url, $days, $for_other = false ) {
-    if ( 'en' === $lang ) {
-        return array(
-            'subject' => 'Orgues Nouvelles: please confirm your request',
-            'body'    => implode( "\n", array(
-                'Hello ' . $first_name . ',',
-                '',
-                $for_other ? 'A request for the free digital subscription for people under 26 was made for you by a user of our website.' : 'We received your request for the free digital subscription for people under 26.',
-                'To confirm that this e-mail address is yours, please click the link below:',
-                '',
-                $url,
-                '',
-                'The link is valid for ' . (int) $days . ' days. Without confirmation, your request and the document you sent are deleted.',
-                'Once confirmed, we check your document and reply by e-mail.',
-                '',
-                'If you did not make this request, simply ignore this message.',
-                '',
-                'Orgues Nouvelles',
-            ) ),
-        );
-    }
+    $t = on_gratuite_confirmation_texts( $lang, $for_other );
     return array(
-        'subject' => 'Orgues Nouvelles : merci de confirmer votre demande',
-        'body'    => implode( "\n", array(
-            'Bonjour ' . $first_name . ',',
-            '',
-            $for_other ? 'Une demande d\'abonnement numérique gratuit pour les moins de 26 ans a été faite pour vous par un utilisateur de notre site.' : 'Nous avons bien reçu votre demande d\'abonnement numérique gratuit pour les moins de 26 ans.',
-            'Pour confirmer que cette adresse e-mail est bien la vôtre, cliquez sur le lien ci-dessous :',
-            '',
-            $url,
-            '',
-            'Le lien est valable ' . (int) $days . ' jours. Sans confirmation, votre demande et le document envoyé sont supprimés.',
-            'Une fois confirmée, nous examinons votre justificatif et nous vous répondons par e-mail.',
-            '',
-            'Si vous n\'êtes pas à l\'origine de cette demande, ignorez simplement ce message.',
-            '',
-            'Orgues Nouvelles',
-        ) ),
+        'subject' => $t['subject'],
+        'body'    => ( 'en' === $lang ? 'Hello ' : 'Bonjour ' ) . $first_name . ",\n\n"
+            . on_gratuite_fill_confirmation_text( $t['body'], $first_name, $url, $days ) . "\n\nOrgues Nouvelles",
     );
 }
 
@@ -141,7 +150,13 @@ function on_gratuite_send_confirmation( $post_id, array $d ) {
     $token = on_gratuite_new_token();
     update_post_meta( $post_id, '_on_gratuite_token_hash', on_gratuite_token_hash( $token, $post_id, on_gratuite_confirmation_key() ) );
     update_post_meta( $post_id, '_on_gratuite_created', time() );
-    $mail = on_gratuite_confirmation_mail( $d['langue'], $d['prenom'], on_gratuite_confirmation_url( $post_id, $token ), $days, ! empty( $d['pour_autre'] ) );
+    $url = on_gratuite_confirmation_url( $post_id, $token );
+    // Preferred: the site's WooCommerce e-mail (logo, colours, footer; texts editable in WooCommerce > Settings > Emails).
+    $email = on_gratuite_wc_email( 'ON_Gratuite_Email_Confirmation' );
+    if ( $email ) {
+        return (bool) $email->trigger( $post_id, $d, $url, $days );
+    }
+    $mail = on_gratuite_confirmation_mail( $d['langue'], $d['prenom'], $url, $days, ! empty( $d['pour_autre'] ) );
     return (bool) wp_mail( $d['email'], $mail['subject'], $mail['body'], array( 'Content-Type: text/plain; charset=UTF-8' ) );
 }
 

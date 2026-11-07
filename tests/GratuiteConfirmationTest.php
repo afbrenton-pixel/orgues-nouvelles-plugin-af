@@ -102,4 +102,23 @@ class GratuiteConfirmationTest extends TestCase {
         $this->assertStringContainsString( 'made for you', $en['body'] );
         $this->assertStringNotContainsString( 'faite pour vous', on_gratuite_confirmation_mail( 'fr', 'Léa', 'u', 7 )['body'] );
     }
+    public function test_default_texts_exist_in_both_languages_with_placeholders() {
+        foreach ( array( 'fr', 'en' ) as $lang ) {
+            foreach ( array( false, true ) as $other ) {
+                $t = on_gratuite_confirmation_texts( $lang, $other );
+                foreach ( array( 'subject', 'heading', 'body' ) as $k ) {
+                    $this->assertNotSame( '', $t[ $k ] );
+                }
+                $this->assertStringContainsString( '{link}', $t['body'] );
+                $this->assertStringContainsString( '{days}', $t['body'] );
+            }
+        }
+        $this->assertNotSame( on_gratuite_confirmation_texts( 'fr' )['body'], on_gratuite_confirmation_texts( 'fr', true )['body'] );
+    }
+
+    public function test_placeholders_are_filled() {
+        $out = on_gratuite_fill_confirmation_text( 'Salut {first_name}, {link} ({days} jours)', 'Léa', 'https://x.test/?k=1', 7 );
+        $this->assertSame( 'Salut Léa, https://x.test/?k=1 (7 jours)', $out );
+        $this->assertStringNotContainsString( '{', $out );
+    }
 }
