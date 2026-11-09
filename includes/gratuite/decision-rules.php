@@ -24,7 +24,7 @@ function on_gratuite_decision_texts( $kind, $lang ) {
         return $en ? array(
             'subject' => 'Orgues Nouvelles: your free subscription is accepted',
             'heading' => 'Your request is accepted',
-            'body'    => 'Good news: your request for the free digital subscription for people under 26 is accepted.' . "\n"
+            'body'    => 'Good news: your request for the free digital subscription for people aged 26 or under is accepted.' . "\n"
                 . 'Your subscription is active until {end_date}. You can read the issues online from your account:' . "\n\n"
                 . '{account_url}' . "\n\n"
                 . 'To keep it free the following year, simply send a new request with a new proof.' . "\n"
@@ -33,7 +33,7 @@ function on_gratuite_decision_texts( $kind, $lang ) {
         ) : array(
             'subject' => 'Orgues Nouvelles : votre abonnement gratuit est accepté',
             'heading' => 'Votre demande est acceptée',
-            'body'    => 'Bonne nouvelle : votre demande d\'abonnement numérique gratuit pour les moins de 26 ans est acceptée.' . "\n"
+            'body'    => 'Bonne nouvelle : votre demande d\'abonnement numérique gratuit pour les jeunes jusqu\'à 26 ans est acceptée.' . "\n"
                 . 'Votre abonnement est actif jusqu\'au {end_date}. Vous pouvez lire les numéros en ligne depuis votre compte :' . "\n\n"
                 . '{account_url}' . "\n\n"
                 . 'Pour conserver la gratuité l\'année suivante, il suffira de refaire une demande avec un nouveau justificatif.' . "\n"
@@ -44,14 +44,14 @@ function on_gratuite_decision_texts( $kind, $lang ) {
     return $en ? array(
         'subject' => 'Orgues Nouvelles: your free subscription request',
         'heading' => 'We could not accept your request',
-        'body'    => 'We were unable to accept your request for the free digital subscription for people under 26.{reason}' . "\n"
+        'body'    => 'We were unable to accept your request for the free digital subscription for people aged 26 or under.{reason}' . "\n"
             . 'The document you sent has been deleted from our site. You can send a new request right away, with a valid proof:' . "\n\n"
             . '{form_url}' . "\n\n"
             . 'If you have any question, just reply to this message or write to {contact}.',
     ) : array(
         'subject' => 'Orgues Nouvelles : votre demande d\'abonnement gratuit',
         'heading' => 'Votre demande n\'a pas pu être acceptée',
-        'body'    => 'Nous n\'avons pas pu accepter votre demande d\'abonnement numérique gratuit pour les moins de 26 ans.{reason}' . "\n"
+        'body'    => 'Nous n\'avons pas pu accepter votre demande d\'abonnement numérique gratuit pour les jeunes jusqu\'à 26 ans.{reason}' . "\n"
             . 'Le document que vous avez envoyé a été supprimé de notre site. Vous pouvez déposer une nouvelle demande dès maintenant, avec un justificatif valide :' . "\n\n"
             . '{form_url}' . "\n\n"
             . 'Pour toute question, répondez simplement à ce message ou écrivez à {contact}.',

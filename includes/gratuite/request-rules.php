@@ -13,8 +13,16 @@ function on_gratuite_message( $key, $lang = 'fr', $limit = 0, $extra = '' ) {
     $messages = array(
         'bad_dob'     => array( 'Date de naissance non valide.', 'Invalid date of birth.' ),
         'too_old'     => array(
-            sprintf( 'Cette offre est réservée aux personnes de moins de %d ans.', $limit ),
-            sprintf( 'This offer is reserved for people under %d.', $limit ),
+            sprintf( 'Cette offre est réservée aux jeunes jusqu\'à %d ans (avant leur %de anniversaire).', $limit - 1, $limit ),
+            sprintf( 'This offer is for people aged %d or under (before their %dth birthday).', $limit - 1, $limit ),
+        ),
+        'promo_not_yet' => array(
+            sprintf( 'Cette offre n\'est pas encore ouverte : les demandes ouvriront le %s.', $extra ),
+            sprintf( 'This offer is not open yet: requests will open on %s.', $extra ),
+        ),
+        'promo_closed' => array(
+            sprintf( 'Cette offre est terminée : les demandes étaient ouvertes jusqu\'au %s.', $extra ),
+            sprintf( 'This offer has ended: requests were open until %s.', $extra ),
         ),
         'login_first' => array(
             'Un compte existe déjà avec cette adresse. Connectez-vous d\'abord à votre compte, puis refaites votre demande depuis cette page.',
@@ -70,6 +78,35 @@ function on_gratuite_parse_date( $value ) {
 }
 
 /**
+ * State of the promotional period for first requests: 'open', 'not_yet' or 'closed'.
+ * The end date is included. An empty date means no limit on that side.
+ *
+ * @param string            $start YYYY-MM-DD or ''.
+ * @param string            $end   YYYY-MM-DD or ''.
+ * @param DateTimeImmutable $today
+ */
+function on_gratuite_promo_state( $start, $end, DateTimeImmutable $today ) {
+    $from = on_gratuite_parse_date( (string) $start );
+    $to   = on_gratuite_parse_date( (string) $end );
+    if ( $from && $today < $from ) {
+        return 'not_yet';
+    }
+    if ( $to && $today > $to ) {
+        return 'closed';
+    }
+    return 'open';
+}
+
+/** A date for a message: 09/11/2026 in French, November 9, 2026 in English. */
+function on_gratuite_promo_date_text( $value, $lang ) {
+    $date = on_gratuite_parse_date( (string) $value );
+    if ( ! $date ) {
+        return '';
+    }
+    return 'en' === $lang ? $date->format( 'F j, Y' ) : $date->format( 'd/m/Y' );
+}
+
+/**
  * Evaluate a request.
  *
  * @param array $in {
@@ -102,6 +139,14 @@ function on_gratuite_evaluate_request( array $in ) {
         $limit = ( 'premiere' === $type ) ? (int) $settings['age_first'] : (int) $settings['age_renew'];
         if ( $age >= $limit ) {
             $errors['date_naissance'] = on_gratuite_message( 'too_old', $lang, $limit );
+        }
+    }
+    // The promotional period only limits first requests: renewals go on until the 27th birthday.
+    if ( 'premiere' === $type ) {
+        $state = on_gratuite_promo_state( (string) ( $settings['promo_start'] ?? '' ), (string) ( $settings['promo_end'] ?? '' ), $today );
+        if ( 'open' !== $state ) {
+            $date = on_gratuite_promo_date_text( 'not_yet' === $state ? $settings['promo_start'] : $settings['promo_end'], $lang );
+            $errors['promo'] = on_gratuite_message( 'promo_' . $state, $lang, 0, $date );
         }
     }
     $typed   = strtolower( trim( isset( $in['typed_email'] ) ? (string) $in['typed_email'] : '' ) );

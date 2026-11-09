@@ -281,6 +281,19 @@ Réglage ajouté : `form_page_id` (49840), page du formulaire citée dans l'e-ma
 2. Définir `ON_GRATUITE_PROOF_KEY` dans `wp-config.php` en production.
 3. Elementor ne conserve ni le fichier ni son adresse (voir étape 2) : vérifier le dossier `wp-content/uploads/elementor/forms/` et la page des envois après un essai.
 
+## Période promotionnelle (décidé le 9 novembre 2026)
+
+Les **premières demandes** ne sont possibles que pendant une période promotionnelle, avec une
+date de début et une date de fin (incluses). Hors période, le formulaire refuse la demande avec
+un message qui donne la date (« pas encore ouverte… » ou « terminée… »), en français et en anglais ;
+le refus est fait côté serveur, donc aussi pour un envoi direct. **Les renouvellements ne sont jamais
+limités par ces dates** : ils vont jusqu'au 27e anniversaire de chaque personne. Sans date, pas de limite.
+
+Les dates se changent dans l'administration, sans code : page de réglages Pods
+**« Gratuité -26 ans : réglages »** (voir ci-dessous). Fonctions : `on_gratuite_promo_state()` et
+`on_gratuite_promo_date_text()` (`request-rules.php`), lecture des dates dans `on_gratuite_settings()`
+(`settings.php`, clés `promo_start` et `promo_end`).
+
 ## Pods (hors code)
 
 Le type de contenu et ses champs sont créés avec Pods : ils sont enregistrés dans la
@@ -322,3 +335,9 @@ elles sont gérées par le code (voir ci-dessus) et ne s'affichent pas en saisie
 `tests/GratuitePrivateProofStorageTest.php` : rangement chiffré, refus des mauvais formats,
 nom aléatoire, relecture à l'identique, fichier modifié refusé, clé changée,
 remplacement, suppression, protection contre les chemins piégés, purge à 60 jours. Commande : `vendor/bin/phpunit tests/GratuitePrivateProofStorageTest.php`.
+
+**Page de réglages** `on_gratuite_reglages` (Pods, type « Page de réglages ») : libellé
+« Gratuité -26 ans : réglages », sous le menu « Gratuité -26 ans ». Deux champs de type date,
+format AAAA-MM-JJ : `promo_debut` (début de la période, incluse) et `promo_fin` (fin, incluse).
+Pods les enregistre dans les options WordPress `on_gratuite_reglages_promo_debut` et
+`on_gratuite_reglages_promo_fin`, que le code lit. À refaire (ou exporter) sur le vrai site, comme le type de contenu.

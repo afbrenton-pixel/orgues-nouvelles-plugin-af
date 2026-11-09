@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 function on_gratuite_settings() {
-    return apply_filters( 'on_gratuite_settings', array(
+    $settings = array(
         'age_first'          => 27,   // First request: strictly under this age, i.e. until the 27th birthday (decision of 9 November 2026: same rule as the renewal).
         'age_renew'          => 27,   // Yearly renewal: strictly under this age, i.e. until the 27th birthday.
         'renew_window_days'  => 60,   // Renewal allowed this many days before the end (enforced in step 5).
@@ -23,5 +23,18 @@ function on_gratuite_settings() {
         'rate_limit_per_hour' => 5,   // Requests per IP and per hour.
         'confirm_days'       => 7,    // The e-mail confirmation link is valid this many days.
         'auto_purge_unconfirmed' => false, // false = manual purge only (decision of 7 November; automatic purge to check with the webmaster).
-    ) );
+        'promo_start'        => '',   // First requests open from this date (YYYY-MM-DD, included). Empty = no start limit.
+        'promo_end'          => '',   // First requests open until this date (YYYY-MM-DD, included). Empty = no end limit. Renewals are never limited by these dates.
+    );
+    // The promotional period is edited by the team on the Pods settings page "Gratuité -26 ans : réglages"
+    // (settings pod `on_gratuite_reglages`, date fields `promo_debut` and `promo_fin`, stored as options).
+    if ( function_exists( 'get_option' ) ) {
+        foreach ( array( 'promo_start' => 'promo_debut', 'promo_end' => 'promo_fin' ) as $key => $field ) {
+            $value = get_option( 'on_gratuite_reglages_' . $field, '' );
+            if ( is_string( $value ) && 1 === preg_match( '/^\d{4}-\d{2}-\d{2}/', $value ) ) {
+                $settings[ $key ] = substr( $value, 0, 10 );
+            }
+        }
+    }
+    return apply_filters( 'on_gratuite_settings', $settings );
 }
