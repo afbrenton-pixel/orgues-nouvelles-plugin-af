@@ -46,10 +46,38 @@ class GratuiteDecisionRulesTest extends TestCase {
         $this->assertStringContainsString( 'Reason: Unreadable', $en );
     }
 
-    public function test_copy_intro_names_the_beneficiary_in_both_languages() {
-        $fr = on_gratuite_copy_intro( 'fr', 'Jules DUPONT', 'j@x.org' );
-        $this->assertStringContainsString( 'Jules DUPONT (j@x.org)', $fr );
-        $this->assertStringContainsString( 'Copie', $fr );
-        $this->assertStringContainsString( 'Copy for your information', on_gratuite_copy_intro( 'en', 'A B', 'a@b.c' ) );
+    public function test_copy_for_the_requester_names_the_person_and_gives_the_end_date() {
+        $vars = array( 'name' => 'Jules DUPONT', 'email' => 'j@x.org', 'end_date' => '7 novembre 2027' );
+        foreach ( array( 'fr', 'en' ) as $lang ) {
+            $texts = on_gratuite_copy_texts( 'accepted', $lang );
+            $body  = on_gratuite_fill_copy_text( $texts['body'], $vars, $lang );
+            $this->assertStringContainsString( 'Jules DUPONT (j@x.org)', $body, $lang );
+            $this->assertStringContainsString( '7 novembre 2027', $body, $lang );
+            $this->assertStringContainsString( 'Jules DUPONT', on_gratuite_fill_copy_text( $texts['subject'], $vars, $lang ), $lang );
+            $this->assertStringNotContainsString( '{', $body, $lang );
+        }
+        $this->assertStringContainsString( 'Pour information', on_gratuite_copy_texts( 'accepted', 'fr' )['body'] );
+        $this->assertStringContainsString( 'For your information', on_gratuite_copy_texts( 'accepted', 'en' )['body'] );
+    }
+
+    public function test_copy_for_the_requester_says_nothing_about_reading_the_account_or_renewal() {
+        foreach ( array( 'accepted', 'refused' ) as $kind ) {
+            foreach ( array( 'fr', 'en' ) as $lang ) {
+                $t    = on_gratuite_copy_texts( $kind, $lang );
+                $text = $t['subject'] . ' ' . $t['heading'] . ' ' . $t['body'];
+                foreach ( array( '{account_url}', '{form_url}', 'Mon compte', 'My account', 'lire', 'read', 'conserver', 'keep it', 'supprimé', 'deleted' ) as $forbidden ) {
+                    $this->assertStringNotContainsString( $forbidden, $text, "$kind $lang $forbidden" );
+                }
+            }
+        }
+    }
+
+    public function test_copy_of_a_refusal_carries_the_reason_only_when_there_is_one() {
+        $fr   = on_gratuite_copy_texts( 'refused', 'fr' )['body'];
+        $with = on_gratuite_fill_copy_text( $fr, array( 'name' => 'A B', 'email' => 'a@b.c', 'reason' => ' Document illisible ' ), 'fr' );
+        $this->assertStringContainsString( 'Motif : Document illisible', $with );
+        $this->assertStringNotContainsString( 'Motif', on_gratuite_fill_copy_text( $fr, array( 'name' => 'A B', 'email' => 'a@b.c' ), 'fr' ) );
+        $en = on_gratuite_fill_copy_text( on_gratuite_copy_texts( 'refused', 'en' )['body'], array( 'name' => 'A B', 'email' => 'a@b.c', 'reason' => 'Unreadable' ), 'en' );
+        $this->assertStringContainsString( 'Reason: Unreadable', $en );
     }
 }

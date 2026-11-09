@@ -84,8 +84,8 @@ function on_gratuite_confirmation_page_message( $result, $lang = 'fr' ) {
 function on_gratuite_confirmation_texts( $lang, $for_other = false ) {
     if ( 'en' === $lang ) {
         $first = $for_other
-            ? 'A request for the free digital subscription for people under 26 was made for you by a user of our website.'
-            : 'We received your request for the free digital subscription for people under 26.';
+            ? 'A request for the free digital subscription for people aged 26 or under was made for you by a user of our website.'
+            : 'We received your request for the free digital subscription for people aged 26 or under.';
         return array(
             'subject' => 'Orgues Nouvelles: please confirm your request',
             'heading' => 'Please confirm your request',
@@ -97,8 +97,8 @@ function on_gratuite_confirmation_texts( $lang, $for_other = false ) {
         );
     }
     $first = $for_other
-        ? 'Une demande d\'abonnement numérique gratuit pour les moins de 26 ans a été faite pour vous par un utilisateur de notre site.'
-        : 'Nous avons bien reçu votre demande d\'abonnement numérique gratuit pour les moins de 26 ans.';
+        ? 'Une demande d\'abonnement numérique gratuit pour les jeunes jusqu\'à 26 ans a été faite pour vous par un utilisateur de notre site.'
+        : 'Nous avons bien reçu votre demande d\'abonnement numérique gratuit pour les jeunes jusqu\'à 26 ans.';
     return array(
         'subject' => 'Orgues Nouvelles : merci de confirmer votre demande',
         'heading' => 'Confirmez votre demande',

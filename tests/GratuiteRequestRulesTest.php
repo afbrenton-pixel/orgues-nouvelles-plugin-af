@@ -34,24 +34,30 @@ class GratuiteRequestRulesTest extends TestCase {
         $this->assertSame( 21, $r['age'] );
     }
 
-    public function test_first_request_the_day_before_the_26th_birthday_is_accepted() {
-        $r = $this->request( array( 'dob' => '2000-11-08' ) );
-        $this->assertSame( 25, $r['age'] );
+    public function test_first_request_is_accepted_at_26_until_the_day_before_the_27th_birthday() {
+        $r = $this->request( array( 'dob' => '1999-11-08' ) ); // Turns 27 tomorrow.
+        $this->assertSame( 26, $r['age'] );
+        $this->assertSame( array(), $r['errors'] );
+        $r = $this->request( array( 'dob' => '2000-11-07' ) ); // Turned 26 today.
+        $this->assertSame( 26, $r['age'] );
         $this->assertSame( array(), $r['errors'] );
     }
 
-    public function test_first_request_on_the_26th_birthday_is_refused() {
-        $r = $this->request( array( 'dob' => '2000-11-07' ) );
-        $this->assertSame( 26, $r['age'] );
+    public function test_first_request_on_the_27th_birthday_is_refused() {
+        $r = $this->request( array( 'dob' => '1999-11-07' ) );
+        $this->assertSame( 27, $r['age'] );
         $this->assertArrayHasKey( 'date_naissance', $r['errors'] );
-        $this->assertStringContainsString( '26', $r['errors']['date_naissance'] );
+        $this->assertStringContainsString( 'jusqu\'à 26 ans', $r['errors']['date_naissance'] );
+        $this->assertStringContainsString( '27e anniversaire', $r['errors']['date_naissance'] );
     }
 
-    public function test_renewal_accepts_26_but_refuses_27() {
+    public function test_renewal_follows_the_same_rule_as_the_first_request() {
         $this->assertSame( array(), $this->request( array( 'dob' => '2000-01-01', 'has_accepted' => true, 'logged_in' => true ) )['errors'] );
+        $this->assertSame( array(), $this->request( array( 'dob' => '1999-11-08', 'has_accepted' => true, 'logged_in' => true ) )['errors'] );
         $r = $this->request( array( 'dob' => '1999-11-07', 'has_accepted' => true, 'logged_in' => true ) );
         $this->assertSame( 'renouvellement', $r['type'] );
         $this->assertArrayHasKey( 'date_naissance', $r['errors'] );
+        $this->assertSame( on_gratuite_settings()['age_first'], on_gratuite_settings()['age_renew'] );
     }
 
     public function test_invalid_future_or_impossible_dates_are_refused() {
@@ -73,7 +79,7 @@ class GratuiteRequestRulesTest extends TestCase {
 
     public function test_messages_exist_in_english() {
         $r = $this->request( array( 'lang' => 'en', 'dob' => '1990-01-01', 'email_has_account' => true ) );
-        $this->assertStringContainsString( 'under 26', $r['errors']['date_naissance'] );
+        $this->assertStringContainsString( '26 or under', $r['errors']['date_naissance'] );
         $this->assertStringContainsString( 'log in', $r['errors']['email'] );
         foreach ( array( 'bad_dob', 'login_first', 'pending', 'no_proof', 'bad_proof', 'rate_limit', 'technical' ) as $key ) {
             $this->assertNotSame( '', on_gratuite_message( $key, 'fr' ), $key );
@@ -84,6 +90,52 @@ class GratuiteRequestRulesTest extends TestCase {
     public function test_ages_come_from_the_settings() {
         $GLOBALS['on_gratuite_test_filters']['on_gratuite_settings'] = array_merge( on_gratuite_settings(), array( 'age_first' => 30 ) );
         $this->assertSame( array(), $this->request( array( 'dob' => '1997-01-01' ) )['errors'] );
+    }
+
+    private function with_promo( $start, $end ) {
+        $GLOBALS['on_gratuite_test_filters']['on_gratuite_settings'] = array_merge( on_gratuite_settings(), array( 'promo_start' => $start, 'promo_end' => $end ) );
+    }
+
+    public function test_promo_period_without_dates_is_always_open() {
+        $this->assertSame( 'open', on_gratuite_promo_state( '', '', new DateTimeImmutable( '2026-11-07' ) ) );
+        $this->assertArrayNotHasKey( 'promo', $this->request()['errors'] );
+    }
+
+    public function test_promo_period_includes_the_first_and_the_last_day() {
+        $today = new DateTimeImmutable( '2026-11-07' );
+        $this->assertSame( 'open', on_gratuite_promo_state( '2026-11-07', '2026-11-30', $today ) );
+        $this->assertSame( 'open', on_gratuite_promo_state( '2026-11-01', '2026-11-07', $today ) );
+        $this->assertSame( 'not_yet', on_gratuite_promo_state( '2026-11-08', '2026-11-30', $today ) );
+        $this->assertSame( 'closed', on_gratuite_promo_state( '2026-11-01', '2026-11-06', $today ) );
+        $this->assertSame( 'open', on_gratuite_promo_state( '', '2026-11-30', $today ) );
+        $this->assertSame( 'not_yet', on_gratuite_promo_state( '2026-12-01', '', $today ) );
+        $this->assertSame( 'open', on_gratuite_promo_state( 'pas une date', 'xx', $today ) );
+    }
+
+    public function test_first_request_is_refused_outside_the_promo_period_with_the_date_in_the_message() {
+        $this->with_promo( '2026-12-01', '2026-12-31' );
+        $r = $this->request();
+        $this->assertStringContainsString( '01/12/2026', $r['errors']['promo'] );
+        $this->assertStringContainsString( 'pas encore ouverte', $r['errors']['promo'] );
+        $this->assertStringContainsString( 'December 1, 2026', $this->request( array( 'lang' => 'en' ) )['errors']['promo'] );
+
+        $this->with_promo( '2026-10-01', '2026-11-06' );
+        $r = $this->request();
+        $this->assertStringContainsString( 'terminée', $r['errors']['promo'] );
+        $this->assertStringContainsString( '06/11/2026', $r['errors']['promo'] );
+        $this->assertStringContainsString( 'has ended', $this->request( array( 'lang' => 'en' ) )['errors']['promo'] );
+    }
+
+    public function test_first_request_is_accepted_inside_the_promo_period() {
+        $this->with_promo( '2026-11-06', '2026-11-30' );
+        $this->assertSame( array(), $this->request()['errors'] );
+    }
+
+    public function test_renewal_is_never_limited_by_the_promo_period() {
+        $this->with_promo( '2026-12-01', '2026-12-31' );
+        $this->assertSame( array(), $this->request( array( 'has_accepted' => true, 'logged_in' => true ) )['errors'] );
+        $this->with_promo( '2026-01-01', '2026-01-31' );
+        $this->assertSame( array(), $this->request( array( 'has_accepted' => true, 'logged_in' => true ) )['errors'] );
     }
 
     public function test_early_proof_check_on_extension_and_size() {
