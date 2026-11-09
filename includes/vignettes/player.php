@@ -63,6 +63,7 @@ add_action(
 				'fields'           => 'ids',
 				'no_found_rows'    => true,
 				'suppress_filters' => false,
+				'lang'             => '', // Polylang : toutes les langues (la page anglaise reprend des vignettes françaises).
 				'meta_key'         => '_onv_source_type', // phpcs:ignore WordPress.DB.SlowDBQuery
 				'meta_value'       => 'ressource', // phpcs:ignore WordPress.DB.SlowDBQuery
 			)
