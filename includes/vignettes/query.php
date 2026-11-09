@@ -11,9 +11,120 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Langue de repli (Polylang).
+ *
+ * Sur une page qui n'est pas dans la langue par défaut (par exemple l'anglais), les vignettes
+ * françaises dont le type de ressource est audio, partitions ou vidéos sont ajoutées à celles
+ * de la langue courante : ce sont des contenus que l'on écoute ou regarde, la langue compte peu.
+ * Les textes ne sont pas repris. Une vignette française qui a une traduction dans la langue
+ * courante est remplacée par celle-ci.
+ * Filtre `on_vignettes_types_partages` : slugs de `type_de_ressource` concernés.
+ *
+ * @return array|null Langue courante et langue par défaut, ou null s'il n'y a rien à faire.
+ */
+function on_vignettes_langues_repli() {
+	if ( ! function_exists( 'pll_current_language' ) || ! function_exists( 'pll_default_language' ) ) {
+		return null;
+	}
+	$cur = pll_current_language();
+	$def = pll_default_language();
+	if ( ! $cur || ! $def || $cur === $def ) {
+		return null;
+	}
+	return array( $cur, $def );
+}
+
+/** Vrai si la vignette est une ressource audio, partition ou vidéo. */
+function on_vignettes_partageable( $id ) {
+	$types = (array) apply_filters( 'on_vignettes_types_partages', array( 'audio', 'partitions', 'videos' ) );
+	return has_term( $types, 'type_de_ressource', $id );
+}
+
+/**
+ * Identifiants des vignettes : langue courante, plus le repli de la langue par défaut.
+ *
+ * @param array $args  Arguments de WP_Query (le tri est conservé).
+ * @param array $langs Résultat de on_vignettes_langues_repli().
+ */
+function on_vignettes_ids_repli( array $args, array $langs ) {
+	list( $cur, $def )        = $langs;
+	$args['lang']             = $cur . ',' . $def;
+	$args['suppress_filters'] = false;
+	$ids                      = array_map( 'intval', ( new WP_Query( $args ) )->posts );
+	$out                      = array();
+	foreach ( $ids as $id ) {
+		$lang = pll_get_post_language( $id );
+		if ( $lang === $cur ) {
+			$out[] = $id;
+		} elseif ( $lang === $def && on_vignettes_partageable( $id ) && ! pll_get_post( $id, $cur ) ) {
+			$out[] = $id;
+		}
+	}
+	return $out;
+}
+
+/** Arguments de WP_Query : toutes les vignettes de la requête Elementor, par rang puis par date. */
+function on_vignettes_args_rang( $query ) {
+	$args      = array(
+		'post_type'        => 'vignette_accueil',
+		'post_status'      => 'publish',
+		'posts_per_page'   => 200,
+		'fields'           => 'ids',
+		'no_found_rows'    => true,
+		'suppress_filters' => true,
+		'meta_query'       => array( // phpcs:ignore WordPress.DB.SlowDBQuery
+			'relation'    => 'OR',
+			'rang_clause' => array(
+				'key'     => 'rang',
+				'type'    => 'NUMERIC',
+				'compare' => 'EXISTS',
+			),
+			array(
+				'key'     => 'rang',
+				'compare' => 'NOT EXISTS',
+			),
+		),
+		'orderby'          => array(
+			'rang_clause' => 'ASC',
+			'date'        => 'DESC',
+		),
+	);
+	$tax_query = $query->get( 'tax_query' );
+	if ( is_array( $tax_query ) && $tax_query ) {
+		$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery
+	}
+	return $args;
+}
+
+/** Applique le repli de langue à une requête Elementor (ordre par rang puis date). */
+function on_vignettes_applique_repli( $query, array $langs ) {
+	static $running = false;
+	if ( $running ) {
+		return;
+	}
+	$running = true;
+	try {
+		$ids = on_vignettes_ids_repli( on_vignettes_args_rang( $query ), $langs );
+		$query->set( 'meta_query', array() );
+		$query->set( 'tax_query', array() );
+		$query->set( 'lang', $langs[0] . ',' . $langs[1] );
+		$query->set( 'post__in', $ids ? $ids : array( 0 ) );
+		$query->set( 'orderby', 'post__in' );
+	} catch ( \Throwable $e ) {
+		unset( $e );
+	}
+	$running = false;
+}
+
 add_action(
 	'elementor/query/vignettes_rang',
 	function ( $query ) {
+		$langs = on_vignettes_langues_repli();
+		if ( $langs ) {
+			on_vignettes_applique_repli( $query, $langs );
+			return;
+		}
 		$query->set(
 			'meta_query',
 			array(
@@ -182,11 +293,17 @@ function on_vignettes_split_query( $query, $want_large ) {
 		if ( is_array( $tax_query ) && $tax_query ) {
 			$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery
 		}
-		if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
-			$args['lang']             = pll_current_language();
-			$args['suppress_filters'] = false;
+		$langs = on_vignettes_langues_repli();
+		if ( $langs ) {
+			$ids = on_vignettes_ids_repli( $args, $langs );
+			$query->set( 'lang', $langs[0] . ',' . $langs[1] );
+		} else {
+			if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
+				$args['lang']             = pll_current_language();
+				$args['suppress_filters'] = false;
+			}
+			$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
 		}
-		$ids    = array_map( 'intval', ( new WP_Query( $args ) )->posts );
 		$result = array();
 		foreach ( $ids as $id ) {
 			$is_large = 'large' === get_post_meta( $id, 'format', true );
@@ -249,7 +366,14 @@ add_action(
 			if ( is_array( $tax ) && $tax ) {
 				$args['tax_query'] = $tax; // phpcs:ignore WordPress.DB.SlowDBQuery
 			}
-			$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
+			$langs = on_vignettes_langues_repli();
+			if ( $langs ) {
+				$args['orderby'] = array( 'date' => 'DESC' );
+				$ids             = on_vignettes_ids_repli( $args, $langs );
+				$query->set( 'lang', $langs[0] . ',' . $langs[1] );
+			} else {
+				$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
+			}
 			$max = 0;
 			foreach ( $ids as $id ) {
 				$max = max( $max, (int) get_post_meta( $id, 'numero', true ) );
