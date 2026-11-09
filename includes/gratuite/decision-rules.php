@@ -72,9 +72,50 @@ function on_gratuite_fill_decision_text( $text, array $vars, $lang = 'fr' ) {
     ) );
 }
 
-/** First line of the copy sent to the person who made the request for someone else. */
-function on_gratuite_copy_intro( $lang, $name, $email ) {
-    return 'en' === $lang
-        ? sprintf( 'Copy for your information: this is the decision about the request you made for %s (%s).', $name, $email )
-        : sprintf( 'Copie pour information : voici la décision concernant la demande que vous avez faite pour %s (%s).', $name, $email );
+/**
+ * Texts of the copy sent to the person who made the request on behalf of someone else.
+ * Short on purpose (decision of 9 November 2026): the decision, who it is about, the end date (acceptance)
+ * or the reason (refusal). Nothing about reading online, "My account" or the next renewal: it is not their subscription.
+ * Placeholders: {name} {email} {end_date} {reason}
+ *
+ * @param string $kind 'accepted' or 'refused'
+ * @param string $lang 'fr' or 'en'
+ * @return array { subject, heading, body }
+ */
+function on_gratuite_copy_texts( $kind, $lang ) {
+    $en = 'en' === $lang;
+    if ( 'accepted' === $kind ) {
+        return $en ? array(
+            'subject' => 'Orgues Nouvelles: free subscription accepted for {name}',
+            'heading' => 'The request is accepted',
+            'body'    => 'For your information: the request for the free digital subscription that you made for {name} ({email}) is accepted.' . "\n"
+                . 'The subscription is active until {end_date}.',
+        ) : array(
+            'subject' => 'Orgues Nouvelles : abonnement gratuit accepté pour {name}',
+            'heading' => 'La demande est acceptée',
+            'body'    => 'Pour information : la demande d\'abonnement numérique gratuit que vous avez faite pour {name} ({email}) est acceptée.' . "\n"
+                . 'L\'abonnement est actif jusqu\'au {end_date}.',
+        );
+    }
+    return $en ? array(
+        'subject' => 'Orgues Nouvelles: free subscription request for {name}',
+        'heading' => 'The request could not be accepted',
+        'body'    => 'For your information: the request for the free digital subscription that you made for {name} ({email}) could not be accepted.{reason}',
+    ) : array(
+        'subject' => 'Orgues Nouvelles : demande d\'abonnement gratuit pour {name}',
+        'heading' => 'La demande n\'a pas pu être acceptée',
+        'body'    => 'Pour information : la demande d\'abonnement numérique gratuit que vous avez faite pour {name} ({email}) n\'a pas pu être acceptée.{reason}',
+    );
+}
+
+/** Fill the placeholders of a copy text. $vars: name, email, end_date, reason (free text, may be empty). */
+function on_gratuite_fill_copy_text( $text, array $vars, $lang = 'fr' ) {
+    $reason = trim( (string) ( $vars['reason'] ?? '' ) );
+    $label  = 'en' === $lang ? 'Reason: ' : 'Motif : ';
+    return strtr( (string) $text, array(
+        '{name}'     => (string) ( $vars['name'] ?? '' ),
+        '{email}'    => (string) ( $vars['email'] ?? '' ),
+        '{end_date}' => (string) ( $vars['end_date'] ?? '' ),
+        '{reason}'   => '' === $reason ? '' : "\n" . $label . $reason,
+    ) );
 }

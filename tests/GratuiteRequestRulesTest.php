@@ -34,24 +34,29 @@ class GratuiteRequestRulesTest extends TestCase {
         $this->assertSame( 21, $r['age'] );
     }
 
-    public function test_first_request_the_day_before_the_26th_birthday_is_accepted() {
-        $r = $this->request( array( 'dob' => '2000-11-08' ) );
-        $this->assertSame( 25, $r['age'] );
+    public function test_first_request_is_accepted_at_26_until_the_day_before_the_27th_birthday() {
+        $r = $this->request( array( 'dob' => '1999-11-08' ) ); // Turns 27 tomorrow.
+        $this->assertSame( 26, $r['age'] );
+        $this->assertSame( array(), $r['errors'] );
+        $r = $this->request( array( 'dob' => '2000-11-07' ) ); // Turned 26 today.
+        $this->assertSame( 26, $r['age'] );
         $this->assertSame( array(), $r['errors'] );
     }
 
-    public function test_first_request_on_the_26th_birthday_is_refused() {
-        $r = $this->request( array( 'dob' => '2000-11-07' ) );
-        $this->assertSame( 26, $r['age'] );
+    public function test_first_request_on_the_27th_birthday_is_refused() {
+        $r = $this->request( array( 'dob' => '1999-11-07' ) );
+        $this->assertSame( 27, $r['age'] );
         $this->assertArrayHasKey( 'date_naissance', $r['errors'] );
-        $this->assertStringContainsString( '26', $r['errors']['date_naissance'] );
+        $this->assertStringContainsString( '27', $r['errors']['date_naissance'] );
     }
 
-    public function test_renewal_accepts_26_but_refuses_27() {
+    public function test_renewal_follows_the_same_rule_as_the_first_request() {
         $this->assertSame( array(), $this->request( array( 'dob' => '2000-01-01', 'has_accepted' => true, 'logged_in' => true ) )['errors'] );
+        $this->assertSame( array(), $this->request( array( 'dob' => '1999-11-08', 'has_accepted' => true, 'logged_in' => true ) )['errors'] );
         $r = $this->request( array( 'dob' => '1999-11-07', 'has_accepted' => true, 'logged_in' => true ) );
         $this->assertSame( 'renouvellement', $r['type'] );
         $this->assertArrayHasKey( 'date_naissance', $r['errors'] );
+        $this->assertSame( on_gratuite_settings()['age_first'], on_gratuite_settings()['age_renew'] );
     }
 
     public function test_invalid_future_or_impossible_dates_are_refused() {
@@ -73,7 +78,7 @@ class GratuiteRequestRulesTest extends TestCase {
 
     public function test_messages_exist_in_english() {
         $r = $this->request( array( 'lang' => 'en', 'dob' => '1990-01-01', 'email_has_account' => true ) );
-        $this->assertStringContainsString( 'under 26', $r['errors']['date_naissance'] );
+        $this->assertStringContainsString( 'under 27', $r['errors']['date_naissance'] );
         $this->assertStringContainsString( 'log in', $r['errors']['email'] );
         foreach ( array( 'bad_dob', 'login_first', 'pending', 'no_proof', 'bad_proof', 'rate_limit', 'technical' ) as $key ) {
             $this->assertNotSame( '', on_gratuite_message( $key, 'fr' ), $key );

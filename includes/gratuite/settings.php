@@ -11,8 +11,8 @@ defined( 'ABSPATH' ) || exit;
 
 function on_gratuite_settings() {
     return apply_filters( 'on_gratuite_settings', array(
-        'age_first'          => 26,   // First request: strictly under this age.
-        'age_renew'          => 27,   // Yearly renewal: strictly under this age.
+        'age_first'          => 27,   // First request: strictly under this age, i.e. until the 27th birthday (decision of 9 November 2026: same rule as the renewal).
+        'age_renew'          => 27,   // Yearly renewal: strictly under this age, i.e. until the 27th birthday.
         'renew_window_days'  => 60,   // Renewal allowed this many days before the end (enforced in step 5).
         'variation_fr'       => 257,  // "1 an / Étudiant" (test site IDs, to confirm on production).
         'variation_en'       => 30365, // "1 year / Student".

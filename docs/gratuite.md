@@ -5,7 +5,7 @@ Spécification complète : plan technique du 7 novembre 2026 (Anne-Françoise).
 
 ## Principe
 
-- Une personne de moins de 26 ans (moins de 27 ans au renouvellement) remplit un
+- Une personne qui n'a pas encore 27 ans (même règle pour la première demande et pour chaque renouvellement) remplit un
   **formulaire Elementor Pro** avec un justificatif.
 - Une **autorisation** est créée (type de contenu Pods) et acceptée ou refusée dans
   le menu « Gratuité -26 ans ».
@@ -135,7 +135,7 @@ Le site propose déjà d'offrir un abonnement (extension WooCommerce Subscriptio
 - La fiche garde le bénéficiaire (`client_id`, `email`) et le demandeur (`demandeur_id`) ; la notification à
   l'équipe indique le demandeur. **Étape 3** : l'abonnement est un abonnement cadeau (acheteur = demandeur,
   destinataire = bénéficiaire, compte créé s'il n'existe pas) ; les renouvellements suivent le bénéficiaire.
-- L'âge est contrôlé sur la date de naissance du bénéficiaire (première demande : moins de 26 ans ; renouvellement : moins de 27 ans).
+- L'âge est contrôlé sur la date de naissance du bénéficiaire (décidé le 9 novembre : la première demande et chaque renouvellement sont possibles jusqu'au 27e anniversaire, réglages `age_first` et `age_renew` = 27).
 - Texte du formulaire : les champs prénom, nom, e-mail et date de naissance sont ceux de la personne concernée.
 
 ### Règles appliquées
@@ -268,7 +268,7 @@ supprime le justificatif ; fiche « refusée » ; e-mail de refus. Rien n'est cr
 **E-mails** (WooCommerce > Réglages > E-mails, activés, objet/titre/texte modifiables en français et en anglais) :
 « Gratuité -26 ans : demande acceptée » et « … demande refusée ». Espaces réservés : `{first_name}`, `{end_date}`,
 `{account_url}`, `{form_url}`, `{contact}`, `{reason}`. Envoyés à la personne bénéficiaire (adresse de la demande).
-Dans une demande pour une autre personne, le **demandeur reçoit une copie** (décidé le 7 novembre), précédée d'une ligne « Copie pour information : voici la décision concernant la demande que vous avez faite pour … ».
+Dans une demande pour une autre personne, le **demandeur reçoit une copie** (décidé le 7 novembre), avec un **texte court et propre à la copie** (décidé le 9 novembre) : la décision, le nom et l'adresse de la personne, la date de fin de l'abonnement (acceptation) ou le motif (refus). Rien sur la lecture en ligne, « Mon compte » ou le renouvellement, puisque ce n'est pas son abonnement. Textes dans `on_gratuite_copy_texts()` (`decision-rules.php`), fixes (non modifiables dans WooCommerce).
 
 Réglage ajouté : `form_page_id` (49840), page du formulaire citée dans l'e-mail de refus (traduction trouvée par Polylang).
 

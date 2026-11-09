@@ -242,7 +242,7 @@ if ( ! class_exists( 'ON_Gratuite_Email_Decision' ) ) {
                 $recipient       = $d['email'];
                 if ( is_array( $copy_for ) ) {
                     // Copy for the person who made the request on behalf of someone else: addressed to them.
-                    $vars['copy_intro'] = on_gratuite_copy_intro( $this->lang, $copy_for['name'], $copy_for['email'] );
+                    $vars['copy_for']   = array( 'name' => $copy_for['name'], 'email' => $copy_for['email'] );
                     $recipient          = $copy_for['to'];
                     $d['prenom']        = $copy_for['first_name'];
                 }
@@ -267,15 +267,33 @@ if ( ! class_exists( 'ON_Gratuite_Email_Decision' ) ) {
             return on_gratuite_decision_texts( $this->kind, 'fr' )['heading'];
         }
 
+        /** Values of the copy sent to the requester (name, e-mail, end date, reason), or null for the e-mail to the person. */
+        protected function on_gratuite_copy_vars() {
+            if ( empty( $this->object['vars']['copy_for'] ) ) {
+                return null;
+            }
+            return array_merge( $this->object['vars'], $this->object['vars']['copy_for'] );
+        }
+
         public function get_subject() {
-            $texts   = on_gratuite_decision_texts( $this->kind, $this->lang );
-            $subject = $this->get_option( $this->on_gratuite_key( 'subject' ), $texts['subject'] ); // WooCommerce's own field has an empty default.
+            $copy = $this->on_gratuite_copy_vars();
+            if ( $copy ) {
+                $subject = on_gratuite_fill_copy_text( on_gratuite_copy_texts( $this->kind, $this->lang )['subject'], $copy, $this->lang );
+            } else {
+                $texts   = on_gratuite_decision_texts( $this->kind, $this->lang );
+                $subject = $this->get_option( $this->on_gratuite_key( 'subject' ), $texts['subject'] ); // WooCommerce's own field has an empty default.
+            }
             return apply_filters( 'woocommerce_email_subject_' . $this->id, $this->format_string( $subject ), $this->object, $this );
         }
 
         public function get_heading() {
-            $texts   = on_gratuite_decision_texts( $this->kind, $this->lang );
-            $heading = $this->get_option( $this->on_gratuite_key( 'heading' ), $texts['heading'] );
+            $copy = $this->on_gratuite_copy_vars();
+            if ( $copy ) {
+                $heading = on_gratuite_copy_texts( $this->kind, $this->lang )['heading'];
+            } else {
+                $texts   = on_gratuite_decision_texts( $this->kind, $this->lang );
+                $heading = $this->get_option( $this->on_gratuite_key( 'heading' ), $texts['heading'] );
+            }
             return apply_filters( 'woocommerce_email_heading_' . $this->id, $this->format_string( $heading ), $this->object, $this );
         }
 
@@ -308,13 +326,16 @@ if ( ! class_exists( 'ON_Gratuite_Email_Decision' ) ) {
 
         /** Body for the current language, placeholders replaced (HTML or plain text). */
         public function on_gratuite_body_text( $plain ) {
-            $text = (string) $this->get_option( 'body_' . $this->lang );
-            if ( '' === trim( $text ) ) {
-                $text = on_gratuite_decision_texts( $this->kind, $this->lang )['body'];
-            }
-            $text = on_gratuite_fill_decision_text( $text, $this->object['vars'], $this->lang );
-            if ( ! empty( $this->object['vars']['copy_intro'] ) ) {
-                $text = $this->object['vars']['copy_intro'] . "\n\n" . $text;
+            $copy = $this->on_gratuite_copy_vars();
+            if ( $copy ) {
+                // Copy for the requester: a short fixed text, not the one addressed to the person.
+                $text = on_gratuite_fill_copy_text( on_gratuite_copy_texts( $this->kind, $this->lang )['body'], $copy, $this->lang );
+            } else {
+                $text = (string) $this->get_option( 'body_' . $this->lang );
+                if ( '' === trim( $text ) ) {
+                    $text = on_gratuite_decision_texts( $this->kind, $this->lang )['body'];
+                }
+                $text = on_gratuite_fill_decision_text( $text, $this->object['vars'], $this->lang );
             }
             if ( $plain ) {
                 return $text;
