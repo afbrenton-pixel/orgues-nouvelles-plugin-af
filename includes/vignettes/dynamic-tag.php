@@ -20,6 +20,7 @@ function on_vignettes_dernier_numero() {
 			'fields'           => 'ids',
 			'no_found_rows'    => true,
 			'suppress_filters' => true,
+			'lang'             => '', // Polylang : toutes les langues (le numéro est le même sur la page anglaise).
 			'tax_query'        => array( // phpcs:ignore WordPress.DB.SlowDBQuery
 				array(
 					'taxonomy' => 'zone_vignette',
