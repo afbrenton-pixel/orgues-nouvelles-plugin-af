@@ -35,6 +35,27 @@ function on_vignettes_langues_repli() {
 	return array( $cur, $def );
 }
 
+/** Retire d'une tax_query les clauses de langue ajoutées par Polylang (taxonomie `language`). */
+function on_vignettes_sans_langue( $tax_query ) {
+	if ( ! is_array( $tax_query ) ) {
+		return $tax_query;
+	}
+	$out = array();
+	foreach ( $tax_query as $key => $clause ) {
+		if ( is_array( $clause ) && isset( $clause['taxonomy'] ) && 'language' === $clause['taxonomy'] ) {
+			continue;
+		}
+		if ( is_array( $clause ) && ! isset( $clause['taxonomy'] ) ) {
+			$clause = on_vignettes_sans_langue( $clause );
+			if ( ! array_diff_key( $clause, array( 'relation' => 1 ) ) ) {
+				continue;
+			}
+		}
+		$out[ $key ] = $clause;
+	}
+	return $out;
+}
+
 /** Vrai si la vignette est une ressource audio, partition ou vidéo. */
 function on_vignettes_partageable( $id ) {
 	$types = (array) apply_filters( 'on_vignettes_types_partages', array( 'audio', 'partitions', 'videos' ) );
@@ -90,7 +111,7 @@ function on_vignettes_args_rang( $query ) {
 			'date'        => 'DESC',
 		),
 	);
-	$tax_query = $query->get( 'tax_query' );
+	$tax_query = on_vignettes_sans_langue( $query->get( 'tax_query' ) );
 	if ( is_array( $tax_query ) && $tax_query ) {
 		$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery
 	}
@@ -266,6 +287,9 @@ function on_vignettes_split_query( $query, $want_large ) {
 	$running = true;
 	try {
 		$tax_query = $query->get( 'tax_query' );
+		if ( on_vignettes_langues_repli() ) {
+			$tax_query = on_vignettes_sans_langue( $tax_query );
+		}
 		$args      = array(
 			'post_type'        => 'vignette_accueil',
 			'post_status'      => 'publish',
@@ -353,6 +377,9 @@ add_action(
 		$running = true;
 		try {
 			$tax  = $query->get( 'tax_query' );
+			if ( on_vignettes_langues_repli() ) {
+				$tax = on_vignettes_sans_langue( $tax );
+			}
 			$args = array(
 				'post_type'        => 'vignette_accueil',
 				'post_status'      => 'publish',
