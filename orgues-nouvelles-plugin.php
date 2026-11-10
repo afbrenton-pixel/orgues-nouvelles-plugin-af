@@ -67,6 +67,8 @@ function on_load_plugin() {
         require_once(__DIR__ . '/includes/usage/table.php');
         require_once(__DIR__ . '/includes/usage/count.php');
         require_once(__DIR__ . '/includes/usage/rest-api.php');
+        require_once(__DIR__ . '/includes/usage/dynamic-tags.php');
+        require_once(__DIR__ . '/includes/usage/download-message.php');
     }
     
     // Charger les modules de gestion des produits (WooCommerce + Pods)
