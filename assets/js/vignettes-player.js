@@ -110,4 +110,15 @@ document.addEventListener('click',function(e){
 });
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&cur&&cur.type==='video')stopAll();});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+/* Vignettes ajoutées après le chargement (pagination AJAX, « Charger plus » d'un Loop Grid) : même initialisation (idempotente). */
+(function(){
+  if(!window.MutationObserver)return;
+  var t=null;
+  function again(){clearTimeout(t);t=setTimeout(init,60);}
+  var mo=new MutationObserver(function(list){
+    for(var i=0;i<list.length;i++){var n=list[i].addedNodes;for(var j=0;j<n.length;j++){var e=n[j];if(e.nodeType===1&&(e.classList.contains('e-loop-item')||(e.querySelector&&e.querySelector('.e-loop-item')))){again();return;}}}
+  });
+  function start(){mo.observe(document.body,{childList:true,subtree:true});}
+  if(document.body)start();else document.addEventListener('DOMContentLoaded',start);
+})();
 })();
