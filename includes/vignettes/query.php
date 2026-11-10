@@ -251,6 +251,7 @@ function on_vignettes_split_query( $query, $want_large ) {
 				$result[] = $id;
 			}
 		}
+		error_log( 'ONVDBG split large=' . (int) $want_large . ' ids=' . implode( ',', $ids ) . ' result=' . implode( ',', $result ) . ' off=' . $query->get( 'offset' ) . ' ppp=' . $query->get( 'posts_per_page' ) . ' lang=' . $query->get( 'lang' ) );
 		$query->set( 'meta_query', array() );
 		$query->set( 'tax_query', array() );
 		$query->set( 'post__in', $result ? $result : array( 0 ) );
