@@ -25,7 +25,14 @@ function on_gratuite_ensure_account( $email, $first, $last, $lang = 'fr' ) {
     add_filter( 'pre_option_woocommerce_registration_generate_password', $force );
     // The "new account" e-mail is sent here: write it in the language of the request.
     $switched = function_exists( 'switch_to_locale' ) ? switch_to_locale( 'en' === $lang ? 'en_US' : 'fr_FR' ) : false;
-    $user_id  = wc_create_new_customer( $email, $login, '' );
+    // The set-password link is built from the "My account" page of the current language, which is French
+    // when the request is accepted from the (French) administration: point it to the page of the request.
+    $account_page = static function () use ( $lang ) {
+        return on_gratuite_account_url( $lang );
+    };
+    add_filter( 'woocommerce_get_myaccount_page_permalink', $account_page, 99 );
+    $user_id = wc_create_new_customer( $email, $login, '' );
+    remove_filter( 'woocommerce_get_myaccount_page_permalink', $account_page, 99 );
     if ( $switched ) {
         restore_previous_locale();
     }
