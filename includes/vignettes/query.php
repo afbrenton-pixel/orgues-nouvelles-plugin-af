@@ -86,6 +86,21 @@ function on_vignettes_ids_repli( array $args, array $langs ) {
 }
 
 /**
+ * Pendant l'affichage d'une grille, Elementor injecte le décalage (offset) de cette grille dans toute requête créée :
+ * y compris notre requête interne de tri, qui perdrait alors les premières vignettes. On remet le décalage à zéro
+ * pour cette seule requête ; Elementor applique ensuite le décalage sur la requête finale de la grille.
+ */
+add_action(
+	'pre_get_posts',
+	function ( $q ) {
+		if ( $q->get( 'onv_interne' ) ) {
+			$q->set( 'offset', 0 );
+		}
+	},
+	PHP_INT_MAX
+);
+
+/**
  * Identifiants des vignettes à afficher, dans l'ordre voulu : d'abord celles dont le rang est strictement positif
  * (du plus petit au plus grand), puis les autres, de la plus récente à la plus ancienne.
  * Le tri est fait ici et non en SQL : un tri numérique croissant placerait les rangs vides ou nuls avant le rang 1.
@@ -106,7 +121,8 @@ function on_vignettes_ordered_ids( $query ) {
 		'suppress_filters' => true,
 		'orderby'          => 'date',
 		'order'            => 'DESC',
-		'offset'           => 0, // le décalage de la grille est appliqué par Elementor sur la requête finale, pas ici.
+		'offset'           => 0,
+		'onv_interne'      => 1,
 	);
 	if ( is_array( $tax_query ) && $tax_query ) {
 		$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery
@@ -118,9 +134,7 @@ function on_vignettes_ordered_ids( $query ) {
 		if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
 			$args['lang'] = pll_current_language(); // Polylang filtre sur `pre_get_posts` : pas besoin des filtres SQL.
 		}
-		$wq  = new WP_Query( $args );
-		$ids = array_map( 'intval', $wq->posts );
-		error_log( 'ONVDBG2 off=' . $wq->get( 'offset' ) . ' sql=' . substr( $wq->request, -260 ) . ' n=' . count( $ids ) );
+		$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
 	}
 	return on_vignettes_sort_by_rank( $ids );
 }
