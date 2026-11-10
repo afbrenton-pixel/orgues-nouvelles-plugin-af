@@ -115,3 +115,7 @@
 @media (max-width: 767px) {
 	.onv-fixes-row .e-loop-item img { aspect-ratio: 1 / 1.285; }
 }
+
+/* ---- Éléments masqués au choix, vignette par vignette (voir includes/vignettes/affichage.php) ---- */
+.onv-sans-titre .onv-w-titre,
+.onv-sans-description .onv-w-description { display: none !important; }
