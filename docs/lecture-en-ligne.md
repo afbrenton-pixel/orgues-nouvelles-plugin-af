@@ -36,3 +36,8 @@ Le fichier servi est le **premier fichier téléchargeable du produit** : c'est 
 
 - Compter les lectures (commande gratuite « Lecture en ligne », au plus une par heure et par numéro, sans e-mail).
 - Bloquer l'accès direct aux PDF dans `/wp-content/uploads` (règle serveur) ou les placer dans le dossier protégé de WooCommerce.
+
+## Comptage et protection de l'adresse réelle du PDF
+
+- À l'ouverture du PDF (la requête qui débute au début du fichier, pas les morceaux suivants ni les requêtes HEAD), le lecteur appelle `on_usage_record($user, $produit, 'read')` si le compteur est présent (branche `comptage-usage`, voir `docs/comptage-usage.md`). Sans le compteur, rien n'est compté et rien ne casse.
+- Le nom du fichier envoyé dans l'en-tête `Content-Disposition` est l'identifiant du produit (par exemple `cahpart73.pdf`), jamais le vrai nom du fichier : WooCommerce renomme au hasard les PDF envoyés depuis la page du produit, et ce nom aléatoire ne doit pas sortir.
