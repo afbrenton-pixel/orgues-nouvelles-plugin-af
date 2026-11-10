@@ -22,7 +22,7 @@ function on_gratuite_settings() {
         'form_page_id'       => 49840, // French page with the form (the English one is found through Polylang).
         'rate_limit_per_hour' => 5,   // Requests per IP and per hour.
         'confirm_days'       => 7,    // The e-mail confirmation link is valid this many days.
-        'auto_purge_unconfirmed' => false, // false = manual purge only (decision of 7 November; automatic purge to check with the webmaster).
+        'auto_purge_unconfirmed' => true,  // Daily purge of the requests never confirmed within `confirm_days` (decision of 10 November: the site uses WP-Cron, confirmed by the webmaster). The manual purge link stays available.
         'promo_start'        => '',   // First requests open from this date (YYYY-MM-DD, included). Empty = no start limit.
         'promo_end'          => '',   // First requests open until this date (YYYY-MM-DD, included). Empty = no end limit. Renewals are never limited by these dates.
     );

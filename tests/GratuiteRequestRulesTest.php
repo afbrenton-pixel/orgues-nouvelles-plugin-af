@@ -87,6 +87,11 @@ class GratuiteRequestRulesTest extends TestCase {
         }
     }
 
+    public function test_unconfirmed_requests_are_purged_automatically() {
+        $this->assertTrue( on_gratuite_settings()['auto_purge_unconfirmed'] );
+        $this->assertSame( 7, on_gratuite_settings()['confirm_days'] );
+    }
+
     public function test_ages_come_from_the_settings() {
         $GLOBALS['on_gratuite_test_filters']['on_gratuite_settings'] = array_merge( on_gratuite_settings(), array( 'age_first' => 30 ) );
         $this->assertSame( array(), $this->request( array( 'dob' => '1997-01-01' ) )['errors'] );
