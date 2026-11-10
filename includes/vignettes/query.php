@@ -86,21 +86,6 @@ function on_vignettes_ids_repli( array $args, array $langs ) {
 }
 
 /**
- * Pendant l'affichage d'une grille, Elementor injecte le décalage (offset) de cette grille dans toute requête créée :
- * y compris notre requête interne de tri, qui perdrait alors les premières vignettes. On remet le décalage à zéro
- * pour cette seule requête ; Elementor applique ensuite le décalage sur la requête finale de la grille.
- */
-add_action(
-	'pre_get_posts',
-	function ( $q ) {
-		if ( $q->get( 'onv_interne' ) ) {
-			$q->set( 'offset', 0 );
-		}
-	},
-	PHP_INT_MAX
-);
-
-/**
  * Identifiants des vignettes à afficher, dans l'ordre voulu : d'abord celles dont le rang est strictement positif
  * (du plus petit au plus grand), puis les autres, de la plus récente à la plus ancienne.
  * Le tri est fait ici et non en SQL : un tri numérique croissant placerait les rangs vides ou nuls avant le rang 1.
@@ -115,14 +100,12 @@ function on_vignettes_ordered_ids( $query ) {
 	$args = array(
 		'post_type'        => 'vignette_accueil',
 		'post_status'      => 'publish',
-		'posts_per_page'   => 200,
+		'nopaging'         => true, // pas de LIMIT : Elementor injecte le décalage (offset) de la grille dans toute requête créée pendant son affichage, ce qui ferait perdre les premières vignettes.
 		'fields'           => 'ids',
 		'no_found_rows'    => true,
 		'suppress_filters' => true,
 		'orderby'          => 'date',
 		'order'            => 'DESC',
-		'offset'           => 0,
-		'onv_interne'      => 1,
 	);
 	if ( is_array( $tax_query ) && $tax_query ) {
 		$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery
@@ -136,7 +119,7 @@ function on_vignettes_ordered_ids( $query ) {
 		}
 		$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
 	}
-	return on_vignettes_sort_by_rank( $ids );
+	return on_vignettes_sort_by_rank( array_slice( $ids, 0, 200 ) );
 }
 
 /** Trie des identifiants (déjà du plus récent au plus ancien) : rangs positifs d'abord, puis le reste (tri stable). */
