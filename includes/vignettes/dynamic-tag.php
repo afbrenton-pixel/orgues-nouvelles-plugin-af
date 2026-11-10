@@ -12,24 +12,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /** Numéro le plus élevé parmi les vignettes publiées de la zone gauche-ressources (0 si aucun). */
 function on_vignettes_dernier_numero() {
-	$ids = get_posts(
-		array(
-			'post_type'        => 'vignette_accueil',
-			'post_status'      => 'publish',
-			'posts_per_page'   => 200,
-			'fields'           => 'ids',
-			'no_found_rows'    => true,
-			'suppress_filters' => true,
-			'lang'             => '', // Polylang : toutes les langues (le numéro est le même sur la page anglaise).
-			'tax_query'        => array( // phpcs:ignore WordPress.DB.SlowDBQuery
-				array(
-					'taxonomy' => 'zone_vignette',
-					'field'    => 'slug',
-					'terms'    => 'gauche-ressources',
-				),
+	$args = array(
+		'post_type'        => 'vignette_accueil',
+		'post_status'      => 'publish',
+		'posts_per_page'   => 200,
+		'fields'           => 'ids',
+		'no_found_rows'    => true,
+		'suppress_filters' => true,
+		'tax_query'        => array( // phpcs:ignore WordPress.DB.SlowDBQuery
+			array(
+				'taxonomy' => 'zone_vignette',
+				'field'    => 'slug',
+				'terms'    => 'gauche-ressources',
 			),
-		)
+		),
 	);
+	// Dans la langue de la page, comme les grilles ; sur une page non française, avec le même repli
+	// (ressources audio, partitions et vidéos françaises), pour que le numéro annoncé soit celui de la grille.
+	$langs = on_vignettes_langues_repli();
+	if ( $langs ) {
+		$ids = on_vignettes_ids_repli( $args, $langs );
+	} else {
+		if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
+			$args['lang']             = pll_current_language();
+			$args['suppress_filters'] = false;
+		}
+		$ids = get_posts( $args );
+	}
 	$max = 0;
 	foreach ( $ids as $id ) {
 		$max = max( $max, (int) get_post_meta( $id, 'numero', true ) );
