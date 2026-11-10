@@ -143,11 +143,21 @@ function on_vignettes_sort_by_rank( $ids ) {
 add_action(
 	'elementor/query/vignettes_rang',
 	function ( $query ) {
-		$ids = on_vignettes_ordered_ids( $query );
-		$query->set( 'meta_query', array() );
-		$query->set( 'tax_query', array() );
-		$query->set( 'post__in', $ids ? $ids : array( 0 ) );
-		$query->set( 'orderby', 'post__in' );
+		static $running = false;
+		if ( $running ) {
+			return; // la requête interne de on_vignettes_ordered_ids() repasse par ce filtre d'Elementor.
+		}
+		$running = true;
+		try {
+			$ids = on_vignettes_ordered_ids( $query );
+			$query->set( 'meta_query', array() );
+			$query->set( 'tax_query', array() );
+			$query->set( 'post__in', $ids ? $ids : array( 0 ) );
+			$query->set( 'orderby', 'post__in' );
+		} catch ( \Throwable $e ) {
+			unset( $e );
+		}
+		$running = false;
 	}
 );
 
