@@ -20,7 +20,7 @@ function on_vignettes_ordered_ids( $query ) {
 	$args = array(
 		'post_type'        => 'vignette_accueil',
 		'post_status'      => 'publish',
-		'posts_per_page'   => 200,
+		'nopaging'         => true, // pas de LIMIT : Elementor injecte le décalage (offset) de la grille dans toute requête créée pendant son affichage, ce qui ferait perdre les premières vignettes.
 		'fields'           => 'ids',
 		'no_found_rows'    => true,
 		'suppress_filters' => true,
@@ -32,11 +32,10 @@ function on_vignettes_ordered_ids( $query ) {
 		$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery
 	}
 	if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
-		$args['lang']             = pll_current_language();
-		$args['suppress_filters'] = false;
+		$args['lang'] = pll_current_language(); // Polylang filtre sur `pre_get_posts` : pas besoin des filtres SQL.
 	}
 	$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
-	return on_vignettes_sort_by_rank( $ids );
+	return on_vignettes_sort_by_rank( array_slice( $ids, 0, 200 ) );
 }
 
 /** Trie des identifiants (déjà du plus récent au plus ancien) : rangs positifs d'abord, puis le reste (tri stable). */
