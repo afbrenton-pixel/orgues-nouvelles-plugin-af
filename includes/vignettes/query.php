@@ -118,7 +118,9 @@ function on_vignettes_ordered_ids( $query ) {
 		if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
 			$args['lang'] = pll_current_language(); // Polylang filtre sur `pre_get_posts` : pas besoin des filtres SQL.
 		}
-		$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
+		$wq  = new WP_Query( $args );
+		$ids = array_map( 'intval', $wq->posts );
+		error_log( 'ONVDBG2 off=' . $wq->get( 'offset' ) . ' sql=' . substr( $wq->request, -260 ) . ' n=' . count( $ids ) );
 	}
 	return on_vignettes_sort_by_rank( $ids );
 }
