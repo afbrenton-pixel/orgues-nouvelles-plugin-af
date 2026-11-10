@@ -66,6 +66,7 @@ function on_load_plugin() {
         // Compteur de lectures et de téléchargements (voir docs/comptage-usage.md)
         require_once(__DIR__ . '/includes/usage/table.php');
         require_once(__DIR__ . '/includes/usage/count.php');
+        require_once(__DIR__ . '/includes/usage/rest-api.php');
     }
     
     // Charger les modules de gestion des produits (WooCommerce + Pods)
