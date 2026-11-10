@@ -97,7 +97,7 @@ function on_read_online_deny($code, $message)
  * Envoie le fichier avec prise en charge des requêtes partielles (Range),
  * dont PDF.js a besoin.
  */
-function on_read_online_stream($path)
+function on_read_online_stream($path, $product = null)
 {
     $size = filesize($path);
     $start = 0;
@@ -121,6 +121,15 @@ function on_read_online_stream($path)
         $status = 206;
     }
 
+    // === COMPTAGE-USAGE (début) ===
+    // Une lecture compte à l'ouverture du PDF : la requête qui débute au début
+    // du fichier. Les morceaux suivants demandés par le lecteur (Range) ne
+    // comptent pas, ni les requêtes HEAD. Voir docs/comptage-usage.md.
+    if ($start === 0 && $product && ($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'HEAD' && function_exists('on_usage_record')) {
+        on_usage_record(get_current_user_id(), $product->get_id(), 'read');
+    }
+    // === COMPTAGE-USAGE (fin) ===
+
     if (function_exists('ini_set')) {
         @ini_set('zlib.output_compression', 'Off');
     }
@@ -130,7 +139,11 @@ function on_read_online_stream($path)
 
     status_header($status);
     header('Content-Type: application/pdf');
-    header('Content-Disposition: inline; filename="' . basename($path) . '"');
+    // Nom neutre (identifiant du produit) : le vrai nom du fichier, renommé au
+    // hasard par WooCommerce, ne doit jamais sortir (il rendrait l'adresse
+    // réelle du PDF devinable).
+    $public_name = $product ? sanitize_file_name($product->get_slug()) : 'document';
+    header('Content-Disposition: inline; filename="' . $public_name . '.pdf"');
     header('Accept-Ranges: bytes');
     header('Cache-Control: private, max-age=0, must-revalidate');
     header('X-Robots-Tag: noindex, nofollow');
@@ -183,6 +196,6 @@ function on_read_online_handle_request()
         on_read_online_deny(404, 'Fichier PDF indisponible.');
     }
 
-    on_read_online_stream($path);
+    on_read_online_stream($path, $product);
 }
 add_action('template_redirect', 'on_read_online_handle_request', 1);
