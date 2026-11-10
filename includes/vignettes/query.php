@@ -11,32 +11,59 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Identifiants des vignettes à afficher, dans l'ordre voulu : d'abord celles dont le rang est strictement positif
+ * (du plus petit au plus grand), puis les autres, de la plus récente à la plus ancienne.
+ * Le tri est fait ici et non en SQL : un tri numérique croissant placerait les rangs vides ou nuls avant le rang 1.
+ */
+function on_vignettes_ordered_ids( $query ) {
+	$args = array(
+		'post_type'        => 'vignette_accueil',
+		'post_status'      => 'publish',
+		'posts_per_page'   => 200,
+		'fields'           => 'ids',
+		'no_found_rows'    => true,
+		'suppress_filters' => true,
+		'orderby'          => 'date',
+		'order'            => 'DESC',
+	);
+	$tax_query = $query->get( 'tax_query' );
+	if ( is_array( $tax_query ) && $tax_query ) {
+		$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery
+	}
+	if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
+		$args['lang']             = pll_current_language();
+		$args['suppress_filters'] = false;
+	}
+	$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
+	return on_vignettes_sort_by_rank( $ids );
+}
+
+/** Trie des identifiants (déjà du plus récent au plus ancien) : rangs positifs d'abord, puis le reste (tri stable). */
+function on_vignettes_sort_by_rank( $ids ) {
+	$rank = array();
+	foreach ( $ids as $id ) {
+		$r          = (int) get_post_meta( $id, 'rang', true );
+		$rank[ $id ] = $r > 0 ? $r : PHP_INT_MAX;
+	}
+	$pos = array_flip( $ids );
+	usort(
+		$ids,
+		function ( $a, $b ) use ( $rank, $pos ) {
+			return $rank[ $a ] === $rank[ $b ] ? $pos[ $a ] <=> $pos[ $b ] : $rank[ $a ] <=> $rank[ $b ];
+		}
+	);
+	return $ids;
+}
+
 add_action(
 	'elementor/query/vignettes_rang',
 	function ( $query ) {
-		$query->set(
-			'meta_query',
-			array(
-				'relation'    => 'OR',
-				'rang_clause' => array(
-					'key'     => 'rang',
-					'type'    => 'NUMERIC',
-					'compare' => 'EXISTS',
-				),
-				array(
-					'key'     => 'rang',
-					'compare' => 'NOT EXISTS',
-				),
-			)
-		);
-		// Sans rang (ou rang 0) : après les autres.
-		$query->set(
-			'orderby',
-			array(
-				'rang_clause' => 'ASC',
-				'date'        => 'DESC',
-			)
-		);
+		$ids = on_vignettes_ordered_ids( $query );
+		$query->set( 'meta_query', array() );
+		$query->set( 'tax_query', array() );
+		$query->set( 'post__in', $ids ? $ids : array( 0 ) );
+		$query->set( 'orderby', 'post__in' );
 	}
 );
 
@@ -60,39 +87,7 @@ add_action(
 		}
 		$running = true;
 		try {
-			$tax_query = $query->get( 'tax_query' );
-			$args      = array(
-				'post_type'        => 'vignette_accueil',
-				'post_status'      => 'publish',
-				'posts_per_page'   => 200,
-				'fields'           => 'ids',
-				'no_found_rows'    => true,
-				'suppress_filters' => true,
-				'meta_query'       => array( // phpcs:ignore WordPress.DB.SlowDBQuery
-					'relation'    => 'OR',
-					'rang_clause' => array(
-						'key'     => 'rang',
-						'type'    => 'NUMERIC',
-						'compare' => 'EXISTS',
-					),
-					array(
-						'key'     => 'rang',
-						'compare' => 'NOT EXISTS',
-					),
-				),
-				'orderby'          => array(
-					'rang_clause' => 'ASC',
-					'date'        => 'DESC',
-				),
-			);
-			if ( is_array( $tax_query ) && $tax_query ) {
-				$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery
-			}
-			if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
-				$args['lang'] = pll_current_language();
-				$args['suppress_filters'] = false;
-			}
-			$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
+			$ids = on_vignettes_ordered_ids( $query );
 
 			$places = (array) apply_filters( 'on_vignettes_grandes_places', array( 1, 14 ) );
 			$bigs   = array();
@@ -154,39 +149,7 @@ function on_vignettes_split_query( $query, $want_large ) {
 	}
 	$running = true;
 	try {
-		$tax_query = $query->get( 'tax_query' );
-		$args      = array(
-			'post_type'        => 'vignette_accueil',
-			'post_status'      => 'publish',
-			'posts_per_page'   => 200,
-			'fields'           => 'ids',
-			'no_found_rows'    => true,
-			'suppress_filters' => true,
-			'meta_query'       => array( // phpcs:ignore WordPress.DB.SlowDBQuery
-				'relation'    => 'OR',
-				'rang_clause' => array(
-					'key'     => 'rang',
-					'type'    => 'NUMERIC',
-					'compare' => 'EXISTS',
-				),
-				array(
-					'key'     => 'rang',
-					'compare' => 'NOT EXISTS',
-				),
-			),
-			'orderby'          => array(
-				'rang_clause' => 'ASC',
-				'date'        => 'DESC',
-			),
-		);
-		if ( is_array( $tax_query ) && $tax_query ) {
-			$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery
-		}
-		if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
-			$args['lang']             = pll_current_language();
-			$args['suppress_filters'] = false;
-		}
-		$ids    = array_map( 'intval', ( new WP_Query( $args ) )->posts );
+		$ids    = on_vignettes_ordered_ids( $query );
 		$result = array();
 		foreach ( $ids as $id ) {
 			$is_large = 'large' === get_post_meta( $id, 'format', true );
