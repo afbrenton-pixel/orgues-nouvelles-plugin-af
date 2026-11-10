@@ -122,3 +122,6 @@
 /* ---- Éléments masqués au choix, vignette par vignette (voir includes/vignettes/affichage.php) ---- */
 .onv-sans-titre .onv-w-titre,
 .onv-sans-description .onv-w-description { display: none !important; }
+
+/* Audio avec image : la barre de lecture est visible dès l'affichage (la hauteur de la vignette ne change plus au clic). */
+.onv-has-audio:not(.onv-compactcard) .onv-mini { display: flex; }

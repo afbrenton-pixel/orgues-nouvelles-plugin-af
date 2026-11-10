@@ -88,7 +88,7 @@ function init(){
       var tag=q(c,'.onv-tagw');
       var mini=document.createElement('span');mini.className='onv-mini';
       mini.innerHTML='<button type="button" class="onv-mbtn" aria-label="Pause"></button><span class="onv-bar"><span class="onv-fill"></span></span><span class="onv-count"></span><button type="button" class="onv-nbtn onv-prev" aria-label="Morceau précédent"><svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M6 5h2.4v14H6zM20 5v14L9.5 12z" fill="currentColor"/></svg></button><button type="button" class="onv-nbtn onv-next" aria-label="Morceau suivant"><svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M15.6 5H18v14h-2.4zM4 5v14l10.5-7z" fill="currentColor"/></svg></button>';
-      if(c.classList.contains('onv-barfull')){c.appendChild(mini);setIcon(c,false);}else if(tag&&tag.parentNode)tag.parentNode.insertBefore(mini,tag.nextSibling);else{var b=q(c,'.onv-body');if(b)b.insertBefore(mini,b.firstChild);}
+      if(c.classList.contains('onv-barfull')){c.appendChild(mini);setIcon(c,false);}else if(tag&&tag.parentNode){tag.parentNode.insertBefore(mini,tag.nextSibling);setIcon(c,false);}else{var b=q(c,'.onv-body');if(b){b.insertBefore(mini,b.firstChild);setIcon(c,false);}}
     }
   }
 }
