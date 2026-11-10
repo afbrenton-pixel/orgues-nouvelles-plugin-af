@@ -12,14 +12,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /** Numéro le plus élevé parmi les vignettes publiées de la zone gauche-ressources (0 si aucun). */
 function on_vignettes_dernier_numero() {
-	$ids = get_posts(
+	$lang = function_exists( 'pll_current_language' ) ? (string) pll_current_language() : '';
+	$ids  = get_posts(
 		array(
 			'post_type'        => 'vignette_accueil',
 			'post_status'      => 'publish',
 			'posts_per_page'   => 200,
 			'fields'           => 'ids',
 			'no_found_rows'    => true,
-			'suppress_filters' => true,
+			'suppress_filters' => '' === $lang, // dans la langue courante (Polylang), comme les grilles.
+			'lang'             => $lang,
 			'tax_query'        => array( // phpcs:ignore WordPress.DB.SlowDBQuery
 				array(
 					'taxonomy' => 'zone_vignette',
