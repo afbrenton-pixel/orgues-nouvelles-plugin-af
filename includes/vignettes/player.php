@@ -19,8 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 function on_vignettes_media_for( $vignette_id ) {
 	$source = (int) get_post_meta( $vignette_id, '_onv_source_id', true );
 	$post   = $source ? get_post( $source ) : null;
-	if ( ! $post || 'ressource' !== $post->post_type ) {
-		return null;
+	if ( ! $post || 'ressource' !== $post->post_type || ! on_vignettes_source_is_public( $post ) ) {
+		return null; // source privée, en brouillon ou protégée par mot de passe : aucune adresse exportée.
 	}
 	$c   = (string) $post->post_content;
 	$out = array(
