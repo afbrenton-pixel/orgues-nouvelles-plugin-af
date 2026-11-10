@@ -47,6 +47,10 @@ function on_vignettes_migration_zone( $old_id, $label_lc, $source_id, $source_ty
 		return array( 'droite-fixe', $notes );
 	}
 	if ( 'centre' === $zone ) {
+		$source_post = ( 'ressource' === $source_type && $source_id ) ? get_post( $source_id ) : null;
+		if ( $source_post && on_vignettes_is_video( $source_post ) ) {
+			return array( 'centre-videos', $notes ); // vidéo Vimeo : rubrique des vidéos.
+		}
 		$is_resource = false;
 		if ( 'ressource' === $source_type && $source_id ) {
 			$types = get_the_terms( $source_id, 'type_de_ressource' );

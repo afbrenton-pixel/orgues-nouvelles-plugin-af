@@ -29,7 +29,8 @@ Fichier d'import : `docs/pods/vignette_accueil-package.json` (Pods > Composants 
 | `format` | Choix | `standard` (défaut) ou `large`. |
 | `image_cote` | Choix | `gauche` (défaut) ou `droite`, pour les grandes vignettes. |
 | `cadrage` | Choix | `carre`, `4-3` ou `original` (défaut). |
-| `masquer_titre` | Oui / non | Cache l'étiquette et le titre. |
+| `masquer_titre` | Oui / non | Cache le titre (l'étiquette reste affichée). |
+| `afficher_description` | Oui / non | Affiche le sous-titre et l'extrait. Non par défaut : seuls l'étiquette et le titre sont affichés. |
 | `rang` | Nombre | Place voulue dans la grille (1 = en premier). Vide = ordre par date. |
 | `numero` | Nombre | Numéro du magazine (ressources du dernier numéro). |
 
@@ -99,3 +100,7 @@ Le type de contenu et les étiquettes sont déclarés traduisibles ; les requêt
 ## Remarque : source du Loop Grid
 
 Le type de contenu doit avoir `show_in_nav_menus` = oui (réglage Pods « Afficher dans les menus de navigation »), sinon Elementor Pro ne le propose pas comme source dans le Loop Grid.
+
+## Éléments masqués au choix
+
+`includes/vignettes/affichage.php` ajoute à chaque vignette les classes `onv-sans-titre` (case « Masquer le titre » cochée) et `onv-sans-description` (case « Afficher la description » non cochée). Le CSS cache les widgets des modèles de boucle portant les classes `onv-w-titre` et `onv-w-description`. Ces classes sont à poser (réglage « Classes CSS » du widget) sur le titre et sur le sous-titre / l'extrait du modèle « standard » ; les grandes vignettes n'ont pas `onv-w-description` et gardent leur texte.

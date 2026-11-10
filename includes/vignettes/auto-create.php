@@ -43,6 +43,7 @@ function on_vignettes_busy( $set = null ) {
  * -------------------------------------------------------------------- */
 
 add_action( 'save_post', 'on_vignettes_on_source_saved', 30, 2 );
+add_action( 'rest_api_init', 'on_vignettes_hook_rest_saves' );
 add_action( 'before_delete_post', 'on_vignettes_on_source_deleted' );
 add_action( 'save_post_' . ON_VIGNETTES_CPT, 'on_vignettes_lock_if_edited_by_hand', 99, 2 );
 add_action( 'admin_menu', 'on_vignettes_menu_badge', 99 );
@@ -58,6 +59,27 @@ function on_vignettes_on_source_saved( $post_id, $post ) {
 		return;
 	}
 	on_vignettes_upsert( $post );
+}
+
+/**
+ * Éditeur de blocs : `save_post` part avant l'enregistrement de l'image à la une et des taxonomies par
+ * l'API REST. On resynchronise donc la vignette une fois l'enregistrement complet (`rest_after_insert_{type}`).
+ */
+function on_vignettes_hook_rest_saves() {
+	foreach ( on_vignettes_source_types() as $type ) {
+		add_action( 'rest_after_insert_' . $type, 'on_vignettes_on_rest_saved', 30, 1 );
+	}
+}
+
+function on_vignettes_on_rest_saved( $post ) {
+	if ( $post instanceof WP_Post ) {
+		on_vignettes_on_source_saved( $post->ID, $post );
+	}
+}
+
+/** Un contenu est-il visible de tous ? Publié et sans mot de passe (les sources protégées ne donnent pas de vignette publique). */
+function on_vignettes_source_is_public( $post ) {
+	return $post && 'publish' === $post->post_status && '' === (string) $post->post_password;
 }
 
 function on_vignettes_on_source_deleted( $post_id ) {
@@ -187,6 +209,22 @@ function on_vignettes_vimeo_image_id( $post ) {
 	}
 	update_post_meta( $post->ID, '_onv_vimeo_thumb_' . $vid, (int) $att );
 	return (int) $att;
+}
+
+/** Récupérer la miniature Vimeo de cette ressource demandera-t-il un appel réseau ? (vidéo Vimeo, pas déjà importée, pas d'échec récent) */
+function on_vignettes_vimeo_will_fetch( $post ) {
+	$c = (string) $post->post_content;
+	if ( ! preg_match( '#player\.vimeo\.com/video/(\d+)#i', $c, $v ) && ! preg_match( '#vimeo\.com/(\d+)#i', $c, $v ) ) {
+		return false;
+	}
+	if ( preg_match( '#https?://[^"\'\s<>]+?\.mp3#i', $c ) ) {
+		return false;
+	}
+	$cached = (int) get_post_meta( $post->ID, '_onv_vimeo_thumb_' . $v[1], true );
+	if ( $cached && 'attachment' === get_post_type( $cached ) ) {
+		return false;
+	}
+	return ! get_transient( 'onv_vimeo_fail_' . $v[1] );
 }
 
 /**
@@ -329,9 +367,10 @@ function on_vignettes_upsert( $post ) {
 	}
 	$existing = on_vignettes_find( $post->ID );
 
-	// Contenu dépublié : la vignette automatique passe en brouillon.
-	if ( 'publish' !== $post->post_status ) {
-		if ( $existing && 'publish' === get_post_status( $existing ) && ! get_post_meta( $existing, '_onv_locked', true ) ) {
+	// Contenu dépublié ou protégé par mot de passe : la vignette passe en brouillon, même verrouillée
+	// (sinon elle resterait publique avec l'extrait d'un contenu qui ne l'est plus).
+	if ( ! on_vignettes_source_is_public( $post ) ) {
+		if ( $existing && 'publish' === get_post_status( $existing ) ) {
 			on_vignettes_busy( true );
 			wp_update_post(
 				array(
@@ -413,6 +452,8 @@ function on_vignettes_upsert( $post ) {
 		$numero = get_post_meta( $post->ID, 'numero', true );
 		if ( '' !== $numero ) {
 			update_post_meta( $vid, 'numero', (int) $numero );
+		} else {
+			delete_post_meta( $vid, 'numero' ); // numéro effacé dans la ressource : la vignette n'est plus classée dans un numéro.
 		}
 	}
 
@@ -436,6 +477,8 @@ function on_vignettes_upsert( $post ) {
 		$types = get_the_terms( $post->ID, 'type_de_ressource' );
 		if ( $types && ! is_wp_error( $types ) ) {
 			wp_set_object_terms( $vid, wp_list_pluck( $types, 'term_id' ), 'type_de_ressource' );
+		} elseif ( false === $types ) {
+			wp_set_object_terms( $vid, array(), 'type_de_ressource' ); // tous les types retirés : la vignette n'en garde aucun (une erreur de lecture, elle, ne change rien).
 		}
 	}
 
@@ -503,8 +546,8 @@ add_action(
 			)
 		);
 		foreach ( $ids as $id ) {
-			if ( has_post_thumbnail( $id ) ) {
-				continue;
+			if ( has_post_thumbnail( $id ) || get_post_meta( $id, '_onv_locked', true ) ) {
+				continue; // déjà illustrée, ou modifiée à la main.
 			}
 			if ( has_term( array( 'gauche-ressources', 'gauche-fixe', 'droite-fixe' ), 'zone_vignette', $id ) ) {
 				continue;
@@ -556,16 +599,18 @@ add_action(
 			if ( get_post_meta( $id, '_onv_vimeo_checked', true ) || get_post_meta( $id, '_onv_locked', true ) ) {
 				continue;
 			}
-			if ( $budget <= 0 ) {
-				$left = true;
-				break;
-			}
 			$source = get_post( (int) get_post_meta( $id, '_onv_source_id', true ) );
 			if ( $source ) {
+				if ( on_vignettes_vimeo_will_fetch( $source ) ) {
+					if ( $budget <= 0 ) {
+						$left = true;
+						break;
+					}
+					--$budget; // chaque tentative compte, réussie ou non (Vimeo qui ne répond pas ne doit pas bloquer la page).
+				}
 				$image = on_vignettes_vimeo_image_id( $source );
 				if ( $image ) {
 					set_post_thumbnail( $id, $image );
-					--$budget;
 				}
 			}
 			update_post_meta( $id, '_onv_vimeo_checked', 1 );
@@ -648,7 +693,7 @@ add_action(
 		);
 		foreach ( $ids as $id ) {
 			$source = get_post( (int) get_post_meta( $id, '_onv_source_id', true ) );
-			if ( $source && on_vignettes_is_video( $source ) ) {
+			if ( $source && on_vignettes_is_video( $source ) && ! get_post_meta( $id, '_onv_locked', true ) ) {
 				wp_set_object_terms( $id, array( (int) $zone->term_id ), 'zone_vignette' );
 			}
 		}
