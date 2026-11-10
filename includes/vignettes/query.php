@@ -71,7 +71,7 @@ function on_vignettes_partageable( $id ) {
 function on_vignettes_ids_repli( array $args, array $langs ) {
 	list( $cur, $def )        = $langs;
 	$args['lang']             = $cur . ',' . $def;
-	$args['suppress_filters'] = false;
+	$args['suppress_filters'] = true; // sinon le décalage (offset) de la grille Elementor s'applique aussi à cette requête interne.
 	$ids                      = array_map( 'intval', ( new WP_Query( $args ) )->posts );
 	$out                      = array();
 	foreach ( $ids as $id ) {
@@ -106,6 +106,7 @@ function on_vignettes_ordered_ids( $query ) {
 		'suppress_filters' => true,
 		'orderby'          => 'date',
 		'order'            => 'DESC',
+		'offset'           => 0, // le décalage de la grille est appliqué par Elementor sur la requête finale, pas ici.
 	);
 	if ( is_array( $tax_query ) && $tax_query ) {
 		$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery
@@ -115,8 +116,7 @@ function on_vignettes_ordered_ids( $query ) {
 		$query->set( 'lang', $langs[0] . ',' . $langs[1] );
 	} else {
 		if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
-			$args['lang']             = pll_current_language();
-			$args['suppress_filters'] = false;
+			$args['lang'] = pll_current_language(); // Polylang filtre sur `pre_get_posts` : pas besoin des filtres SQL.
 		}
 		$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
 	}
@@ -251,7 +251,6 @@ function on_vignettes_split_query( $query, $want_large ) {
 				$result[] = $id;
 			}
 		}
-		error_log( 'ONVDBG split large=' . (int) $want_large . ' ids=' . implode( ',', $ids ) . ' result=' . implode( ',', $result ) . ' off=' . $query->get( 'offset' ) . ' ppp=' . $query->get( 'posts_per_page' ) . ' lang=' . $query->get( 'lang' ) );
 		$query->set( 'meta_query', array() );
 		$query->set( 'tax_query', array() );
 		$query->set( 'post__in', $result ? $result : array( 0 ) );
