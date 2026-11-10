@@ -22,7 +22,7 @@ Spécification complète : plan technique du 7 novembre 2026 (Anne-Françoise).
 | 1 | Stockage privé et chiffré des justificatifs, affichage admin, suppression | **Fait** |
 | 1 | Type de contenu « Autorisation » et ses champs | **Fait** sur le site de test (Pods, sans code) |
 | 2 | Action du formulaire Elementor : contrôle d'âge, fiche, justificatif chiffré | **Fait et testé de bout en bout** sur le site de test (7 novembre) |
-| 2b | Confirmation de l'adresse e-mail (lien, statut « à confirmer », purge manuelle) | **Code fait** (7 novembre) ; test à faire |
+| 2b | Confirmation de l'adresse e-mail (lien, statut « à confirmer », purge manuelle et automatique) | **Code fait** (7 novembre) ; test à faire |
 | 3 | Compte, abonnement et commande **à l'acceptation** (le compte n'est plus créé à la demande) | À faire |
 | 4 | Accepter / Refuser | À faire |
 | 5 | Renouvellement annuel | À faire |
@@ -190,10 +190,12 @@ laisser de compte ni de justificatif.
   le filtre « À confirmer (n) ». Action de ligne **« Annuler la demande »** (supprime la fiche
   et son justificatif). Lien **« Supprimer les demandes non confirmées de plus de 7 jours (n) »**
   (purge manuelle, avec confirmation).
-- **Purge automatique** : désactivée (`auto_purge_unconfirmed` = faux). Si on l'active, une tâche
-  quotidienne WordPress (`on_gratuite_purge_unconfirmed_event`) fait la même chose.
-  **À vérifier avec le webmaster** : le site utilise-t-il la tâche planifiée de WordPress
-  (dépend des visites) ou une vraie tâche du serveur ? La purge des justificatifs à 60 jours
+- **Purge automatique** : **activée le 10 novembre 2026** (`auto_purge_unconfirmed` = vrai). Une tâche
+  quotidienne WordPress (`on_gratuite_purge_unconfirmed_event`) supprime les demandes jamais confirmées
+  depuis plus de 7 jours (`confirm_days`), avec leur justificatif ; elle ne touche ni aux demandes confirmées,
+  ni aux demandes acceptées ou refusées. Le lien de purge manuelle reste disponible.
+  Le webmaster a confirmé (10 novembre) que le site utilise les tâches planifiées de WordPress
+  (WP-Cron) : elles s'exécutent quand le site reçoit des visites. La purge des justificatifs à 60 jours
   (étape 1) a la même dépendance.
 - **Limite connue** : une personne peut déclencher l'envoi d'e-mails de confirmation à une adresse qui
   n'est pas la sienne (5 demandes par heure et par connexion au maximum).
