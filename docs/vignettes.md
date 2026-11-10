@@ -93,10 +93,6 @@ La zone se choisit dans le Loop Grid (filtre sur la taxonomie `zone_vignette`).
 
 Le type de contenu et les étiquettes sont déclarés traduisibles ; les requêtes suivent la langue courante. Les zones ne sont pas traduisibles. La traduction anglaise de l'étiquette « Échos » est créée avec les termes.
 
-## Migration (outil temporaire)
-
-« Vignettes accueil > Migration » reprend les vignettes de l'ancien plugin de test (`on_vignette`, champs `_onv_*`) : une simulation (rien n'est écrit) puis la migration. Les anciennes vignettes ne sont jamais modifiées ni supprimées. Sans objet sur un site qui n'a pas cet ancien plugin.
-
 ## Remarque : source du Loop Grid
 
 Le type de contenu doit avoir `show_in_nav_menus` = oui (réglage Pods « Afficher dans les menus de navigation »), sinon Elementor Pro ne le propose pas comme source dans le Loop Grid.
