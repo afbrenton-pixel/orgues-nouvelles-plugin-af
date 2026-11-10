@@ -79,6 +79,7 @@ function on_load_plugin() {
         require_once(__DIR__ . '/includes/vignettes/query.php');
         require_once(__DIR__ . '/includes/vignettes/dynamic-tag.php');
         require_once(__DIR__ . '/includes/vignettes/player.php');
+        require_once(__DIR__ . '/includes/vignettes/affichage.php');
         if ( is_admin() ) {
             require_once(__DIR__ . '/includes/vignettes/migration.php');
         }
