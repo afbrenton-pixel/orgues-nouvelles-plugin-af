@@ -34,6 +34,35 @@ add_filter(
 );
 
 /**
+ * Identifiant du contenu du site que désigne une adresse (0 si aucun). `url_to_postid()` est d'abord essayé ;
+ * sinon on cherche le dernier segment de l'adresse comme nom d'article dans les types de contenu publics
+ * (Polylang fait échouer `url_to_postid()` pour un contenu sans traduction dans la langue courante).
+ */
+function on_vignettes_post_id_from_url( $url ) {
+	$id = (int) url_to_postid( $url );
+	if ( $id ) {
+		return $id;
+	}
+	$path = trim( (string) wp_parse_url( $url, PHP_URL_PATH ), '/' );
+	if ( '' === $path || wp_parse_url( $url, PHP_URL_HOST ) !== wp_parse_url( home_url(), PHP_URL_HOST ) ) {
+		return 0;
+	}
+	$segments = explode( '/', $path );
+	$found    = get_posts(
+		array(
+			'name'             => end( $segments ),
+			'post_type'        => array_values( get_post_types( array( 'public' => true ) ) ),
+			'post_status'      => 'any',
+			'posts_per_page'   => 1,
+			'fields'           => 'ids',
+			'suppress_filters' => true,
+			'no_found_rows'    => true,
+		)
+	);
+	return $found ? (int) $found[0] : 0;
+}
+
+/**
  * Objet attaché à une vignette : celui d'où elle a été créée, sinon celui de sa vignette d'origine (traduction
  * faite à la main), sinon (vignette créée à la main) celui que désigne son lien, si ce lien pointe vers un contenu du site.
  */
@@ -48,7 +77,7 @@ function on_vignettes_attached_post( $vignette_id ) {
 			$origin = (int) get_post_meta( $translation_id, '_onv_source_id', true );
 			if ( ! $origin ) {
 				$lien_origine = (string) get_post_meta( $translation_id, 'lien', true );
-				$origin       = '' !== $lien_origine ? (int) url_to_postid( $lien_origine ) : 0;
+				$origin       = '' !== $lien_origine ? on_vignettes_post_id_from_url( $lien_origine ) : 0;
 			}
 			if ( $origin ) {
 				$lang      = function_exists( 'pll_get_post_language' ) ? pll_get_post_language( $vignette_id ) : '';
@@ -61,7 +90,7 @@ function on_vignettes_attached_post( $vignette_id ) {
 	if ( ! $source_id ) {
 		$lien = (string) get_post_meta( $vignette_id, 'lien', true );
 		if ( '' !== $lien ) {
-			$source_id = (int) url_to_postid( $lien );
+			$source_id = on_vignettes_post_id_from_url( $lien );
 		}
 	}
 	return $source_id ? get_post( $source_id ) : null;
