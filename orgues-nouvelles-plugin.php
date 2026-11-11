@@ -68,6 +68,12 @@ function on_load_plugin() {
     if (is_plugin_active('woocommerce/woocommerce.php')) {
         require_once(__DIR__ . '/includes/products/check-download-product.php');
         require_once(__DIR__ . '/includes/products/direct-download-free.php');
+        // Compteur de lectures et de téléchargements (voir docs/comptage-usage.md)
+        require_once(__DIR__ . '/includes/usage/table.php');
+        require_once(__DIR__ . '/includes/usage/count.php');
+        require_once(__DIR__ . '/includes/usage/rest-api.php');
+        require_once(__DIR__ . '/includes/usage/dynamic-tags.php');
+        require_once(__DIR__ . '/includes/usage/download-message.php');
     }
     
     // Charger les modules de gestion des produits (WooCommerce + Pods)
