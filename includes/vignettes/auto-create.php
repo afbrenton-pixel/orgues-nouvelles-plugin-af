@@ -849,7 +849,7 @@ add_action(
 add_action(
 	'init',
 	function () {
-		if ( '1' === get_option( 'on_vignettes_twins_done' ) || ! post_type_exists( ON_VIGNETTES_CPT ) || ! function_exists( 'pll_languages_list' ) ) {
+		if ( ON_VIGNETTES_TERMS_VERSION === get_option( 'on_vignettes_twins_done' ) || ! post_type_exists( ON_VIGNETTES_CPT ) || ! function_exists( 'pll_languages_list' ) ) {
 			return;
 		}
 		$ids = get_posts(
@@ -870,7 +870,7 @@ add_action(
 				on_vignettes_sync_twins( $source, $id );
 			}
 		}
-		update_option( 'on_vignettes_twins_done', '1' );
+		update_option( 'on_vignettes_twins_done', ON_VIGNETTES_TERMS_VERSION );
 	},
 	160
 );
