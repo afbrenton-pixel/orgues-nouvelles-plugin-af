@@ -87,8 +87,7 @@ function on_vignettes_on_source_deleted( $post_id ) {
 	if ( ! $post || ! in_array( $post->post_type, on_vignettes_source_types(), true ) ) {
 		return;
 	}
-	$vid = on_vignettes_find( $post_id );
-	if ( $vid ) {
+	foreach ( on_vignettes_find_all( $post_id ) as $vid ) {
 		on_vignettes_busy( true );
 		wp_delete_post( $vid, true );
 		on_vignettes_busy( false );
@@ -113,8 +112,16 @@ function on_vignettes_lock_if_edited_by_hand( $post_id, $post ) {
  * Création / mise à jour
  * -------------------------------------------------------------------- */
 
-/** Identifiant de la vignette liée à un contenu (toutes langues et statuts), 0 si aucune. */
-function on_vignettes_find( $source_id ) {
+/**
+ * Identifiant de la vignette liée à un contenu (tous statuts), 0 si aucune.
+ *
+ * Une même source peut avoir plusieurs vignettes : la sienne, et une « jumelle » par langue secondaire
+ * (voir on_vignettes_sync_twins). Sans langue donnée, on cherche la vignette dans la langue de la source.
+ */
+function on_vignettes_find( $source_id, $lang = null ) {
+	if ( null === $lang ) {
+		$lang = function_exists( 'pll_get_post_language' ) ? (string) pll_get_post_language( $source_id ) : '';
+	}
 	$ids = get_posts(
 		array(
 			'post_type'        => ON_VIGNETTES_CPT,
@@ -123,11 +130,138 @@ function on_vignettes_find( $source_id ) {
 			'fields'           => 'ids',
 			'meta_key'         => '_onv_source_id', // phpcs:ignore WordPress.DB.SlowDBQuery
 			'meta_value'       => (int) $source_id, // phpcs:ignore WordPress.DB.SlowDBQuery
-			'lang'             => '',
+			'lang'             => (string) $lang,
 			'suppress_filters' => false,
 		)
 	);
 	return $ids ? (int) $ids[0] : 0;
+}
+
+/** Toutes les vignettes d'un contenu (la sienne et ses jumelles, toutes langues, tous statuts). */
+function on_vignettes_find_all( $source_id ) {
+	return array_map(
+		'intval',
+		get_posts(
+			array(
+				'post_type'        => ON_VIGNETTES_CPT,
+				'post_status'      => array( 'publish', 'draft', 'pending', 'private', 'future', 'trash' ),
+				'numberposts'      => -1,
+				'fields'           => 'ids',
+				'meta_key'         => '_onv_source_id', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_value'       => (int) $source_id, // phpcs:ignore WordPress.DB.SlowDBQuery
+				'lang'             => '',
+				'suppress_filters' => false,
+			)
+		)
+	);
+}
+
+/* ----------------------------------------------------------------------
+ * Vignettes jumelles dans les autres langues
+ * -------------------------------------------------------------------- */
+
+/** Langues secondaires (Polylang) : toutes sauf la langue par défaut. */
+function on_vignettes_twin_langs() {
+	if ( ! function_exists( 'pll_languages_list' ) || ! function_exists( 'pll_default_language' ) ) {
+		return array();
+	}
+	return array_values( array_diff( (array) pll_languages_list(), array( pll_default_language() ) ) );
+}
+
+/**
+ * Une ressource audio, partition ou vidéo reçoit une vignette jumelle dans chaque autre langue
+ * (contenus que l'on écoute ou regarde : la langue compte peu). Les textes n'en ont pas.
+ * Filtre `on_vignettes_types_partages` : slugs de `type_de_ressource` concernés.
+ */
+function on_vignettes_is_shareable( $post ) {
+	if ( ! $post || 'ressource' !== $post->post_type ) {
+		return false;
+	}
+	if ( on_vignettes_is_video( $post ) ) {
+		return true;
+	}
+	$types = (array) apply_filters( 'on_vignettes_types_partages', array( 'audio', 'partitions', 'videos' ) );
+	return (bool) has_term( $types, 'type_de_ressource', $post->ID );
+}
+
+/**
+ * Crée ou met à jour les vignettes jumelles d'une vignette de la langue par défaut.
+ *
+ * - La jumelle garde la même source (le lecteur lit donc le même MP3 ou la même vidéo), le même lien, la même
+ *   image, le même numéro ; son étiquette et ses types sont ceux de la langue (ou, à défaut, les mêmes).
+ * - Elle est créée publiée : pour ne pas l'afficher (vidéo très parlée en français, par exemple), il suffit de la
+ *   passer en brouillon ou à la corbeille. Une jumelle modifiée à la main n'est plus touchée.
+ * - Si la ressource a une vraie traduction dans la langue, celle-ci a sa propre vignette : pas de jumelle.
+ */
+function on_vignettes_sync_twins( $source, $vid ) {
+	if ( ! function_exists( 'pll_get_post_language' ) || ! function_exists( 'pll_save_post_translations' ) || ! on_vignettes_is_shareable( $source ) ) {
+		return;
+	}
+	$def = function_exists( 'pll_default_language' ) ? pll_default_language() : '';
+	if ( ! $def || pll_get_post_language( $source->ID ) !== $def || pll_get_post_language( $vid ) !== $def ) {
+		return;
+	}
+	$status = get_post_status( $vid );
+	foreach ( on_vignettes_twin_langs() as $lang ) {
+		if ( function_exists( 'pll_get_post' ) && pll_get_post( $source->ID, $lang ) ) {
+			continue; // vraie traduction de la ressource : elle a sa propre vignette.
+		}
+		$twin = on_vignettes_find( $source->ID, $lang );
+		if ( $twin && ( 'trash' === get_post_status( $twin ) || get_post_meta( $twin, '_onv_locked', true ) ) ) {
+			continue; // masquée ou retouchée à la main.
+		}
+		$fr   = get_post( $vid );
+		$args = array(
+			'post_type'     => ON_VIGNETTES_CPT,
+			'post_title'    => $fr->post_title,
+			'post_excerpt'  => $fr->post_excerpt,
+			'post_date'     => $fr->post_date,
+			'post_date_gmt' => $fr->post_date_gmt,
+		);
+		on_vignettes_busy( true );
+		if ( $twin ) {
+			$args['ID']          = $twin;
+			$args['post_status'] = $status ? $status : 'publish'; // une jumelle non retouchée à la main suit sa vignette française (une retouche la verrouille).
+			wp_update_post( $args );
+		} else {
+			$args['post_status'] = $status ? $status : 'publish';
+			$twin                = wp_insert_post( $args );
+			if ( ! $twin || is_wp_error( $twin ) ) {
+				on_vignettes_busy( false );
+				continue;
+			}
+			pll_set_post_language( $twin, $lang );
+		}
+		on_vignettes_busy( false );
+		foreach ( array( 'sous_titre', 'lien', 'format', 'image_cote', 'cadrage', 'rang', 'numero' ) as $key ) {
+			$val = get_post_meta( $vid, $key, true );
+			if ( '' === $val ) {
+				delete_post_meta( $twin, $key );
+			} else {
+				update_post_meta( $twin, $key, $val );
+			}
+		}
+		update_post_meta( $twin, '_onv_source_id', (int) $source->ID );
+		update_post_meta( $twin, '_onv_source_type', $source->post_type );
+		update_post_meta( $twin, '_onv_twin', 1 );
+		$thumb = get_post_thumbnail_id( $vid );
+		if ( $thumb ) {
+			set_post_thumbnail( $twin, $thumb );
+		} else {
+			delete_post_thumbnail( $twin );
+		}
+		foreach ( array( 'zone_vignette', 'etiquette_vignette', 'type_de_ressource' ) as $tax ) {
+			$ids = array();
+			foreach ( (array) wp_get_object_terms( $vid, $tax, array( 'fields' => 'ids' ) ) as $tid ) {
+				$ids[] = 'zone_vignette' === $tax ? (int) $tid : on_vignettes_term_in_lang( $tid, $lang );
+			}
+			wp_set_object_terms( $twin, $ids, $tax );
+		}
+		$links = (array) pll_get_post_translations( $vid );
+		$links[ $def ]  = $vid;
+		$links[ $lang ] = $twin;
+		pll_save_post_translations( $links );
+	}
 }
 
 /**
@@ -370,16 +504,18 @@ function on_vignettes_upsert( $post ) {
 	// Contenu dépublié ou protégé par mot de passe : la vignette passe en brouillon, même verrouillée
 	// (sinon elle resterait publique avec l'extrait d'un contenu qui ne l'est plus).
 	if ( ! on_vignettes_source_is_public( $post ) ) {
-		if ( $existing && 'publish' === get_post_status( $existing ) ) {
-			on_vignettes_busy( true );
-			wp_update_post(
-				array(
-					'ID'          => $existing,
-					'post_status' => 'draft',
-				)
-			);
-			on_vignettes_busy( false );
-			update_post_meta( $existing, '_onv_autodraft', 1 );
+		foreach ( on_vignettes_find_all( $post->ID ) as $vid_all ) {
+			if ( 'publish' === get_post_status( $vid_all ) ) {
+				on_vignettes_busy( true );
+				wp_update_post(
+					array(
+						'ID'          => $vid_all,
+						'post_status' => 'draft',
+					)
+				);
+				on_vignettes_busy( false );
+				update_post_meta( $vid_all, '_onv_autodraft', 1 );
+			}
 		}
 		return;
 	}
@@ -481,6 +617,8 @@ function on_vignettes_upsert( $post ) {
 			wp_set_object_terms( $vid, array(), 'type_de_ressource' ); // tous les types retirés : la vignette n'en garde aucun (une erreur de lecture, elle, ne change rien).
 		}
 	}
+
+	on_vignettes_sync_twins( $post, $vid );
 
 	do_action( 'on_vignettes_changed', $vid );
 }
@@ -700,4 +838,39 @@ add_action(
 		update_option( 'on_vignettes_videozone_done', '1' );
 	},
 	150
+);
+
+
+/**
+ * Une seule fois : les vignettes françaises existantes des ressources audio, partitions et vidéos reçoivent leur
+ * vignette jumelle dans les autres langues (voir on_vignettes_sync_twins). Chaque jumelle se retire ensuite
+ * séparément (brouillon ou corbeille).
+ */
+add_action(
+	'init',
+	function () {
+		if ( '1' === get_option( 'on_vignettes_twins_done' ) || ! post_type_exists( ON_VIGNETTES_CPT ) || ! function_exists( 'pll_languages_list' ) ) {
+			return;
+		}
+		$ids = get_posts(
+			array(
+				'post_type'        => ON_VIGNETTES_CPT,
+				'post_status'      => 'publish',
+				'numberposts'      => -1,
+				'fields'           => 'ids',
+				'lang'             => pll_default_language(),
+				'suppress_filters' => false,
+				'meta_key'         => '_onv_source_type', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_value'       => 'ressource', // phpcs:ignore WordPress.DB.SlowDBQuery
+			)
+		);
+		foreach ( $ids as $id ) {
+			$source = get_post( (int) get_post_meta( $id, '_onv_source_id', true ) );
+			if ( $source && on_vignettes_is_shareable( $source ) && on_vignettes_source_is_public( $source ) ) {
+				on_vignettes_sync_twins( $source, $id );
+			}
+		}
+		update_option( 'on_vignettes_twins_done', '1' );
+	},
+	160
 );
