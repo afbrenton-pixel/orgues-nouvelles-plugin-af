@@ -42,7 +42,14 @@ function on_vignettes_attached_post( $vignette_id ) {
 	if ( ! $source_id && function_exists( 'pll_get_post_translations' ) ) {
 		// Vignette traduite à la main : objet de la vignette d'origine, dans la langue de la vignette si possible.
 		foreach ( pll_get_post_translations( $vignette_id ) as $translation_id ) {
+			if ( (int) $translation_id === (int) $vignette_id ) {
+				continue;
+			}
 			$origin = (int) get_post_meta( $translation_id, '_onv_source_id', true );
+			if ( ! $origin ) {
+				$lien_origine = (string) get_post_meta( $translation_id, 'lien', true );
+				$origin       = '' !== $lien_origine ? (int) url_to_postid( $lien_origine ) : 0;
+			}
 			if ( $origin ) {
 				$lang      = function_exists( 'pll_get_post_language' ) ? pll_get_post_language( $vignette_id ) : '';
 				$translated = ( $lang && function_exists( 'pll_get_post' ) ) ? (int) pll_get_post( $origin, $lang ) : 0;
