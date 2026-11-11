@@ -19,7 +19,7 @@ Tout ce qui a été ajouté dans le code existant est encadré par `=== COMPTAGE
 | `includes/usage/count.php` | `on_usage_record($user_id, $product_id, $type)` : ajoute 1 au compteur |
 | `includes/usage/rest-api.php` | API en lecture seule `GET /wp-json/on/v1/usage` |
 | `includes/usage/dynamic-tags.php` | balises Elementor « Adresse de lecture » et « Adresse de téléchargement » |
-| `includes/usage/download-message.php`, `assets/js/download-message.js`, `assets/css/style.css` | message après téléchargement (classe CSS `on-dl-message`) |
+| `includes/usage/download-message.php`, `assets/js/download-message.js`, `assets/css/download-message.css` | message après téléchargement (classe CSS `on-dl-message`) |
 | `includes/products/direct-download-free.php` | commande silencieuse réutilisée, coupure des e-mails, appel du compteur (blocs encadrés) |
 | `includes/products/read-online.php` (branche `lecture-en-ligne`) | doit appeler `on_usage_record(…, 'read')` à l'ouverture du PDF |
 
