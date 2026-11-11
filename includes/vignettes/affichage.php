@@ -32,3 +32,66 @@ add_filter(
 	10,
 	3
 );
+
+/**
+ * Objet attaché à une vignette : celui d'où elle a été créée, sinon (vignette créée à la main) celui
+ * que désigne son lien, si ce lien pointe vers un contenu du site.
+ */
+function on_vignettes_attached_post( $vignette_id ) {
+	$source_id = (int) get_post_meta( $vignette_id, '_onv_source_id', true );
+	if ( ! $source_id ) {
+		$lien = (string) get_post_meta( $vignette_id, 'lien', true );
+		if ( '' !== $lien ) {
+			$source_id = (int) url_to_postid( $lien );
+		}
+	}
+	return $source_id ? get_post( $source_id ) : null;
+}
+
+/**
+ * Fiche de la vignette : lien vers l'objet (actualité, ressource, vidéo, magazine…) à partir duquel
+ * la vignette a été créée. Boîte dans la colonne de droite ; absente si aucun objet n'est retrouvé.
+ */
+add_action(
+	'add_meta_boxes_vignette_accueil',
+	function ( $post ) {
+		if ( ! on_vignettes_attached_post( $post->ID ) ) {
+			return;
+		}
+		add_meta_box(
+			'onv-objet-source',
+			__( 'Objet source', 'orgues-nouvelles-plugin' ),
+			function ( $vignette ) {
+				$source = on_vignettes_attached_post( $vignette->ID );
+				if ( ! $source ) {
+					return;
+				}
+				$type  = get_post_type_object( $source->post_type );
+				$label = $type ? $type->labels->singular_name : $source->post_type;
+				printf(
+					'<p><strong>%1$s</strong><br>%2$s (%3$s)</p>',
+					esc_html( get_the_title( $source ) ),
+					esc_html( $label ),
+					esc_html( get_post_status_object( $source->post_status )->label )
+				);
+				if ( current_user_can( 'edit_post', $source->ID ) ) {
+					printf(
+						'<p><a class="button button-primary" href="%s">%s</a></p>',
+						esc_url( get_edit_post_link( $source->ID, 'raw' ) ),
+						esc_html__( 'Modifier l\'objet', 'orgues-nouvelles-plugin' )
+					);
+				}
+				if ( 'publish' === $source->post_status ) {
+					printf(
+						'<p><a href="%s" target="_blank" rel="noopener">%s</a></p>',
+						esc_url( get_permalink( $source ) ),
+						esc_html__( 'Voir l\'objet sur le site', 'orgues-nouvelles-plugin' )
+					);
+				}
+			},
+			'vignette_accueil',
+			'side',
+			'high'
+		);
+	}
+);

@@ -89,6 +89,10 @@ La zone se choisit dans le Loop Grid (filtre sur la taxonomie `zone_vignette`).
 
 `assets/css/vignettes-accueil.css` ne garde que ce qu'Elementor ne sait pas faire : ordre des colonnes sur tablette et téléphone, cadre des images, lecteur. Polices, couleurs et tailles se règlent dans Elementor.
 
+## Lien vers l'objet source
+
+La fiche d'une vignette affiche, dans la colonne de droite, une boîte « Objet source » : titre, type et statut de l'objet (actualité, ressource, vidéo, magazine…), bouton « Modifier l'objet » et lien « Voir l'objet sur le site ». L'objet est celui d'où la vignette a été créée ; pour une vignette créée à la main, c'est celui que désigne son champ « Lien », s'il pointe vers un contenu du site. Sans objet trouvé, la boîte n'apparaît pas.
+
 ## Polylang
 
 Le type de contenu et les étiquettes sont déclarés traduisibles ; les requêtes suivent la langue courante. Les zones ne sont pas traduisibles. La traduction anglaise de l'étiquette « Échos » est créée avec les termes.
