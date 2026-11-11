@@ -108,8 +108,3 @@ div.on-restricted-message a:hover {
     font-size: 0.92rem;
     line-height: 1.45;
 }
-/* Message après téléchargement (voir docs/comptage-usage.md) :
-   caché sur le site tant qu'on n'a pas cliqué, toujours visible dans l'éditeur Elementor. */
-body:not(.elementor-editor-active) .on-dl-message:not(.is-visible) {
-    display: none;
-}
