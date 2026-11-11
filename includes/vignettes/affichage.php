@@ -34,11 +34,23 @@ add_filter(
 );
 
 /**
- * Objet attaché à une vignette : celui d'où elle a été créée, sinon (vignette créée à la main) celui
- * que désigne son lien, si ce lien pointe vers un contenu du site.
+ * Objet attaché à une vignette : celui d'où elle a été créée, sinon celui de sa vignette d'origine (traduction
+ * faite à la main), sinon (vignette créée à la main) celui que désigne son lien, si ce lien pointe vers un contenu du site.
  */
 function on_vignettes_attached_post( $vignette_id ) {
 	$source_id = (int) get_post_meta( $vignette_id, '_onv_source_id', true );
+	if ( ! $source_id && function_exists( 'pll_get_post_translations' ) ) {
+		// Vignette traduite à la main : objet de la vignette d'origine, dans la langue de la vignette si possible.
+		foreach ( pll_get_post_translations( $vignette_id ) as $translation_id ) {
+			$origin = (int) get_post_meta( $translation_id, '_onv_source_id', true );
+			if ( $origin ) {
+				$lang      = function_exists( 'pll_get_post_language' ) ? pll_get_post_language( $vignette_id ) : '';
+				$translated = ( $lang && function_exists( 'pll_get_post' ) ) ? (int) pll_get_post( $origin, $lang ) : 0;
+				$source_id = $translated ? $translated : $origin;
+				break;
+			}
+		}
+	}
 	if ( ! $source_id ) {
 		$lien = (string) get_post_meta( $vignette_id, 'lien', true );
 		if ( '' !== $lien ) {
