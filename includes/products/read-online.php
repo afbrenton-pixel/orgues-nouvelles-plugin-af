@@ -126,7 +126,14 @@ function on_read_online_stream($path, $product = null)
     // du fichier. Les morceaux suivants demandés par le lecteur (Range) ne
     // comptent pas, ni les requêtes HEAD. Voir docs/comptage-usage.md.
     if ($start === 0 && $product && ($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'HEAD' && function_exists('on_usage_record')) {
-        on_usage_record(get_current_user_id(), $product->get_id(), 'read');
+        // PDF.js peut demander deux fois le début du fichier pour une seule
+        // ouverture : une même lecture (même personne, même produit) n'est
+        // comptée qu'une fois par minute.
+        $key = 'on_read_' . get_current_user_id() . '_' . $product->get_id();
+        if (get_transient($key) === false) {
+            set_transient($key, 1, 60);
+            on_usage_record(get_current_user_id(), $product->get_id(), 'read');
+        }
     }
     // === COMPTAGE-USAGE (fin) ===
 
