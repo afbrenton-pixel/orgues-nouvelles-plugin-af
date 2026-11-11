@@ -41,3 +41,14 @@ Le fichier servi est le **premier fichier téléchargeable du produit** : c'est 
 
 - À l'ouverture du PDF (la requête qui débute au début du fichier, pas les morceaux suivants ni les requêtes HEAD), le lecteur appelle `on_usage_record($user, $produit, 'read')` si le compteur est présent (branche `comptage-usage`, voir `docs/comptage-usage.md`). Sans le compteur, rien n'est compté et rien ne casse.
 - Le nom du fichier envoyé dans l'en-tête `Content-Disposition` est l'identifiant du produit (par exemple `cahpart73.pdf`), jamais le vrai nom du fichier : WooCommerce renomme au hasard les PDF envoyés depuis la page du produit, et ce nom aléatoire ne doit pas sortir.
+
+## Élément Elementor « Lecteur PDF en ligne »
+
+Remplace le bloc HTML provisoire des modèles. À glisser dans le modèle de page (catégorie « Général »).
+
+- **Document à lire** : cahier de partitions ou magazine. Le produit est retrouvé tout seul : même numéro (champ `numero`) que la page, même langue (Polylang), téléchargeable, gratuit pour la personne connectée (`on_usage_page_product`). Le champ « Le nom du produit contient » est facultatif (par défaut `CahPart` ou `ONED`).
+- Le PDF est lu par `/?on_action=read_pdf&product_id=…` : l'adresse réelle du fichier n'apparaît jamais, la lecture est comptée.
+- Sans droit de lecture, l'élément n'affiche rien (le bandeau « Abonnés Magazines » reste géré à part).
+- Textes français / anglais selon la langue de la page. Les enregistrements sont repérés par les liens `.mp3` du PDF.
+- Pas d'extrait pour les visiteurs sans droit dans cette première version.
+- Fichiers : `includes/elementor/widgets/online-reader.php`, `assets/js/online-reader.js`, `assets/css/online-reader.css` (PDF.js 3.11.174 depuis cdnjs, chargé seulement quand l'élément est sur la page).
