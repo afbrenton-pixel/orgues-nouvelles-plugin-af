@@ -51,7 +51,7 @@ function on_vignettes_post_id_from_url( $url ) {
 	$found    = get_posts(
 		array(
 			'name'             => end( $segments ),
-			'post_type'        => array_values( get_post_types( array( 'public' => true ) ) ),
+			'post_type'        => array_values( array_unique( array_merge( get_post_types( array( 'public' => true ) ), get_post_types( array( 'publicly_queryable' => true ) ) ) ) ),
 			'post_status'      => 'any',
 			'posts_per_page'   => 1,
 			'fields'           => 'ids',
