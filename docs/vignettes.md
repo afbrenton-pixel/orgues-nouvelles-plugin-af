@@ -52,7 +52,7 @@ Termes de `zone_vignette`, créés par le code (une fois, sans jamais modifier u
 
 ## Étiquettes
 
-Termes de `etiquette_vignette` : Publications, CD, Sorties CD, Vidéos, Échos (anglais : Echoes), Blog, Pub, La Revue, Actus, Newsletter, Ressources, Photos. Les étiquettes Audio, Textes et Partitions viennent du type de ressource.
+Termes de `etiquette_vignette` : Publications, CD, Sorties CD, Vidéos, Échos, Blog, Pub, La Revue, Actus, Newsletter, Ressources, Photos. Les étiquettes Audio, Textes et Partitions viennent du type de ressource.
 
 ## Création automatique
 
@@ -95,7 +95,7 @@ La fiche d'une vignette affiche, dans la colonne de droite, une boîte « Objet 
 
 ## Polylang
 
-Le type de contenu et les étiquettes sont déclarés traduisibles ; les requêtes suivent la langue courante. Les zones ne sont pas traduisibles. La traduction anglaise de l'étiquette « Échos » est créée avec les termes.
+Le type de contenu et les étiquettes sont déclarés traduisibles ; les requêtes suivent la langue courante. Les zones ne sont pas traduisibles. Les traductions anglaises de toutes les étiquettes sont créées avec les termes (Ressources → Resources, Vidéos → Videos, Actus → News, Échos → Echoes, Sorties CD → CD releases, La Revue → The Journal ; Publications, CD, Blog, Pub, Newsletter et Photos gardent leur nom). Une traduction déjà existante n'est pas modifiée. Les vignettes jumelles anglaises reprennent l'étiquette traduite.
 
 ## Remarque : source du Loop Grid
 

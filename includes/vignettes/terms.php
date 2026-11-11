@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /** Numéro de version de la liste de termes : le changer relance la création (les termes existants ne sont jamais modifiés). */
-const ON_VIGNETTES_TERMS_VERSION = '2';
+const ON_VIGNETTES_TERMS_VERSION = '3';
 
 /**
  * Zones : emplacement précis d'une vignette sur la page d'accueil.
@@ -59,7 +59,18 @@ function on_vignettes_default_etiquettes() {
  */
 function on_vignettes_etiquettes_en() {
 	return array(
-		'echos' => 'Echoes',
+		'publications' => 'Publications',
+		'cd'          => 'CD',
+		'sorties-cd'  => 'CD releases',
+		'videos'      => 'Videos',
+		'echos'       => 'Echoes',
+		'blog'        => 'Blog',
+		'pub'         => 'Pub',
+		'la-revue'    => 'The Journal',
+		'actus'       => 'News',
+		'newsletter'  => 'Newsletter',
+		'ressources'  => 'Resources',
+		'photos'      => 'Photos',
 	);
 }
 
