@@ -283,7 +283,8 @@ function on_gratuite_purge_expired_proofs() {
     $cutoff  = time() - on_gratuite_retention_days() * DAY_IN_SECONDS;
     $deleted = 0;
     $ids     = get_posts( array(
-        'post_type'   => 'any',
+        // Explicit type: 'any' skips the types excluded from search, which is the case of the authorizations.
+        'post_type'   => on_gratuite_post_type(),
         'post_status' => 'any',
         'numberposts' => -1,
         'fields'      => 'ids',

@@ -44,6 +44,10 @@ function on_gratuite_message( $key, $lang = 'fr', $limit = 0, $extra = '' ) {
             'Une demande est déjà en cours d\'examen pour cette adresse.',
             'A request is already being reviewed for this address.',
         ),
+        'renewal_unavailable' => array(
+            sprintf( 'Un abonnement gratuit a déjà été obtenu avec cette adresse au titre de cette offre. Le renouvellement en ligne n\'est pas encore disponible ; il sera ouvert %d jours avant la date d\'expiration de l\'abonnement. Pour toute question sur un abonnement, écrivez-nous à %s.', $limit, $extra ),
+            sprintf( 'A free subscription has already been obtained with this address under this offer. Online renewal is not available yet; it will open %d days before the subscription expires. If you have any question about a subscription, please write to us at %s.', $limit, $extra ),
+        ),
         'no_proof'    => array( 'Veuillez joindre un justificatif.', 'Please attach a proof document.' ),
         'bad_proof'   => array(
             'Justificatif non accepté : PDF, JPG ou PNG, 5 Mo au maximum.',
@@ -97,6 +101,16 @@ function on_gratuite_promo_state( $start, $end, DateTimeImmutable $today ) {
     return 'open';
 }
 
+/**
+ * Today's date in the site's time zone (not the server's UTC day), as a date-only value built like the
+ * parsed birth and promotional dates, so that comparisons are between the same representations.
+ */
+function on_gratuite_today() {
+    $ymd   = function_exists( 'wp_date' ) ? wp_date( 'Y-m-d' ) : gmdate( 'Y-m-d' );
+    $today = on_gratuite_parse_date( (string) $ymd );
+    return $today ? $today : new DateTimeImmutable( 'today' );
+}
+
 /** A date for a message: 09/11/2026 in French, November 9, 2026 in English. */
 function on_gratuite_promo_date_text( $value, $lang ) {
     $date = on_gratuite_parse_date( (string) $value );
@@ -119,17 +133,24 @@ function on_gratuite_promo_date_text( $value, $lang ) {
  *     @type string                 $account_email     Address of the logged-in account.
  *     @type bool                   $has_accepted      The customer already had an accepted authorization (=> renewal).
  *     @type bool                   $has_pending       An authorization is already waiting for this address.
- *     @type DateTimeImmutable|null $today             For tests.
+ *     @type DateTimeImmutable|null $today             For tests (default: today in the site's time zone).
  * }
  * @return array { type: 'premiere'|'renouvellement', age: int|null, errors: array field id => message }
  */
 function on_gratuite_evaluate_request( array $in ) {
     $settings = on_gratuite_settings();
     $lang     = ( isset( $in['lang'] ) && 'en' === $in['lang'] ) ? 'en' : 'fr';
-    $today    = isset( $in['today'] ) ? $in['today'] : new DateTimeImmutable( 'today' );
+    $today    = isset( $in['today'] ) ? $in['today'] : on_gratuite_today();
     $type     = ! empty( $in['has_accepted'] ) ? 'renouvellement' : 'premiere';
     $errors   = array();
     $age      = null;
+
+    // Someone already accepted would be a renewal, which has no provisioning path yet (step 5): accepting it
+    // would create a second, overlapping free subscription. Refused until the renewal workflow exists.
+    if ( 'renouvellement' === $type && empty( $settings['renew_enabled'] ) ) {
+        $errors['renouvellement'] = on_gratuite_message( 'renewal_unavailable', $lang, (int) $settings['renew_window_days'], (string) $settings['notify_email'] );
+        return array( 'type' => $type, 'age' => null, 'errors' => $errors );
+    }
 
     $dob = on_gratuite_parse_date( isset( $in['dob'] ) ? $in['dob'] : '' );
     if ( ! $dob || $dob > $today || (int) $dob->format( 'Y' ) < 1900 ) {

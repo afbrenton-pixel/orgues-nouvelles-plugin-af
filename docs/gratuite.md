@@ -343,3 +343,28 @@ remplacement, suppression, protection contre les chemins piégés, purge à 60 j
 format AAAA-MM-JJ : `promo_debut` (début de la période, incluse) et `promo_fin` (fin, incluse).
 Pods les enregistre dans les options WordPress `on_gratuite_reglages_promo_debut` et
 `on_gratuite_reglages_promo_fin`, que le code lit. À reprendre sur le vrai site : le type de contenu `on_abon_autorisation` et cette page de réglages sont dans le paquet Pods `docs/pods/gratuite-26.json` (Pods > Composants > Migrer : paquets > Importer un paquet), exporté du site de test le 11 novembre 2026 (Pods 3.3.9.2). Saisir ensuite les vraies dates de la période.
+
+## Corrections après la relecture automatique de la demande n°20 (12 novembre 2026)
+
+1. **Renouvellement non disponible tant que l'étape 5 n'existe pas** (réglage `renew_enabled`, faux par défaut dans
+   `settings.php`). Une personne dont une demande a déjà été acceptée serait traitée comme un renouvellement, hors
+   période promotionnelle, et l'acceptation créerait un deuxième abonnement gratuit qui se superpose au premier. Sa
+   demande est donc refusée avec un message (clé `renewal_unavailable`, `request-rules.php`, français et anglais :
+   délai lu dans `renew_window_days`, adresse lue dans `notify_email`). L'étape 5 passera `renew_enabled` à vrai.
+2. **Droits du type de contenu** : tous les droits de `on_abon_autorisation` sont ramenés à `on_gratuite_capability()`
+   (`manage_woocommerce` par défaut, filtre `on_gratuite_capability`) par le filtre `register_post_type_args`
+   (`authorization.php`). Un rédacteur ne voit plus le menu et ne peut plus ouvrir une fiche (noms, adresses, dates de
+   naissance). Pods enregistre le type avec les droits des articles ordinaires : ce filtre passe après lui.
+3. **Verrou par demande** (`on_gratuite_lock_acquire()` / `_release()`, `decision.php`) : pris avant de lire l'état,
+   partagé par `on_gratuite_accept()` et `on_gratuite_refuse()`, relâché dans tous les cas (`finally`). Deux clics
+   simultanés ne créent plus deux abonnements, un refus ne croise plus une acceptation. Insertion atomique dans la
+   table des options (`INSERT IGNORE`, comme le verrou du programme de mise à jour de WordPress) ; un verrou de plus de
+   10 minutes est considéré comme abandonné (`on_gratuite_lock_is_stale()`).
+4. **Commande orpheline** : si la création de l'abonnement échoue, la commande parente déjà enregistrée est
+   **annulée** (jamais supprimée), sans e-mail, avec une note ; un nouvel essai repart de zéro.
+5. **Purge des justificatifs à 60 jours** : la requête vise explicitement le type `on_abon_autorisation` (`'any'` ignore
+   les types exclus des recherches), donc le nom d'origine du fichier et les autres données du justificatif sont aussi
+   effacés des fiches et la date de suppression est enregistrée.
+6. **Date du jour du site** : `on_gratuite_today()` (`request-rules.php`) donne la date dans le fuseau du site
+   (`wp_date()`), au même format « date seule » que les dates de naissance et de période. Avant, c'était le jour UTC :
+   décalage d'une ou deux heures autour de minuit pour l'ouverture et la fin de période et le 27e anniversaire.

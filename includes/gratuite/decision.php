@@ -91,14 +91,64 @@ function on_gratuite_mute_order_emails( $mute ) {
     }
 }
 
+/** A lock older than this many seconds is considered abandoned (a request that died half-way). */
+function on_gratuite_lock_ttl() {
+    return 600;
+}
+
+/**
+ * Take the decision lock of one request. INSERT IGNORE on the options table is atomic (same method as the
+ * WordPress core upgrader): only one of two simultaneous requests gets the row.
+ */
+function on_gratuite_lock_acquire( $post_id ) {
+    global $wpdb;
+    $name = 'on_gratuite_lock_' . (int) $post_id;
+    $take = function () use ( $wpdb, $name ) {
+        return (bool) $wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO `{$wpdb->options}` ( `option_name`, `option_value`, `autoload` ) VALUES ( %s, %s, 'no' )", $name, (string) time() ) );
+    };
+    if ( $take() ) {
+        return true;
+    }
+    $started = (int) $wpdb->get_var( $wpdb->prepare( "SELECT option_value FROM `{$wpdb->options}` WHERE option_name = %s", $name ) );
+    if ( on_gratuite_lock_is_stale( $started, time(), on_gratuite_lock_ttl() ) ) {
+        $wpdb->delete( $wpdb->options, array( 'option_name' => $name ) );
+        return $take();
+    }
+    return false;
+}
+
+function on_gratuite_lock_release( $post_id ) {
+    global $wpdb;
+    $wpdb->delete( $wpdb->options, array( 'option_name' => 'on_gratuite_lock_' . (int) $post_id ) );
+}
+
+/** Error returned when a decision is already being applied to this request. */
+function on_gratuite_busy_error() {
+    return new WP_Error( 'on_gratuite_busy', 'Une décision est déjà en cours pour cette demande. Patientez quelques instants, puis actualisez la fiche.' );
+}
+
 /**
  * Accept a request. @return array|WP_Error { subscription_id, order_id, end_date, mail_sent }
+ * Takes the lock shared with on_gratuite_refuse() before the state is read, and releases it on every exit.
  */
 function on_gratuite_accept( $post_id, $user_id ) {
     $post_id = (int) $post_id;
     if ( on_gratuite_post_type() !== get_post_type( $post_id ) ) {
         return new WP_Error( 'on_gratuite_bad_post', 'Fiche introuvable.' );
     }
+    if ( ! on_gratuite_lock_acquire( $post_id ) ) {
+        return on_gratuite_busy_error();
+    }
+    try {
+        wp_cache_delete( $post_id, 'post_meta' ); // State read after the lock, never from a stale cache.
+        return on_gratuite_accept_locked( $post_id, $user_id );
+    } finally {
+        on_gratuite_lock_release( $post_id );
+    }
+}
+
+/** The acceptance itself, called with the lock held. */
+function on_gratuite_accept_locked( $post_id, $user_id ) {
     if ( ! on_gratuite_can_decide( (string) get_post_meta( $post_id, 'statut', true ) ) ) {
         return new WP_Error( 'on_gratuite_status', 'La demande doit être « en attente » (confirmée par e-mail).' );
     }
@@ -174,12 +224,26 @@ function on_gratuite_accept( $post_id, $user_id ) {
 
 /**
  * Refuse a request. @return array|WP_Error { mail_sent }
+ * Shares the lock of on_gratuite_accept(), so a refusal cannot cross an acceptance.
  */
 function on_gratuite_refuse( $post_id, $user_id, $reason = '' ) {
     $post_id = (int) $post_id;
     if ( on_gratuite_post_type() !== get_post_type( $post_id ) ) {
         return new WP_Error( 'on_gratuite_bad_post', 'Fiche introuvable.' );
     }
+    if ( ! on_gratuite_lock_acquire( $post_id ) ) {
+        return on_gratuite_busy_error();
+    }
+    try {
+        wp_cache_delete( $post_id, 'post_meta' );
+        return on_gratuite_refuse_locked( $post_id, $user_id, $reason );
+    } finally {
+        on_gratuite_lock_release( $post_id );
+    }
+}
+
+/** The refusal itself, called with the lock held. */
+function on_gratuite_refuse_locked( $post_id, $user_id, $reason = '' ) {
     if ( ! on_gratuite_can_decide( (string) get_post_meta( $post_id, 'statut', true ) ) ) {
         return new WP_Error( 'on_gratuite_status', 'La demande doit être « en attente » (confirmée par e-mail).' );
     }
