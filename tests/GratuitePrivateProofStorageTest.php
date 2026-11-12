@@ -220,7 +220,10 @@ class GratuitePrivateProofStorageTest extends TestCase {
         $args = on_gratuite_post_type_args( array( 'public' => false ), 'on_abon_autorisation' );
         $this->assertSame( 'manage_woocommerce', $args['capabilities']['edit_posts'] );
         $this->assertSame( 'manage_woocommerce', $args['capabilities']['read_private_posts'] );
-        $this->assertSame( 'manage_woocommerce', $args['capabilities']['edit_post'] );
+        $this->assertArrayNotHasKey( 'edit_post', $args['capabilities'], 'Meta capabilities are left to WordPress.' );
+        $this->assertArrayNotHasKey( 'read_post', $args['capabilities'] );
+        $this->assertArrayNotHasKey( 'delete_post', $args['capabilities'] );
+        $this->assertTrue( $args['map_meta_cap'] );
         $this->assertSame( array( 'manage_woocommerce' ), array_values( array_unique( $args['capabilities'] ) ) );
         $this->assertSame( array( 'public' => false ), on_gratuite_post_type_args( array( 'public' => false ), 'post' ), 'Other types untouched.' );
     }
