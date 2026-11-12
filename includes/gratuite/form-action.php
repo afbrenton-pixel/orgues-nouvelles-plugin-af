@@ -107,7 +107,7 @@ function on_gratuite_validate_form( $record, $ajax_handler ) {
     $lang   = $input['lang'];
 
     foreach ( on_gratuite_evaluate_request( $input )['errors'] as $field => $message ) {
-        if ( 'promo' === $field ) {
+        if ( in_array( $field, array( 'promo', 'renouvellement' ), true ) ) {
             // Not tied to one field: shown as the general message, and under the e-mail field like the rate limit.
             $ajax_handler->add_error_message( $message );
             $field = 'email';

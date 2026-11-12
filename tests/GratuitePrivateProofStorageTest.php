@@ -34,6 +34,7 @@ if ( ! function_exists( 'delete_post_meta' ) ) {
 }
 if ( ! function_exists( 'get_posts' ) ) {
     function get_posts( $args ) {
+        $GLOBALS['on_gratuite_test_query'] = $args;
         $ids = array();
         foreach ( $GLOBALS['on_gratuite_test_meta'] as $id => $meta ) {
             if ( isset( $meta[ $args['meta_key'] ] ) ) { $ids[] = $id; }
@@ -50,9 +51,13 @@ if ( ! function_exists( 'wp_salt' ) ) {
 if ( ! function_exists( 'add_action' ) ) {
     function add_action() {}
 }
+if ( ! function_exists( 'add_filter' ) ) {
+    function add_filter() {}
+}
 
 if ( ! defined( 'ABSPATH' ) ) { define( 'ABSPATH', sys_get_temp_dir() . '/' ); }
 require_once dirname( __DIR__ ) . '/includes/gratuite/private-proof-storage.php';
+require_once dirname( __DIR__ ) . '/includes/gratuite/authorization.php';
 
 class GratuitePrivateProofStorageTest extends TestCase {
     private $base;
@@ -195,5 +200,28 @@ class GratuitePrivateProofStorageTest extends TestCase {
         $this->assertNotSame( on_gratuite_encrypt( 'abc' ), on_gratuite_encrypt( 'abc' ) );
         $this->assertSame( 'abc', on_gratuite_decrypt( on_gratuite_encrypt( 'abc' ) ) );
         $this->assertFalse( on_gratuite_decrypt( 'pas chiffré du tout, mais assez long pour passer la taille minimale' ) );
+    }
+
+    public function test_purge_queries_the_authorization_type_explicitly() {
+        // 'any' skips the types excluded from search, which is the case of the authorizations.
+        on_gratuite_purge_expired_proofs();
+        $this->assertSame( 'on_abon_autorisation', $GLOBALS['on_gratuite_test_query']['post_type'] );
+    }
+
+    public function test_purge_clears_the_proof_data_kept_on_the_record() {
+        on_gratuite_store_proof( $this->make_upload( $this->png(), 'u3.tmp' ), 'carte-identite.png', 30 );
+        update_post_meta( 30, ON_GRATUITE_META_STORED_AT, time() - 61 * DAY_IN_SECONDS );
+        on_gratuite_purge_expired_proofs();
+        $this->assertSame( '', get_post_meta( 30, ON_GRATUITE_META_NAME, true ), 'Original file name erased.' );
+        $this->assertNotSame( '', get_post_meta( 30, ON_GRATUITE_META_DELETED, true ), 'Deletion date recorded.' );
+    }
+
+    public function test_every_capability_of_the_authorization_type_is_the_decision_one() {
+        $args = on_gratuite_post_type_args( array( 'public' => false ), 'on_abon_autorisation' );
+        $this->assertSame( 'manage_woocommerce', $args['capabilities']['edit_posts'] );
+        $this->assertSame( 'manage_woocommerce', $args['capabilities']['read_private_posts'] );
+        $this->assertSame( 'manage_woocommerce', $args['capabilities']['edit_post'] );
+        $this->assertSame( array( 'manage_woocommerce' ), array_values( array_unique( $args['capabilities'] ) ) );
+        $this->assertSame( array( 'public' => false ), on_gratuite_post_type_args( array( 'public' => false ), 'post' ), 'Other types untouched.' );
     }
 }
