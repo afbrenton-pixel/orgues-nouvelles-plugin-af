@@ -119,3 +119,8 @@ function on_gratuite_fill_copy_text( $text, array $vars, $lang = 'fr' ) {
         '{reason}'   => '' === $reason ? '' : "\n" . $label . $reason,
     ) );
 }
+
+/** Whether a decision lock taken at $started is abandoned at $now (a request that died half-way). */
+function on_gratuite_lock_is_stale( $started, $now, $ttl = 600 ) {
+    return (int) $started > 0 && ( (int) $now - (int) $started ) > (int) $ttl;
+}

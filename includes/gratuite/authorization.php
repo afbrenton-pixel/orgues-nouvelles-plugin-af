@@ -5,6 +5,25 @@
  */
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Capabilities of the authorization type. Pods registers it with the ordinary post capabilities, so an Editor
+ * could open the records (names, e-mail addresses, birth dates) from the editing screens. Every capability of
+ * the type is mapped to the one that already protects the proof and the decision buttons.
+ */
+function on_gratuite_post_type_args( $args, $post_type ) {
+    if ( on_gratuite_post_type() !== $post_type ) {
+        return $args;
+    }
+    $cap = on_gratuite_capability();
+    $args['capabilities'] = array_fill_keys( array(
+        'edit_post', 'read_post', 'delete_post', 'edit_posts', 'edit_others_posts', 'delete_posts',
+        'publish_posts', 'read_private_posts', 'delete_private_posts', 'delete_published_posts',
+        'delete_others_posts', 'edit_private_posts', 'edit_published_posts', 'create_posts',
+    ), $cap );
+    return $args;
+}
+add_filter( 'register_post_type_args', 'on_gratuite_post_type_args', 99, 2 );
+
 /** Whether this customer already had an accepted authorization (=> yearly renewal). */
 function on_gratuite_customer_has_accepted( $user_id ) {
     if ( ! $user_id ) {

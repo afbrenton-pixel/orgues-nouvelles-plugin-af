@@ -80,4 +80,10 @@ class GratuiteDecisionRulesTest extends TestCase {
         $en = on_gratuite_fill_copy_text( on_gratuite_copy_texts( 'refused', 'en' )['body'], array( 'name' => 'A B', 'email' => 'a@b.c', 'reason' => 'Unreadable' ), 'en' );
         $this->assertStringContainsString( 'Reason: Unreadable', $en );
     }
+
+    public function test_a_decision_lock_is_abandoned_only_after_its_delay() {
+        $this->assertFalse( on_gratuite_lock_is_stale( 1000, 1000 + 600 ) );
+        $this->assertTrue( on_gratuite_lock_is_stale( 1000, 1000 + 601 ) );
+        $this->assertFalse( on_gratuite_lock_is_stale( 0, 99999 ), 'An unreadable lock is never taken over.' );
+    }
 }

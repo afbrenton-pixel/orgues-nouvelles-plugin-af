@@ -167,7 +167,19 @@ function on_gratuite_provision( $post_id ) {
         'status'           => 'pending',
     ) );
     if ( is_wp_error( $subscription ) ) {
-        $order->add_order_note( 'Création de l\'abonnement impossible : ' . $subscription->get_error_message() );
+        // The parent order is already saved: cancel it (never delete) so that it does not stay in the proof-waiting
+        // workflow, and so that a new attempt starts clean. No e-mail goes out for this cancellation.
+        $mute = function_exists( 'on_gratuite_mute_order_emails' );
+        if ( $mute ) {
+            on_gratuite_mute_order_emails( true );
+        }
+        try {
+            $order->update_status( 'cancelled', 'Création de l\'abonnement impossible, commande annulée : ' . $subscription->get_error_message() );
+        } finally {
+            if ( $mute ) {
+                on_gratuite_mute_order_emails( false );
+            }
+        }
         return $subscription;
     }
     $subscription->add_product( $variation, 1 );

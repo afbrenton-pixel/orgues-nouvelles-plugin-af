@@ -51,7 +51,12 @@ class GratuiteRequestRulesTest extends TestCase {
         $this->assertStringContainsString( '27e anniversaire', $r['errors']['date_naissance'] );
     }
 
+    private function with_renewal_enabled() {
+        $GLOBALS['on_gratuite_test_filters']['on_gratuite_settings'] = array_merge( on_gratuite_settings(), array( 'renew_enabled' => true ) );
+    }
+
     public function test_renewal_follows_the_same_rule_as_the_first_request() {
+        $this->with_renewal_enabled();
         $this->assertSame( array(), $this->request( array( 'dob' => '2000-01-01', 'has_accepted' => true, 'logged_in' => true ) )['errors'] );
         $this->assertSame( array(), $this->request( array( 'dob' => '1999-11-08', 'has_accepted' => true, 'logged_in' => true ) )['errors'] );
         $r = $this->request( array( 'dob' => '1999-11-07', 'has_accepted' => true, 'logged_in' => true ) );
@@ -137,9 +142,11 @@ class GratuiteRequestRulesTest extends TestCase {
     }
 
     public function test_renewal_is_never_limited_by_the_promo_period() {
+        $this->with_renewal_enabled();
         $this->with_promo( '2026-12-01', '2026-12-31' );
         $this->assertSame( array(), $this->request( array( 'has_accepted' => true, 'logged_in' => true ) )['errors'] );
         $this->with_promo( '2026-01-01', '2026-01-31' );
+        $this->with_renewal_enabled();
         $this->assertSame( array(), $this->request( array( 'has_accepted' => true, 'logged_in' => true ) )['errors'] );
     }
 
@@ -196,5 +203,34 @@ class GratuiteRequestRulesTest extends TestCase {
     public function test_pending_message_does_not_hide_a_more_precise_address_error() {
         $r = $this->request( array( 'logged_in' => true, 'account_email' => 'moi@example.org', 'typed_email' => 'autre@example.org', 'has_pending' => true ) );
         $this->assertStringContainsString( 'moi@example.org', $r['errors']['email'] );
+    }
+
+    public function test_someone_already_accepted_is_refused_while_renewal_is_not_available() {
+        // Without this, an accepted person could ask again at once (even outside the promotion): it would be treated
+        // as a renewal and accepting it would create a second, overlapping free subscription.
+        $this->with_promo( '2026-12-01', '2026-12-31' );
+        $r = $this->request( array( 'has_accepted' => true, 'logged_in' => true ) );
+        $this->assertSame( 'renouvellement', $r['type'] );
+        $this->assertSame( array( 'renouvellement' ), array_keys( $r['errors'] ) );
+        $this->assertStringContainsString( '60 jours avant', $r['errors']['renouvellement'] );
+        $this->assertStringContainsString( 'etudiant@orgues-nouvelles.org', $r['errors']['renouvellement'] );
+        $en = $this->request( array( 'has_accepted' => true, 'logged_in' => true, 'lang' => 'en' ) );
+        $this->assertStringContainsString( '60 days before', $en['errors']['renouvellement'] );
+    }
+
+    public function test_the_renewal_refusal_does_not_touch_first_requests() {
+        $this->assertArrayNotHasKey( 'renouvellement', $this->request()['errors'] );
+        $this->assertSame( 'premiere', $this->request()['type'] );
+    }
+
+    public function test_the_renewal_delay_in_the_message_follows_the_setting() {
+        $GLOBALS['on_gratuite_test_filters']['on_gratuite_settings'] = array_merge( on_gratuite_settings(), array( 'renew_window_days' => 30 ) );
+        $this->assertStringContainsString( '30 jours avant', $this->request( array( 'has_accepted' => true, 'logged_in' => true ) )['errors']['renouvellement'] );
+    }
+
+    public function test_today_is_a_date_only_value_in_the_site_calendar() {
+        $today = on_gratuite_today();
+        $this->assertSame( '00:00:00', $today->format( 'H:i:s' ) );
+        $this->assertSame( gmdate( 'Y-m-d' ), $today->format( 'Y-m-d' ), 'Without WordPress, falls back to the UTC day.' );
     }
 }
