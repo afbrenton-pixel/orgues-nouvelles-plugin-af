@@ -15,10 +15,14 @@ function on_gratuite_post_type_args( $args, $post_type ) {
         return $args;
     }
     $cap = on_gratuite_capability();
+    // Primitive capabilities only. The meta capabilities (edit_post, read_post, delete_post) must NOT be listed:
+    // with map_meta_cap, WordPress would then treat the shared capability itself as a meta capability and deny it
+    // to everyone, administrators included (found when testing on the test site on 12 November).
+    $args['map_meta_cap'] = true;
     $args['capabilities'] = array_fill_keys( array(
-        'edit_post', 'read_post', 'delete_post', 'edit_posts', 'edit_others_posts', 'delete_posts',
-        'publish_posts', 'read_private_posts', 'delete_private_posts', 'delete_published_posts',
-        'delete_others_posts', 'edit_private_posts', 'edit_published_posts', 'create_posts',
+        'edit_posts', 'edit_others_posts', 'delete_posts', 'publish_posts', 'read_private_posts',
+        'delete_private_posts', 'delete_published_posts', 'delete_others_posts', 'edit_private_posts',
+        'edit_published_posts', 'create_posts',
     ), $cap );
     return $args;
 }

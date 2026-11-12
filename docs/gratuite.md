@@ -353,8 +353,11 @@ Pods les enregistre dans les options WordPress `on_gratuite_reglages_promo_debut
    délai lu dans `renew_window_days`, adresse lue dans `notify_email`). L'étape 5 passera `renew_enabled` à vrai.
 2. **Droits du type de contenu** : tous les droits de `on_abon_autorisation` sont ramenés à `on_gratuite_capability()`
    (`manage_woocommerce` par défaut, filtre `on_gratuite_capability`) par le filtre `register_post_type_args`
-   (`authorization.php`). Un rédacteur ne voit plus le menu et ne peut plus ouvrir une fiche (noms, adresses, dates de
-   naissance). Pods enregistre le type avec les droits des articles ordinaires : ce filtre passe après lui.
+   (`authorization.php`), avec `map_meta_cap` vrai : seuls les droits de base (`edit_posts`, `publish_posts`, etc.) sont
+   remplacés ; les droits « modèles » `edit_post`, `read_post` et `delete_post` ne doivent **pas** être listés, sinon
+   WordPress refuse le droit commun à tout le monde, administrateurs compris (constaté à l'essai du 12 novembre). Un
+   rédacteur ne voit plus le menu et ne peut plus ouvrir une fiche (noms, adresses, dates de naissance). Pods
+   enregistre le type avec les droits des articles ordinaires : ce filtre passe après lui.
 3. **Verrou par demande** (`on_gratuite_lock_acquire()` / `_release()`, `decision.php`) : pris avant de lire l'état,
    partagé par `on_gratuite_accept()` et `on_gratuite_refuse()`, relâché dans tous les cas (`finally`). Deux clics
    simultanés ne créent plus deux abonnements, un refus ne croise plus une acceptation. Insertion atomique dans la
