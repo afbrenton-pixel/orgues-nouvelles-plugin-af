@@ -50,14 +50,16 @@ class ON_Online_Reader extends Widget_Base
         return array('pdf', 'lecteur', 'lecture', 'cahier', 'magazine', 'mp3');
     }
 
+    // Dans l'éditeur Elementor seulement : sur le site, les fichiers (dont PDF.js)
+    // ne sont chargés que si le lecteur est réellement affiché (voir render()).
     public function get_script_depends()
     {
-        return array('on-online-reader');
+        return \Elementor\Plugin::$instance->editor->is_edit_mode() ? array('on-online-reader') : array();
     }
 
     public function get_style_depends()
     {
-        return array('on-online-reader');
+        return \Elementor\Plugin::$instance->editor->is_edit_mode() ? array('on-online-reader') : array();
     }
 
     protected function register_controls()
@@ -179,6 +181,9 @@ class ON_Online_Reader extends Widget_Base
             }
             return;
         }
+
+        wp_enqueue_style('on-online-reader');
+        wp_enqueue_script('on-online-reader');
 
         $url = add_query_arg(array(
             'on_action'  => 'read_pdf',
