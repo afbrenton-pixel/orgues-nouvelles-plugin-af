@@ -52,6 +52,13 @@ function on_read_online_user_can_read($product)
         && $product->is_downloadable()
         && (float) $product->get_price() <= 0;
 
+    // Un produit non publié ou protégé par mot de passe n'est lisible que par
+    // quelqu'un qui peut le modifier (liste de contrôle, point 1).
+    if ($can && ($product->get_status() !== 'publish' || post_password_required($product->get_id()))
+        && !current_user_can('edit_post', $product->get_id())) {
+        $can = false;
+    }
+
     return (bool) apply_filters('on_read_online_can_access', $can, $product, get_current_user_id());
 }
 
