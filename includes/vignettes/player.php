@@ -49,6 +49,53 @@ function on_vignettes_media_for( $vignette_id ) {
 	return ( $out['audio'] || $out['video'] || $out['kind'] ) ? $out : null;
 }
 
+/**
+ * Pistes d'une vignette de format « playlist » : fichiers du champ Pods « pistes » (médiathèque), dans l'ordre du champ.
+ * Titre, artiste et durée viennent des étiquettes ID3 du MP3 (métadonnées WordPress), sinon du titre du fichier.
+ * Retourne null si la vignette n'a aucune piste lisible.
+ */
+function on_vignettes_playlist_for( $vignette_id ) {
+	$raw = get_post_meta( $vignette_id, 'pistes' );
+	$ids = array();
+	foreach ( $raw as $v ) {
+		foreach ( (array) $v as $item ) {
+			$id = is_array( $item ) ? (int) ( $item['ID'] ?? 0 ) : (int) $item;
+			if ( $id ) {
+				$ids[] = $id;
+			}
+		}
+	}
+	$ids    = array_values( array_unique( $ids ) );
+	$audio  = array();
+	$tracks = array();
+	foreach ( $ids as $aid ) {
+		$url = wp_get_attachment_url( $aid );
+		if ( ! $url || 0 !== strpos( (string) get_post_mime_type( $aid ), 'audio' ) ) {
+			continue;
+		}
+		$meta     = wp_get_attachment_metadata( $aid );
+		$meta     = is_array( $meta ) ? $meta : array();
+		$title    = ! empty( $meta['title'] ) ? $meta['title'] : get_the_title( $aid );
+		$audio[]  = esc_url_raw( $url );
+		$tracks[] = array(
+			'title'  => wp_strip_all_tags( (string) $title ),
+			'artist' => ! empty( $meta['artist'] ) ? wp_strip_all_tags( (string) $meta['artist'] ) : '',
+			'length' => ! empty( $meta['length_formatted'] ) ? (string) $meta['length_formatted'] : '',
+		);
+	}
+	if ( ! $audio ) {
+		return null;
+	}
+	return array(
+		'audio'    => $audio,
+		'tracks'   => $tracks,
+		'video'    => '',
+		'kind'     => 'audio',
+		'playlist' => 1,
+		'visibles' => max( 1, (int) apply_filters( 'on_vignettes_playlist_visibles', 5 ) ),
+	);
+}
+
 add_action(
 	'wp_enqueue_scripts',
 	function () {
@@ -70,6 +117,24 @@ add_action(
 		$map = array();
 		foreach ( $ids as $id ) {
 			$info = on_vignettes_media_for( $id );
+			if ( $info ) {
+				$map[ (int) $id ] = $info;
+			}
+		}
+		$playlists = get_posts(
+			array(
+				'post_type'        => 'vignette_accueil',
+				'post_status'      => 'publish',
+				'posts_per_page'   => 20,
+				'fields'           => 'ids',
+				'no_found_rows'    => true,
+				'suppress_filters' => false,
+				'meta_key'         => 'format', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_value'       => 'playlist', // phpcs:ignore WordPress.DB.SlowDBQuery
+			)
+		);
+		foreach ( $playlists as $id ) {
+			$info = on_vignettes_playlist_for( $id );
 			if ( $info ) {
 				$map[ (int) $id ] = $info;
 			}
