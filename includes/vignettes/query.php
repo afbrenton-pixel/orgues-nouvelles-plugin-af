@@ -35,6 +35,15 @@ function on_vignettes_ordered_ids( $query ) {
 		$args['lang'] = pll_current_language(); // Polylang filtre sur `pre_get_posts` : pas besoin des filtres SQL.
 	}
 	$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
+	// Les vignettes « playlist » ont leur propre grille (requête vignettes_playlist) : jamais dans les autres.
+	$ids = array_values(
+		array_filter(
+			$ids,
+			function ( $id ) {
+				return 'playlist' !== get_post_meta( $id, 'format', true );
+			}
+		)
+	);
 	return on_vignettes_sort_by_rank( array_slice( $ids, 0, 200 ) );
 }
 
@@ -191,6 +200,54 @@ add_action(
 );
 
 /**
+ * Vignettes de format « playlist » (liste de pistes MP3).
+ *
+ * Dans le Loop Grid, « ID de la requête » : vignettes_playlist
+ *
+ * Ne garde que les vignettes dont le champ « format » vaut « playlist » (rang puis date).
+ * La zone se choisit dans le Loop Grid ; le modèle de boucle est « Vignette accueil – playlist ».
+ */
+add_action(
+	'elementor/query/vignettes_playlist',
+	function ( $query ) {
+		static $running = false;
+		if ( $running ) {
+			return;
+		}
+		$running = true;
+		try {
+			$args = array(
+				'post_type'        => 'vignette_accueil',
+				'post_status'      => 'publish',
+				'nopaging'         => true,
+				'fields'           => 'ids',
+				'no_found_rows'    => true,
+				'suppress_filters' => true,
+				'orderby'          => 'date',
+				'order'            => 'DESC',
+				'meta_key'         => 'format', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_value'       => 'playlist', // phpcs:ignore WordPress.DB.SlowDBQuery
+			);
+			$tax  = $query->get( 'tax_query' );
+			if ( is_array( $tax ) && $tax ) {
+				$args['tax_query'] = $tax; // phpcs:ignore WordPress.DB.SlowDBQuery
+			}
+			if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
+				$args['lang'] = pll_current_language();
+			}
+			$ids = on_vignettes_sort_by_rank( array_map( 'intval', ( new WP_Query( $args ) )->posts ) );
+			$query->set( 'meta_query', array() );
+			$query->set( 'tax_query', array() );
+			$query->set( 'post__in', $ids ? $ids : array( 0 ) );
+			$query->set( 'orderby', 'post__in' );
+		} catch ( \Throwable $e ) {
+			unset( $e );
+		}
+		$running = false;
+	}
+);
+
+/**
  * Ressources du dernier numéro.
  *
  * Dans le Loop Grid, « ID de la requête » : vignettes_numero
@@ -222,6 +279,14 @@ add_action(
 				$args['tax_query'] = $tax; // phpcs:ignore WordPress.DB.SlowDBQuery
 			}
 			$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
+			$ids = array_values(
+				array_filter(
+					$ids,
+					function ( $id ) {
+						return 'playlist' !== get_post_meta( $id, 'format', true );
+					}
+				)
+			);
 			$max = 0;
 			foreach ( $ids as $id ) {
 				$max = max( $max, (int) get_post_meta( $id, 'numero', true ) );
