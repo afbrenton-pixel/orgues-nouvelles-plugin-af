@@ -107,9 +107,9 @@ Le type de contenu doit avoir `show_in_nav_menus` = oui (réglage Pods « Affich
 
 Format `playlist` : une vignette avec photo (image à la une), étiquette, titre et une liste de pistes MP3 qu'on édite dans le champ « Pistes » du formulaire (ajout depuis la médiathèque, glisser-déposer pour l'ordre).
 - Grille : « ID de la requête » = `vignettes_playlist` (seulement les vignettes de format playlist ; la zone se choisit dans le Loop Grid). Les vignettes playlist n'apparaissent jamais dans les autres grilles (`vignettes_rang`, `vignettes_centre`, `vignettes_larges`, `vignettes_standard`).
-- Modèle de boucle : « Vignette accueil – playlist (Pods) » (image, étiquette, titre, sous-titre ; la liste de pistes est ajoutée par `assets/js/vignettes-player.js`).
+- Modèle de boucle : « Vignette accueil – playlist (Pods) », copie du modèle standard (image, étiquette, titre, sous-titre ; la liste de pistes est ajoutée par `assets/js/vignettes-player.js`).
 - Lecture : clic sur une piste, sur l'image ou sur le bouton ; lecteur de l'accueil (continue tant que la page reste ouverte), piste en cours surlignée, pistes enchaînées, boutons précédent / suivant.
 - Les 5 premières pistes sont visibles, le reste se déplie (« Voir les N pistes »). Le nombre de pistes visibles se change par le filtre `on_vignettes_playlist_visibles`.
 - Version anglaise : jumelle Polylang de la vignette, avec sa propre liste de pistes.
 - Colonnes fixes (`.on-sticky`) plus hautes que l'écran : `assets/js/vignettes-sticky.js` remonte leur position fixe pour que le bas de la colonne (fin de la playlist) puisse être atteint, puis la colonne reste fixée là.
-- Photo de la playlist : centrée, 42 % de la largeur de la vignette (CSS `.onv-playlist .onv-media`).
+- Photo de la playlist : taille, alignement et place réglés dans Elementor, dans le modèle de boucle « Vignette accueil – playlist (Pods) » (widget image : largeur personnalisée, alignement du contenant). Rien dans le CSS du plugin.
