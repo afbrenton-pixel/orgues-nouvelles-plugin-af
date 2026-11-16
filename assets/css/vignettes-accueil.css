@@ -135,3 +135,6 @@
 .onv-pl li.onv-on { color: var(--e-global-color-e778dc5, #f0502a); font-weight: 700; }
 .onv-playlist:not(.onv-pl-open) .onv-pl .onv-pl-more { display: none; }
 .onv-pl-toggle { -webkit-appearance: none; appearance: none; background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 8px 4px 0 !important; margin: 0; font: inherit; font-size: .8rem; font-weight: 700; color: var(--e-global-color-e778dc5, #f0502a) !important; text-transform: none; letter-spacing: 0; cursor: pointer; text-align: left; }
+/* Playlist : photo réduite (la liste de pistes doit rester visible). */
+.onv-playlist .onv-media { width: 42%; min-width: 90px; }
+.onv-playlist .onv-media img { width: 100%; height: auto; }
