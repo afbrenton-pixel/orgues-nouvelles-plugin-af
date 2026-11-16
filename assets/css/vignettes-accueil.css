@@ -122,3 +122,16 @@
 
 /* Audio avec image : la barre de lecture est visible dès l'affichage (la hauteur de la vignette ne change plus au clic). */
 .onv-has-audio:not(.onv-compactcard) .onv-mini { display: flex; }
+
+/* Vignette « playlist » : liste de pistes sous le texte (construite par vignettes-player.js). */
+.onv-pl { list-style: none; margin: 10px 0 0; padding: 0; width: 100%; }
+.onv-pl li { display: flex; align-items: baseline; gap: 8px; padding: 6px 4px; border-top: 1px solid #cfd4e0; cursor: pointer; font-size: .85rem; line-height: 1.25; }
+.onv-pl li:last-child { border-bottom: 1px solid #cfd4e0; }
+.onv-pl li:hover, .onv-pl li:focus-visible { color: var(--e-global-color-e778dc5, #f0502a); outline: 0; }
+.onv-pl .onv-pl-n { flex: 0 0 1.4em; color: #5b6377; font-weight: 700; font-size: .75rem; }
+.onv-pl .onv-pl-t { flex: 1 1 auto; min-width: 0; }
+.onv-pl .onv-pl-a { display: block; font-size: .75rem; color: #5b6377; }
+.onv-pl .onv-pl-d { flex: 0 0 auto; color: #5b6377; font-size: .75rem; }
+.onv-pl li.onv-on { color: var(--e-global-color-e778dc5, #f0502a); font-weight: 700; }
+.onv-playlist:not(.onv-pl-open) .onv-pl .onv-pl-more { display: none; }
+.onv-pl-toggle { -webkit-appearance: none; appearance: none; background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 8px 4px 0 !important; margin: 0; font: inherit; font-size: .8rem; font-weight: 700; color: var(--e-global-color-e778dc5, #f0502a) !important; text-transform: none; letter-spacing: 0; cursor: pointer; text-align: left; }
