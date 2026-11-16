@@ -71,3 +71,5 @@ background:var(--bg);color:var(--fg);font:16px/1.45 var(--fb);border:1px solid v
 .on-rd .top .tools{display:flex;gap:8px}
 .on-rd:fullscreen{height:100vh;border:0}
 .on-rd:-webkit-full-screen{height:100vh;border:0}
+/* Mobile : empêcher la barre d'outils et le lecteur audio de déborder de l'écran */
+@media (max-width:640px){.on-rd{grid-template-columns:minmax(0,1fr)}.on-rd .top{flex-wrap:wrap;gap:8px 12px}.on-rd .top>div:first-child{min-width:0;flex:1 1 100%}.on-rd .top .tools{flex-wrap:wrap;gap:8px;max-width:100%}.on-rd .zoom{margin-left:0}.on-rd .nav{flex-wrap:wrap;row-gap:6px}}
