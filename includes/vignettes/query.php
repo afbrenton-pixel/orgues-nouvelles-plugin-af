@@ -326,5 +326,12 @@ add_action(
 			array(),
 			(string) filemtime( dirname( __DIR__, 2 ) . '/assets/css/vignettes-accueil.css' )
 		);
+		wp_enqueue_script(
+			'on-vignettes-sticky',
+			plugins_url( 'assets/js/vignettes-sticky.js', dirname( __DIR__, 2 ) . '/orgues-nouvelles-plugin.php' ),
+			array(),
+			(string) filemtime( dirname( __DIR__, 2 ) . '/assets/js/vignettes-sticky.js' ),
+			true
+		);
 	}
 );
