@@ -33,7 +33,6 @@ Fichier d'import : `docs/pods/vignette_accueil-package.json` (Pods > Composants 
 | `afficher_description` | Oui / non | Affiche le sous-titre et l'extrait. Non par défaut : seuls l'étiquette et le titre sont affichés. |
 | `pistes` | Fichier (plusieurs) | Format playlist : les MP3 de la médiathèque, dans l'ordre de lecture (glisser-déposer). Titre, artiste et durée viennent des étiquettes du MP3, sinon du titre du fichier. |
 | `rang` | Nombre | Place voulue dans la grille (1 = en premier). Vide = ordre par date. |
-| `numero` | Nombre | Numéro du magazine (ressources du dernier numéro). |
 
 La photo est l'image à la une de WordPress. Les valeurs internes `_onv_source_id`, `_onv_source_type`, `_onv_locked`, `_onv_autodraft` et `_onv_sans_image` sont gérées par le code, hors Pods.
 
@@ -72,14 +71,12 @@ Dans le Loop Grid, section « Requête », champ « ID de la requête » :
 | `vignettes_rang` | Les vignettes qui ont un rang d'abord (du plus petit au plus grand), puis les autres de la plus récente à la plus ancienne. |
 | `vignettes_larges` | Seulement les vignettes dont `format` vaut `large` (par rang puis date). Une grille par grande vignette : la première avec décalage 0, la suivante avec décalage 1. |
 | `vignettes_standard` | Toutes les autres vignettes (rang puis date). Le nombre de vignettes et le décalage se règlent dans le Loop Grid. |
-| `vignettes_numero` | Seulement les vignettes dont `numero` est le plus élevé de la zone choisie (ressources du dernier numéro). |
 | `vignettes_centre` | Ancienne requête, conservée : grandes vignettes aux places 1 et 6 (filtre `on_vignettes_grandes_places`). |
 
 La zone se choisit dans le Loop Grid (filtre sur la taxonomie `zone_vignette`).
 
 ## Balises dynamiques Elementor
 
-- **Numéro des ressources de l'accueil** (`on-vignettes-numero`) : numéro le plus élevé des vignettes publiées de la zone `gauche-ressources`, avec un texte avant (par défaut « Ressources N° »). Pour le titre de la colonne de gauche.
 - **Lien de la vignette** (`on-vignettes-lien`) : champ `lien`, sinon adresse du contenu d'origine. La balise Pods d'URL renvoyait « Array » sur ce champ.
 
 ## Lecteur audio et vidéo
@@ -109,7 +106,7 @@ Le type de contenu doit avoir `show_in_nav_menus` = oui (réglage Pods « Affich
 ## Vignette playlist
 
 Format `playlist` : une vignette avec photo (image à la une), étiquette, titre et une liste de pistes MP3 qu'on édite dans le champ « Pistes » du formulaire (ajout depuis la médiathèque, glisser-déposer pour l'ordre).
-- Grille : « ID de la requête » = `vignettes_playlist` (seulement les vignettes de format playlist ; la zone se choisit dans le Loop Grid). Les vignettes playlist n'apparaissent jamais dans les autres grilles (`vignettes_rang`, `vignettes_centre`, `vignettes_larges`, `vignettes_standard`, `vignettes_numero`).
+- Grille : « ID de la requête » = `vignettes_playlist` (seulement les vignettes de format playlist ; la zone se choisit dans le Loop Grid). Les vignettes playlist n'apparaissent jamais dans les autres grilles (`vignettes_rang`, `vignettes_centre`, `vignettes_larges`, `vignettes_standard`).
 - Modèle de boucle : « Vignette accueil – playlist (Pods) » (image, étiquette, titre, sous-titre ; la liste de pistes est ajoutée par `assets/js/vignettes-player.js`).
 - Lecture : clic sur une piste, sur l'image ou sur le bouton ; lecteur de l'accueil (continue tant que la page reste ouverte), piste en cours surlignée, pistes enchaînées, boutons précédent / suivant.
 - Les 5 premières pistes sont visibles, le reste se déplie (« Voir les N pistes »). Le nombre de pistes visibles se change par le filtre `on_vignettes_playlist_visibles`.

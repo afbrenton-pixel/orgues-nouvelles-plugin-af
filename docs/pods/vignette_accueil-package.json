@@ -197,26 +197,6 @@
                             "number_html5": "0"
                         },
                         {
-                            "name": "numero",
-                            "label": "Numéro du magazine",
-                            "description": "Sert à retrouver les ressources du dernier numéro.",
-                            "weight": 8,
-                            "type": "number",
-                            "required": "0",
-                            "repeatable": "0",
-                            "repeatable_format": "default",
-                            "enable_conditional_logic": "0",
-                            "rest_pick_response": "array",
-                            "rest_pick_depth": "1",
-                            "number_format_type": "number",
-                            "number_format": "i18n",
-                            "number_decimals": "0",
-                            "number_format_soft": "0",
-                            "number_step": "1",
-                            "number_max_length": "12",
-                            "number_html5": "0"
-                        },
-                        {
                             "name": "pistes",
                             "label": "Pistes",
                             "description": "Format Playlist : fichiers MP3 de la médiathèque, dans l'ordre de lecture (glisser-déposer pour réordonner). Titre, artiste et durée viennent du fichier.",
