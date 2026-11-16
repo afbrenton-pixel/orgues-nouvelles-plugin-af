@@ -26,11 +26,12 @@ Fichier d'import : `docs/pods/vignette_accueil-package.json` (Pods > Composants 
 | --- | --- | --- |
 | `sous_titre` | Texte | Ligne sous le titre (facultatif). |
 | `lien` | Site web | Lien de la vignette. Vide = lien vers le contenu d'origine. |
-| `format` | Choix | `standard` (défaut) ou `large`. |
+| `format` | Choix | `standard` (défaut), `large` ou `playlist`. |
 | `image_cote` | Choix | `gauche` (défaut) ou `droite`, pour les grandes vignettes. |
 | `cadrage` | Choix | `carre`, `4-3` ou `original` (défaut). |
 | `masquer_titre` | Oui / non | Cache le titre (l'étiquette reste affichée). |
 | `afficher_description` | Oui / non | Affiche le sous-titre et l'extrait. Non par défaut : seuls l'étiquette et le titre sont affichés. |
+| `pistes` | Fichier (plusieurs) | Format playlist : les MP3 de la médiathèque, dans l'ordre de lecture (glisser-déposer). Titre, artiste et durée viennent des étiquettes du MP3, sinon du titre du fichier. |
 | `rang` | Nombre | Place voulue dans la grille (1 = en premier). Vide = ordre par date. |
 | `numero` | Nombre | Numéro du magazine (ressources du dernier numéro). |
 
@@ -104,3 +105,12 @@ Le type de contenu doit avoir `show_in_nav_menus` = oui (réglage Pods « Affich
 ## Éléments masqués au choix
 
 `includes/vignettes/affichage.php` ajoute à chaque vignette les classes `onv-sans-titre` (case « Masquer le titre » cochée) et `onv-sans-description` (case « Afficher la description » non cochée). Le CSS cache les widgets des modèles de boucle portant les classes `onv-w-titre` et `onv-w-description`. Ces classes sont à poser (réglage « Classes CSS » du widget) sur le titre et sur le sous-titre / l'extrait du modèle « standard » ; les grandes vignettes n'ont pas `onv-w-description` et gardent leur texte.
+
+## Vignette playlist
+
+Format `playlist` : une vignette avec photo (image à la une), étiquette, titre et une liste de pistes MP3 qu'on édite dans le champ « Pistes » du formulaire (ajout depuis la médiathèque, glisser-déposer pour l'ordre).
+- Grille : « ID de la requête » = `vignettes_playlist` (seulement les vignettes de format playlist ; la zone se choisit dans le Loop Grid). Les vignettes playlist n'apparaissent jamais dans les autres grilles (`vignettes_rang`, `vignettes_centre`, `vignettes_larges`, `vignettes_standard`, `vignettes_numero`).
+- Modèle de boucle : « Vignette accueil – playlist (Pods) » (image, étiquette, titre, sous-titre ; la liste de pistes est ajoutée par `assets/js/vignettes-player.js`).
+- Lecture : clic sur une piste, sur l'image ou sur le bouton ; lecteur de l'accueil (continue tant que la page reste ouverte), piste en cours surlignée, pistes enchaînées, boutons précédent / suivant.
+- Les 5 premières pistes sont visibles, le reste se déplie (« Voir les N pistes »). Le nombre de pistes visibles se change par le filtre `on_vignettes_playlist_visibles`.
+- Version anglaise : jumelle Polylang de la vignette, avec sa propre liste de pistes.
