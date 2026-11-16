@@ -115,4 +115,4 @@ Format `playlist` : une vignette avec photo (image à la une), étiquette, titre
 - Les 5 premières pistes sont visibles, le reste se déplie (« Voir les N pistes »). Le nombre de pistes visibles se change par le filtre `on_vignettes_playlist_visibles`.
 - Version anglaise : jumelle Polylang de la vignette, avec sa propre liste de pistes.
 - Colonnes fixes (`.on-sticky`) plus hautes que l'écran : `assets/js/vignettes-sticky.js` remonte leur position fixe pour que le bas de la colonne (fin de la playlist) puisse être atteint, puis la colonne reste fixée là.
-- Photo de la playlist : 42 % de la largeur de la vignette (CSS `.onv-playlist .onv-media`).
+- Photo de la playlist : centrée, 42 % de la largeur de la vignette (CSS `.onv-playlist .onv-media`).
