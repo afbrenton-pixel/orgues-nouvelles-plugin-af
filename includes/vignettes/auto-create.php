@@ -188,7 +188,7 @@ function on_vignettes_is_shareable( $post ) {
  * Crée ou met à jour les vignettes jumelles d'une vignette de la langue par défaut.
  *
  * - La jumelle garde la même source (le lecteur lit donc le même MP3 ou la même vidéo), le même lien, la même
- *   image, le même numéro ; son étiquette et ses types sont ceux de la langue (ou, à défaut, les mêmes).
+ *   image ; son étiquette et ses types sont ceux de la langue (ou, à défaut, les mêmes).
  * - Elle est créée publiée : pour ne pas l'afficher (vidéo très parlée en français, par exemple), il suffit de la
  *   passer en brouillon ou à la corbeille. Une jumelle modifiée à la main n'est plus touchée.
  * - Si la ressource a une vraie traduction dans la langue, celle-ci a sa propre vignette : pas de jumelle.
@@ -233,7 +233,7 @@ function on_vignettes_sync_twins( $source, $vid ) {
 			pll_set_post_language( $twin, $lang );
 		}
 		on_vignettes_busy( false );
-		foreach ( array( 'sous_titre', 'lien', 'format', 'image_cote', 'cadrage', 'rang', 'numero' ) as $key ) {
+		foreach ( array( 'sous_titre', 'lien', 'format', 'image_cote', 'cadrage', 'rang' ) as $key ) {
 			$val = get_post_meta( $vid, $key, true );
 			if ( '' === $val ) {
 				delete_post_meta( $twin, $key );
@@ -584,15 +584,6 @@ function on_vignettes_upsert( $post ) {
 	update_post_meta( $vid, '_onv_source_type', $post->post_type );
 	update_post_meta( $vid, 'sous_titre', on_vignettes_soustitre_for( $post ) );
 	update_post_meta( $vid, 'lien', esc_url_raw( get_permalink( $post ) ) );
-	if ( 'ressource' === $post->post_type ) {
-		$numero = get_post_meta( $post->ID, 'numero', true );
-		if ( '' !== $numero ) {
-			update_post_meta( $vid, 'numero', (int) $numero );
-		} else {
-			delete_post_meta( $vid, 'numero' ); // numéro effacé dans la ressource : la vignette n'est plus classée dans un numéro.
-		}
-	}
-
 	if ( $image_id ) {
 		set_post_thumbnail( $vid, $image_id );
 	} else {
