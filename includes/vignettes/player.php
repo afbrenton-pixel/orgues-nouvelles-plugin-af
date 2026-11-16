@@ -76,6 +76,7 @@ function on_vignettes_playlist_for( $vignette_id ) {
 		$meta     = wp_get_attachment_metadata( $aid );
 		$meta     = is_array( $meta ) ? $meta : array();
 		$title    = ! empty( $meta['title'] ) ? $meta['title'] : get_the_title( $aid );
+		$title    = preg_replace( '/^\s*\d{1,2}\s*[-.–]\s*/u', '', (string) $title ); // la liste a sa propre numérotation : « 01- Van Soldt » → « Van Soldt ».
 		$audio[]  = esc_url_raw( $url );
 		$tracks[] = array(
 			'title'  => wp_strip_all_tags( (string) $title ),
