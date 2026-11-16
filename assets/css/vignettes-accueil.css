@@ -26,9 +26,6 @@
 @media (min-width: 1025px) {
 	/* Les trois colonnes occupent toute la largeur */
 	.e-con:has(> .onv-col-centre) { justify-content: space-between; }
-
-	/* Pubs : 3 visibles sur ordinateur */
-	.onv-col-pubs .e-loop-item:nth-child(n+4) { display: none; }
 }
 
 /* Newsletter et pubs : même rapport qu'une vignette produit, image entière */
