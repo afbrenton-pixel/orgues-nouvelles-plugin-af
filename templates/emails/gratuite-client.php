@@ -1,6 +1,7 @@
 <?php
 /**
- * Free student subscription: confirmation of the address (HTML).
+ * Free student subscription: e-mail to the person (HTML). One template for the confirmation of the address and
+ * for the decision (acceptance or refusal, copy to the requester): the texts come from the translation functions.
  *
  * @type string $email_heading      Heading
  * @type string $greeting           "Bonjour Prénom," (or its translation)
