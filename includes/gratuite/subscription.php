@@ -24,7 +24,7 @@ function on_gratuite_ensure_account( $email, $first, $last, $lang = 'fr' ) {
     };
     add_filter( 'pre_option_woocommerce_registration_generate_password', $force );
     // The "new account" e-mail is sent here: write it in the language of the request.
-    $switched = function_exists( 'switch_to_locale' ) ? switch_to_locale( 'en' === $lang ? 'en_US' : 'fr_FR' ) : false;
+    $switched = function_exists( 'switch_to_locale' ) ? switch_to_locale( on_gratuite_locale( $lang ) ) : false;
     // The set-password link is built from the "My account" page of the current language, which is French
     // when the request is accepted from the (French) administration: point it to the page of the request.
     $account_page = static function () use ( $lang ) {

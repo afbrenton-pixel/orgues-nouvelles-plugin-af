@@ -7,6 +7,8 @@ if ( ! function_exists( 'apply_filters' ) ) {
     function apply_filters( $tag, $value ) { return $GLOBALS['on_gratuite_test_filters'][ $tag ] ?? $value; }
 }
 
+require_once __DIR__ . '/gratuite-i18n-stubs.php';
+require_once dirname( __DIR__ ) . '/includes/gratuite/i18n.php';
 require_once dirname( __DIR__ ) . '/includes/gratuite/settings.php';
 require_once dirname( __DIR__ ) . '/includes/gratuite/request-rules.php';
 

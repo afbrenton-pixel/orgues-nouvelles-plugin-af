@@ -122,7 +122,7 @@ if ( ! class_exists( 'ON_Gratuite_Email_Confirmation' ) ) {
             return array(
                 'email'              => $this,
                 'email_heading'      => $this->get_heading(),
-                'greeting'           => ( 'en' === $this->lang ? 'Hello ' : 'Bonjour ' ) . $this->object['data']['prenom'] . ',',
+                'greeting'           => on_gratuite_greeting( $this->lang, $this->object['data']['prenom'] ),
                 'email_body'         => $this->on_gratuite_body_text( $plain ),
                 'additional_content' => $this->get_additional_content(),
                 'plain_text'         => $plain,
@@ -347,7 +347,7 @@ if ( ! class_exists( 'ON_Gratuite_Email_Decision' ) ) {
             return array(
                 'email'              => $this,
                 'email_heading'      => $this->get_heading(),
-                'greeting'           => ( 'en' === $this->lang ? 'Hello ' : 'Bonjour ' ) . $this->object['data']['prenom'] . ',',
+                'greeting'           => on_gratuite_greeting( $this->lang, $this->object['data']['prenom'] ),
                 'email_body'         => $this->on_gratuite_body_text( $plain ),
                 'additional_content' => $this->get_additional_content(),
                 'plain_text'         => $plain,
