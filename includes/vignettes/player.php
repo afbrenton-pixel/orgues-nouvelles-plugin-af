@@ -145,6 +145,18 @@ add_action(
 		}
 		$main = dirname( __DIR__, 2 ) . '/orgues-nouvelles-plugin.php';
 		wp_enqueue_script( 'on-vignettes-player', plugins_url( 'assets/js/vignettes-player.js', $main ), array(), (string) filemtime( dirname( __DIR__, 2 ) . '/assets/js/vignettes-player.js' ), true );
-		wp_add_inline_script( 'on-vignettes-player', 'window.ONV_MEDIA=' . wp_json_encode( $map ) . ';', 'before' );
+		// Textes du lecteur : écrits en français, traduits par le système de WordPress (languages/*.po), dans la langue de la page.
+		$texts = array(
+			'play'        => __( 'Lecture', 'orgues-nouvelles' ),
+			'pause'       => __( 'Pause', 'orgues-nouvelles' ),
+			'previous'    => __( 'Morceau précédent', 'orgues-nouvelles' ),
+			'next'        => __( 'Morceau suivant', 'orgues-nouvelles' ),
+			'video'       => __( 'Vidéo', 'orgues-nouvelles' ),
+			'close_video' => __( 'Fermer la vidéo', 'orgues-nouvelles' ),
+			/* translators: %d: number of tracks of the playlist. */
+			'show_all'    => __( 'Voir les %d pistes', 'orgues-nouvelles' ),
+			'show_fewer'  => __( 'Réduire', 'orgues-nouvelles' ),
+		);
+		wp_add_inline_script( 'on-vignettes-player', 'window.ONV_I18N=' . wp_json_encode( $texts ) . ';window.ONV_MEDIA=' . wp_json_encode( $map ) . ';', 'before' );
 	}
 );
