@@ -21,8 +21,8 @@ if ( ! class_exists( 'ON_Gratuite_Email_Confirmation' ) ) {
             $this->customer_email = true;
             $this->title          = 'Gratuité -26 ans : confirmation de la demande';
             $this->description    = 'Envoyé à la personne qui demande l\'abonnement gratuit pour qu\'elle confirme son adresse e-mail (français ou anglais selon la page du formulaire).';
-            $this->template_html  = 'emails/gratuite-confirmation.php';
-            $this->template_plain = 'emails/plain/gratuite-confirmation.php';
+            $this->template_html  = 'emails/gratuite-client.php';
+            $this->template_plain = 'emails/plain/gratuite-client.php';
             $this->template_base  = ORGUES_NOUVELLES_PLUGIN_DIR . 'templates/';
             $this->placeholders   = array( '{first_name}' => '', '{link}' => '', '{days}' => '' );
             parent::__construct();
@@ -221,8 +221,8 @@ if ( ! class_exists( 'ON_Gratuite_Email_Decision' ) ) {
             $this->customer_email = true;
             $this->title          = $title;
             $this->description    = $description;
-            $this->template_html  = 'emails/gratuite-decision.php';
-            $this->template_plain = 'emails/plain/gratuite-decision.php';
+            $this->template_html  = 'emails/gratuite-client.php';
+            $this->template_plain = 'emails/plain/gratuite-client.php';
             $this->template_base  = ORGUES_NOUVELLES_PLUGIN_DIR . 'templates/';
             parent::__construct();
         }

@@ -1,6 +1,7 @@
 <?php
 /**
- * Free student subscription: confirmation of the address (plain text).
+ * Free student subscription: e-mail to the person (plain text). One template for the confirmation of the address
+ * and for the decision (acceptance or refusal, copy to the requester).
  */
 defined( 'ABSPATH' ) || exit;
 

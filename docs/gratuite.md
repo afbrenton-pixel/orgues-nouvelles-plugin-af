@@ -203,7 +203,7 @@ laisser de compte ni de justificatif.
 
 ### E-mails au format du site (étape 2c, décidé le 7 novembre)
 
-Fichiers : `includes/gratuite/emails.php`, `class-emails.php`, `templates/emails/gratuite-*.php` (et `plain/`).
+Fichiers : `includes/gratuite/emails.php`, `class-emails.php`, `templates/emails/gratuite-client.php` (un seul modèle, avec sa version `plain/`, pour la confirmation de l'adresse et pour la décision : les textes viennent des fonctions de traduction) et `gratuite-notification.php` (e-mail à l'équipe).
 Même mécanisme que l'e-mail « Demande de justificatif étudiant » du webmaster : classes d'e-mail WooCommerce,
 donc logo, couleurs et pied de page du site, version texte brute de secours.
 
