@@ -11,13 +11,12 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Locale switched to for a request language. The locales must be installed on the site (Settings > General >
- * Site language): switch_to_locale() refuses a locale that is not installed and the texts then stay in the
- * language of the administrator. The English texts are read by WordPress from
- * languages/orgues-nouvelles-en_GB.mo once the locale is en_GB.
+ * Locale switched to for a request language. English requests use en_US, which every WordPress has (the site
+ * does not necessarily have en_GB installed, and switch_to_locale() refuses a locale that is not installed).
+ * The texts of the plugin do not depend on it: they come from languages/orgues-nouvelles-en_GB.po (see below).
  */
 function on_gratuite_locale( $lang ) {
-    return 'en' === $lang ? 'en_GB' : 'fr_FR';
+    return 'en' === $lang ? 'en_US' : 'fr_FR';
 }
 
 /**
@@ -28,12 +27,29 @@ function on_gratuite_locale( $lang ) {
  * @return mixed
  */
 function on_gratuite_in_lang( $lang, callable $callback ) {
+    $domain   = 'orgues-nouvelles';
     $switched = function_exists( 'switch_to_locale' ) ? switch_to_locale( on_gratuite_locale( $lang ) ) : false;
+    $reload   = false;
+    if ( function_exists( 'load_textdomain' ) ) {
+        // The plugin text domain was loaded at start-up, in the language of the page: drop it and read the
+        // language file of the request explicitly, whatever the current locale is (French is the language of
+        // the source texts: no file).
+        $reload = true;
+        unload_textdomain( $domain );
+        if ( 'en' === $lang ) {
+            load_textdomain( $domain, dirname( __DIR__, 2 ) . '/languages/' . $domain . '-en_GB.mo', function_exists( 'determine_locale' ) ? determine_locale() : null );
+        }
+    }
     try {
         return $callback();
     } finally {
         if ( $switched ) {
             restore_previous_locale();
+        }
+        if ( $reload ) {
+            // Back to the translations of the language of the page.
+            unload_textdomain( $domain );
+            load_plugin_textdomain( $domain, false, dirname( plugin_basename( dirname( __DIR__, 2 ) . '/orgues-nouvelles-plugin.php' ) ) . '/languages/' );
         }
     }
 }
