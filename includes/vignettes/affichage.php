@@ -108,7 +108,7 @@ add_action(
 		}
 		add_meta_box(
 			'onv-objet-source',
-			__( 'Objet source', 'orgues-nouvelles-plugin' ),
+			__( 'Objet source', 'orgues-nouvelles' ),
 			function ( $vignette ) {
 				$source = on_vignettes_attached_post( $vignette->ID );
 				if ( ! $source ) {
@@ -126,14 +126,14 @@ add_action(
 					printf(
 						'<p><a class="button button-primary" href="%s">%s</a></p>',
 						esc_url( get_edit_post_link( $source->ID, 'raw' ) ),
-						esc_html__( 'Modifier l\'objet', 'orgues-nouvelles-plugin' )
+						esc_html__( 'Modifier l\'objet', 'orgues-nouvelles' )
 					);
 				}
 				if ( 'publish' === $source->post_status ) {
 					printf(
 						'<p><a href="%s" target="_blank" rel="noopener">%s</a></p>',
 						esc_url( get_permalink( $source ) ),
-						esc_html__( 'Voir l\'objet sur le site', 'orgues-nouvelles-plugin' )
+						esc_html__( 'Voir l\'objet sur le site', 'orgues-nouvelles' )
 					);
 				}
 			},

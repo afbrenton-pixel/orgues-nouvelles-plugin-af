@@ -1032,3 +1032,50 @@ msgstr "Nothing is created until the request is confirmed by e-mail and accepted
 #: includes/gratuite/subscription-admin.php:70
 msgid "Action non autorisée."
 msgstr "Action not allowed."
+
+#. Vignettes accueil (includes/vignettes)
+
+#: includes/vignettes/affichage.php:111
+msgid "Objet source"
+msgstr "Source object"
+
+#: includes/vignettes/affichage.php:129
+msgid "Modifier l'objet"
+msgstr "Edit the object"
+
+#: includes/vignettes/affichage.php:136
+msgid "Voir l'objet sur le site"
+msgstr "View the object on the site"
+
+#: includes/vignettes/player.php:150
+msgid "Lecture"
+msgstr "Play"
+
+#: includes/vignettes/player.php:151
+msgid "Pause"
+msgstr "Pause"
+
+#: includes/vignettes/player.php:152
+msgid "Morceau précédent"
+msgstr "Previous track"
+
+#: includes/vignettes/player.php:153
+msgid "Morceau suivant"
+msgstr "Next track"
+
+#: includes/vignettes/player.php:154
+msgid "Vidéo"
+msgstr "Video"
+
+#: includes/vignettes/player.php:155
+msgid "Fermer la vidéo"
+msgstr "Close the video"
+
+#: includes/vignettes/player.php:157
+#, php-format
+msgid "Voir les %d pistes"
+msgstr "Show all %d tracks"
+
+#: includes/vignettes/player.php:158
+msgid "Réduire"
+msgstr "Show fewer"

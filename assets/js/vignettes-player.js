@@ -7,7 +7,8 @@ var PLAY='<svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true"
 var MPLAY='<svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>';
 var MPAUSE='<svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M6 4.5h4.2v15H6zM13.8 4.5H18v15h-4.2z" fill="currentColor"/></svg>';
 function q(el,s){return el.querySelector(s);}
-function setIcon(card,playing){var b=q(card,'.onv-mbtn');if(b){b.innerHTML=playing?MPAUSE:MPLAY;b.setAttribute('aria-label',playing?'Pause':'Lecture');}card.classList.toggle('onv-playing',playing);}
+var I=window.ONV_I18N||{};function t(k,d){return I[k]||d;}function ta(k,d){return t(k,d).replace(/"/g,'&quot;');}
+function setIcon(card,playing){var b=q(card,'.onv-mbtn');if(b){b.innerHTML=playing?MPAUSE:MPLAY;b.setAttribute('aria-label',playing?t('pause','Pause'):t('play','Lecture'));}card.classList.toggle('onv-playing',playing);}
 function fill(card,p){var f=q(card,'.onv-fill');if(f)f.style.width=Math.max(0,Math.min(100,p*100))+'%';}
 function stopAll(){
   if(!cur)return;var c=cur;cur=null;
@@ -42,9 +43,9 @@ function startVideo(card){
   var m=q(card,'.onv-media');if(!m)return;
   var a=q(m,':scope > a');if(a)a.style.display='none';
   var w=document.createElement('div');w.className='onv-vwrap';
-  var f=document.createElement('iframe');f.src=u;f.setAttribute('allow','autoplay; fullscreen; picture-in-picture');f.setAttribute('allowfullscreen','');f.setAttribute('title','Vidéo');
+  var f=document.createElement('iframe');f.src=u;f.setAttribute('allow','autoplay; fullscreen; picture-in-picture');f.setAttribute('allowfullscreen','');f.setAttribute('title',t('video','Vidéo'));
   w.appendChild(f);
-  var x=document.createElement('button');x.type='button';x.className='onv-vclose';x.setAttribute('aria-label','Fermer la vidéo');x.setAttribute('title','Fermer la vidéo');x.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="4.6" stroke-linecap="butt" fill="none"/></svg>';w.appendChild(x);m.appendChild(w);
+  var x=document.createElement('button');x.type='button';x.className='onv-vclose';x.setAttribute('aria-label',t('close_video','Fermer la vidéo'));x.setAttribute('title',t('close_video','Fermer la vidéo'));x.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="4.6" stroke-linecap="butt" fill="none"/></svg>';w.appendChild(x);m.appendChild(w);
   card.classList.add('onv-video-on','onv-playing');
   cur={el:card,type:'video'};
   setTimeout(function(){try{card.scrollIntoView({behavior:'smooth',block:'nearest'});}catch(e){}},50);
@@ -59,7 +60,6 @@ var PICTO={
  textes:'<svg viewBox="0 0 138 138" width="100%" height="100%" aria-hidden="true" focusable="false"><circle cx="69" cy="69" r="63.3" fill="none" stroke="currentColor" stroke-width="3"/><path d="M44 46h50M44 63h50M44 80h50M44 97h30" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>'
 };
 function buildPlaylist(it,info){
-  var en=/^en/i.test(document.documentElement.lang||'');
   var n=info.tracks.length,vis=info.visibles||5;
   it.classList.add('onv-playlist');
   var ol=document.createElement('ol');ol.className='onv-pl';
@@ -76,8 +76,8 @@ function buildPlaylist(it,info){
   host.appendChild(ol);
   if(n>vis){
     var tg=document.createElement('button');tg.type='button';tg.className='onv-pl-toggle';
-    tg.setAttribute('data-all',en?'Show all '+n+' tracks':'Voir les '+n+' pistes');
-    tg.setAttribute('data-less',en?'Show fewer':'Réduire');
+    tg.setAttribute('data-all',t('show_all','Voir les %d pistes').replace('%d',n));
+    tg.setAttribute('data-less',t('show_fewer','Réduire'));
     tg.textContent=tg.getAttribute('data-all');tg.setAttribute('aria-expanded','false');
     host.appendChild(tg);
   }
@@ -118,7 +118,7 @@ function init(){
     if(c.classList.contains('onv-has-audio')){
       var tag=q(c,'.onv-tagw');
       var mini=document.createElement('span');mini.className='onv-mini';
-      mini.innerHTML='<button type="button" class="onv-mbtn" aria-label="Pause"></button><span class="onv-bar"><span class="onv-fill"></span></span><span class="onv-count"></span><button type="button" class="onv-nbtn onv-prev" aria-label="Morceau précédent"><svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M6 5h2.4v14H6zM20 5v14L9.5 12z" fill="currentColor"/></svg></button><button type="button" class="onv-nbtn onv-next" aria-label="Morceau suivant"><svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M15.6 5H18v14h-2.4zM4 5v14l10.5-7z" fill="currentColor"/></svg></button>';
+      mini.innerHTML='<button type="button" class="onv-mbtn" aria-label="'+ta('pause','Pause')+'"></button><span class="onv-bar"><span class="onv-fill"></span></span><span class="onv-count"></span><button type="button" class="onv-nbtn onv-prev" aria-label="'+ta('previous','Morceau précédent')+'"><svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M6 5h2.4v14H6zM20 5v14L9.5 12z" fill="currentColor"/></svg></button><button type="button" class="onv-nbtn onv-next" aria-label="'+ta('next','Morceau suivant')+'"><svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M15.6 5H18v14h-2.4zM4 5v14l10.5-7z" fill="currentColor"/></svg></button>';
       if(c.classList.contains('onv-barfull')){c.appendChild(mini);setIcon(c,false);}else if(tag&&tag.parentNode){tag.parentNode.insertBefore(mini,tag.nextSibling);setIcon(c,false);}else{var b=q(c,'.onv-body');if(b){b.insertBefore(mini,b.firstChild);setIcon(c,false);}}
     }
   }
