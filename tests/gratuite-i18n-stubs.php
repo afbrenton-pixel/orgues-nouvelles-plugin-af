@@ -35,11 +35,14 @@ if ( ! function_exists( 'restore_previous_locale' ) ) {
         return true;
     }
 }
+if ( ! function_exists( 'determine_locale' ) ) {
+    function determine_locale() { return end( $GLOBALS['on_gratuite_test_locale_stack'] ) ?: 'fr_FR'; }
+}
 if ( ! function_exists( 'unload_textdomain' ) ) {
     function unload_textdomain( $domain ) { $GLOBALS['on_gratuite_test_loaded'] = null; return true; }
 }
 if ( ! function_exists( 'load_textdomain' ) ) {
-    function load_textdomain( $domain, $file ) {
+    function load_textdomain( $domain, $file, $locale = null ) {
         $GLOBALS['on_gratuite_test_mo'][ $file ] = on_gratuite_test_read_mo( $file );
         $GLOBALS['on_gratuite_test_loaded']      = $file;
         return true;
