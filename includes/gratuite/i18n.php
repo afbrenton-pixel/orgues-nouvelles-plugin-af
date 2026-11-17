@@ -11,12 +11,15 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Locale switched to for a request language. English requests use en_US, which every WordPress has (the site
- * does not necessarily have en_GB installed, and switch_to_locale() refuses a locale that is not installed).
- * The texts of the plugin do not depend on it: they come from languages/orgues-nouvelles-en_GB.po (see below).
+ * Locale switched to for a request language. English requests use en_GB, the locale declared by Polylang
+ * (installed on the site: switch_to_locale() refuses a locale that is not installed, which then leaves the
+ * texts in the language of the administrator).
+ * The texts of the plugin do NOT depend on this switch: tested on 17 November 2026, WordPress does not
+ * read languages/orgues-nouvelles-en_GB.mo by itself after switch_to_locale( 'en_GB' ) (the e-mails stayed in
+ * French), so on_gratuite_in_lang() loads the file explicitly (see below).
  */
 function on_gratuite_locale( $lang ) {
-    return 'en' === $lang ? 'en_US' : 'fr_FR';
+    return 'en' === $lang ? 'en_GB' : 'fr_FR';
 }
 
 /**
