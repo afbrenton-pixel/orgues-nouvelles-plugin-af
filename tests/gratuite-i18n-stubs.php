@@ -26,33 +26,22 @@ function on_gratuite_test_read_mo( $file ) {
 if ( ! function_exists( 'switch_to_locale' ) ) {
     function switch_to_locale( $locale ) {
         $GLOBALS['on_gratuite_test_locale_stack'][] = $locale;
+        // Like WordPress: the translations of the plugin of the new locale are read from its .mo file.
+        $file = dirname( __DIR__ ) . '/languages/orgues-nouvelles-' . $locale . '.mo';
+        $GLOBALS['on_gratuite_test_loaded'] = null;
+        if ( is_readable( $file ) ) {
+            $GLOBALS['on_gratuite_test_mo'][ $file ] = on_gratuite_test_read_mo( $file );
+            $GLOBALS['on_gratuite_test_loaded']      = $file;
+        }
         return true;
     }
 }
 if ( ! function_exists( 'restore_previous_locale' ) ) {
     function restore_previous_locale() {
         array_pop( $GLOBALS['on_gratuite_test_locale_stack'] );
+        $GLOBALS['on_gratuite_test_loaded'] = null; // the tests start from French (the source language)
         return true;
     }
-}
-if ( ! function_exists( 'determine_locale' ) ) {
-    function determine_locale() { return end( $GLOBALS['on_gratuite_test_locale_stack'] ) ?: 'fr_FR'; }
-}
-if ( ! function_exists( 'unload_textdomain' ) ) {
-    function unload_textdomain( $domain ) { $GLOBALS['on_gratuite_test_loaded'] = null; return true; }
-}
-if ( ! function_exists( 'load_textdomain' ) ) {
-    function load_textdomain( $domain, $file, $locale = null ) {
-        $GLOBALS['on_gratuite_test_mo'][ $file ] = on_gratuite_test_read_mo( $file );
-        $GLOBALS['on_gratuite_test_loaded']      = $file;
-        return true;
-    }
-}
-if ( ! function_exists( 'load_plugin_textdomain' ) ) {
-    function load_plugin_textdomain() { $GLOBALS['on_gratuite_test_loaded'] = null; return true; }
-}
-if ( ! function_exists( 'plugin_basename' ) ) {
-    function plugin_basename( $file ) { return basename( dirname( $file ) ) . '/' . basename( $file ); }
 }
 if ( ! function_exists( 'wp_date' ) ) {
     function wp_date( $format, $timestamp = null ) {
