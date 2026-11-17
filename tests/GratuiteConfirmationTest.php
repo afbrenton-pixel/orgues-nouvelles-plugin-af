@@ -7,6 +7,8 @@ if ( ! function_exists( 'add_action' ) ) {
     function add_action() {}
 }
 
+require_once __DIR__ . '/gratuite-i18n-stubs.php';
+require_once dirname( __DIR__ ) . '/includes/gratuite/i18n.php';
 require_once dirname( __DIR__ ) . '/includes/gratuite/confirmation.php';
 
 class GratuiteConfirmationTest extends TestCase {

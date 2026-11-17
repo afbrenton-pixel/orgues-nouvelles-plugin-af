@@ -725,3 +725,357 @@ msgstr "Show all %d tracks"
 #: includes/vignettes/player.php:158
 msgid "Réduire"
 msgstr "Show fewer"
+
+#. Free student subscription (includes/gratuite)
+
+#: includes/gratuite/authorization.php:110
+msgid "anglais"
+msgstr "English"
+
+#: includes/gratuite/authorization.php:110
+msgid "français"
+msgstr "French"
+
+#: includes/gratuite/class-form-action.php:18
+msgid "Gratuité -26 ans (autorisation)"
+msgstr "Free for under 26 (authorisation)"
+
+#: includes/gratuite/class-form-action.php:23
+msgid "Gratuité -26 ans"
+msgstr "Free for under 26"
+
+#: includes/gratuite/class-form-action.php:28
+msgid "Identifiants des champs : prenom, nom, email, date_naissance, justificatif (envoi de fichier, 1 fichier), newsletter (facultatif), consentement (acceptation obligatoire), langue (champ caché : fr ou en). Choisir uniquement cette action (et Redirection). Voir docs/gratuite.md."
+msgstr "Field IDs: prenom, nom, email, date_naissance, justificatif (file upload, 1 file), newsletter (optional), consentement (acceptance, required), langue (hidden field: fr or en). Choose only this action (and Redirect). See docs/gratuite.md."
+
+#: includes/gratuite/confirmation.php:58
+msgid "Merci, votre demande est confirmée"
+msgstr "Thank you, your request is confirmed"
+
+#: includes/gratuite/confirmation.php:58
+msgid "Nous allons examiner votre justificatif et vous répondrons par e-mail."
+msgstr "We will check your proof document and reply by e-mail."
+
+#: includes/gratuite/confirmation.php:60
+msgid "Demande déjà confirmée"
+msgstr "Request already confirmed"
+
+#: includes/gratuite/confirmation.php:60
+msgid "Votre demande a déjà été confirmée : nous vous répondrons par e-mail."
+msgstr "Your request has already been confirmed: we will reply by e-mail."
+
+#: includes/gratuite/confirmation.php:62
+msgid "Lien expiré"
+msgstr "Link expired"
+
+#: includes/gratuite/confirmation.php:62
+msgid "Ce lien n'est plus valable. Merci de refaire votre demande depuis la page du formulaire."
+msgstr "This link is no longer valid. Please submit your request again from the form page."
+
+#: includes/gratuite/confirmation.php:64
+msgid "Lien non valable"
+msgstr "Invalid link"
+
+#: includes/gratuite/confirmation.php:64
+msgid "Ce lien n'est pas valable. Merci de refaire votre demande depuis la page du formulaire."
+msgstr "This link is not valid. Please submit your request again from the form page."
+
+#: includes/gratuite/confirmation.php:77
+msgid "Une demande d'abonnement numérique gratuit pour les jeunes jusqu'à 26 ans a été faite pour vous par un utilisateur de notre site."
+msgstr "A request for the free digital subscription for people aged 26 or under was made for you by a user of our website."
+
+#: includes/gratuite/confirmation.php:78
+msgid "Nous avons bien reçu votre demande d'abonnement numérique gratuit pour les jeunes jusqu'à 26 ans."
+msgstr "We received your request for the free digital subscription for people aged 26 or under."
+
+#: includes/gratuite/confirmation.php:80
+msgid "Orgues Nouvelles : merci de confirmer votre demande"
+msgstr "Orgues Nouvelles: please confirm your request"
+
+#: includes/gratuite/confirmation.php:81
+msgid "Confirmez votre demande"
+msgstr "Please confirm your request"
+
+#: includes/gratuite/confirmation.php:82
+msgid "Pour confirmer que cette adresse e-mail est bien la vôtre, cliquez sur le lien ci-dessous :"
+msgstr "To confirm that this e-mail address is yours, please click the link below:"
+
+#: includes/gratuite/confirmation.php:84
+msgid "Le lien est valable {days} jours. Sans confirmation, votre demande et le document envoyé sont supprimés."
+msgstr "The link is valid for {days} days. Without confirmation, your request and the document you sent are deleted."
+
+#: includes/gratuite/confirmation.php:85
+msgid "Une fois confirmée, nous examinons votre justificatif et nous vous répondons par e-mail."
+msgstr "Once confirmed, we check your document and reply by e-mail."
+
+#: includes/gratuite/confirmation.php:86
+msgid "Si vous n'êtes pas à l'origine de cette demande, ignorez simplement ce message."
+msgstr "If you did not make this request, simply ignore this message."
+
+#: includes/gratuite/confirmation.php:95
+#, php-format
+msgid "Bonjour %s,"
+msgstr "Hello %s,"
+
+#: includes/gratuite/decision-rules.php:25
+msgid "Orgues Nouvelles : votre abonnement gratuit est accepté"
+msgstr "Orgues Nouvelles: your free subscription is accepted"
+
+#: includes/gratuite/decision-rules.php:26
+msgid "Votre demande est acceptée"
+msgstr "Your request is accepted"
+
+#: includes/gratuite/decision-rules.php:27
+msgid "Bonne nouvelle : votre demande d'abonnement numérique gratuit pour les jeunes jusqu'à 26 ans est acceptée."
+msgstr "Good news: your request for the free digital subscription for people aged 26 or under is accepted."
+
+#: includes/gratuite/decision-rules.php:28
+msgid "Votre abonnement est actif jusqu'au {end_date}. Vous pouvez lire les numéros en ligne depuis votre compte :"
+msgstr "Your subscription is active until {end_date}. You can read the issues online from your account:"
+
+#: includes/gratuite/decision-rules.php:30
+msgid "Pour conserver la gratuité l'année suivante, il suffira de refaire une demande avec un nouveau justificatif."
+msgstr "To keep it free the following year, simply send a new request with a new proof."
+
+#: includes/gratuite/decision-rules.php:31
+msgid "Le document que vous avez envoyé a été supprimé de notre site."
+msgstr "The document you sent has been deleted from our site."
+
+#: includes/gratuite/decision-rules.php:32
+msgid "Bonne lecture !"
+msgstr "Happy reading!"
+
+#: includes/gratuite/decision-rules.php:36
+msgid "Orgues Nouvelles : votre demande d'abonnement gratuit"
+msgstr "Orgues Nouvelles: your free subscription request"
+
+#: includes/gratuite/decision-rules.php:37
+msgid "Votre demande n'a pas pu être acceptée"
+msgstr "We could not accept your request"
+
+#: includes/gratuite/decision-rules.php:38
+msgid "Nous n'avons pas pu accepter votre demande d'abonnement numérique gratuit pour les jeunes jusqu'à 26 ans."
+msgstr "We were unable to accept your request for the free digital subscription for people aged 26 or under."
+
+#: includes/gratuite/decision-rules.php:39
+msgid "Le document que vous avez envoyé a été supprimé de notre site. Vous pouvez déposer une nouvelle demande dès maintenant, avec un justificatif valide :"
+msgstr "The document you sent has been deleted from our site. You can send a new request right away, with a valid proof:"
+
+#: includes/gratuite/decision-rules.php:41
+msgid "Pour toute question, répondez simplement à ce message ou écrivez à {contact}."
+msgstr "If you have any question, just reply to this message or write to {contact}."
+
+#: includes/gratuite/decision-rules.php:50 includes/gratuite/decision-rules.php:94
+msgid "Motif : "
+msgstr "Reason: "
+
+#: includes/gratuite/decision-rules.php:76
+msgid "Orgues Nouvelles : abonnement gratuit accepté pour {name}"
+msgstr "Orgues Nouvelles: free subscription accepted for {name}"
+
+#: includes/gratuite/decision-rules.php:77
+msgid "La demande est acceptée"
+msgstr "The request is accepted"
+
+#: includes/gratuite/decision-rules.php:78
+msgid "Pour information : la demande d'abonnement numérique gratuit que vous avez faite pour {name} ({email}) est acceptée."
+msgstr "For your information: the request for the free digital subscription that you made for {name} ({email}) is accepted."
+
+#: includes/gratuite/decision-rules.php:79
+msgid "L'abonnement est actif jusqu'au {end_date}."
+msgstr "The subscription is active until {end_date}."
+
+#: includes/gratuite/decision-rules.php:83
+msgid "Orgues Nouvelles : demande d'abonnement gratuit pour {name}"
+msgstr "Orgues Nouvelles: free subscription request for {name}"
+
+#: includes/gratuite/decision-rules.php:84
+msgid "La demande n'a pas pu être acceptée"
+msgstr "The request could not be accepted"
+
+#: includes/gratuite/decision-rules.php:85
+msgid "Pour information : la demande d'abonnement numérique gratuit que vous avez faite pour {name} ({email}) n'a pas pu être acceptée."
+msgstr "For your information: the request for the free digital subscription that you made for {name} ({email}) could not be accepted."
+
+#: includes/gratuite/decision.php:40
+msgid "j F Y"
+msgstr "F j, Y"
+
+#: includes/gratuite/private-proof-storage.php:127 includes/gratuite/private-proof-storage.php:150
+msgid "Le justificatif est introuvable."
+msgstr "The proof document cannot be found."
+
+#: includes/gratuite/private-proof-storage.php:130
+msgid "Format de justificatif non accepté (PDF, JPG ou PNG)."
+msgstr "Proof format not accepted (PDF, JPG or PNG)."
+
+#: includes/gratuite/private-proof-storage.php:134
+msgid "Le justificatif est vide ou trop volumineux."
+msgstr "The proof document is empty or too large."
+
+#: includes/gratuite/private-proof-storage.php:142
+msgid "Le contenu du fichier ne correspond pas à son format."
+msgstr "The content of the file does not match its format."
+
+#: includes/gratuite/private-proof-storage.php:146 includes/gratuite/private-proof-storage.php:155
+msgid "Le justificatif ne peut pas être enregistré pour le moment."
+msgstr "The proof document cannot be saved at the moment."
+
+#: includes/gratuite/private-proof-storage.php:214 includes/gratuite/private-proof-storage.php:240
+msgid "Accès refusé."
+msgstr "Access denied."
+
+#: includes/gratuite/private-proof-storage.php:219
+msgid "Aucun justificatif lisible pour cette demande."
+msgstr "No readable proof document for this request."
+
+#: includes/gratuite/private-proof-storage.php:251
+msgid "Justificatif"
+msgstr "Proof document"
+
+#: includes/gratuite/private-proof-storage.php:263
+#, php-format
+msgid "Justificatif supprimé le %s."
+msgstr "Proof document deleted on %s."
+
+#: includes/gratuite/private-proof-storage.php:264
+msgid "Aucun justificatif conservé."
+msgstr "No proof document kept."
+
+#: includes/gratuite/private-proof-storage.php:270
+msgid "Voir le justificatif"
+msgstr "View the proof document"
+
+#: includes/gratuite/private-proof-storage.php:272
+#, php-format
+msgid "Suppression automatique au plus tard le %s."
+msgstr "Automatic deletion at the latest on %s."
+
+#: includes/gratuite/private-proof-storage.php:274
+msgid "Supprimer maintenant"
+msgstr "Delete now"
+
+#: includes/gratuite/request-rules.php:18
+msgid "Date de naissance non valide."
+msgstr "Invalid date of birth."
+
+#: includes/gratuite/request-rules.php:21
+#, php-format
+msgid "Cette offre est réservée aux jeunes jusqu'à %1$d ans (avant leur %2$de anniversaire)."
+msgstr "This offer is for people aged %1$d or under (before their %2$dth birthday)."
+
+#: includes/gratuite/request-rules.php:24
+#, php-format
+msgid "Cette offre n'est pas encore ouverte : les demandes ouvriront le %s."
+msgstr "This offer is not open yet: requests will open on %s."
+
+#: includes/gratuite/request-rules.php:27
+#, php-format
+msgid "Cette offre est terminée : les demandes étaient ouvertes jusqu'au %s."
+msgstr "This offer has ended: requests were open until %s."
+
+#: includes/gratuite/request-rules.php:29
+msgid "Un compte existe déjà avec cette adresse. Connectez-vous d'abord à votre compte, puis refaites votre demande depuis cette page."
+msgstr "An account already exists with this address. Please log in to your account first, then submit your request again from this page."
+
+#: includes/gratuite/request-rules.php:32
+#, php-format
+msgid "Vous êtes connecté(e) : la demande se fait avec l'adresse de votre compte (%s). Pour demander pour une autre personne, cochez la case prévue."
+msgstr "You are logged in: the request is made with the address of your account (%s). To apply for someone else, tick the box provided."
+
+#: includes/gratuite/request-rules.php:34
+msgid "Pour faire une demande pour une autre personne, connectez-vous d'abord à votre compte."
+msgstr "To apply for another person, please log in to your account first."
+
+#: includes/gratuite/request-rules.php:36
+msgid "Cette adresse est celle de votre compte. Décochez la case « pour une autre personne », ou indiquez l'adresse de la personne concernée."
+msgstr "This is the address of your account. Untick the \"for another person\" box, or enter the address of the person concerned."
+
+#: includes/gratuite/request-rules.php:38
+msgid "Une demande est déjà en cours d'examen pour cette adresse."
+msgstr "A request is already being reviewed for this address."
+
+#: includes/gratuite/request-rules.php:41
+#, php-format
+msgid "Un abonnement gratuit a déjà été obtenu avec cette adresse au titre de cette offre. Le renouvellement en ligne n'est pas encore disponible ; il sera ouvert %1$d jours avant la date d'expiration de l'abonnement. Pour toute question sur un abonnement, écrivez-nous à %2$s."
+msgstr "A free subscription has already been obtained with this address under this offer. Online renewal is not available yet; it will open %1$d days before the subscription expires. If you have any question about a subscription, please write to us at %2$s."
+
+#: includes/gratuite/request-rules.php:43
+msgid "Veuillez joindre un justificatif."
+msgstr "Please attach a proof document."
+
+#: includes/gratuite/request-rules.php:45
+msgid "Justificatif non accepté : PDF, JPG ou PNG, 5 Mo au maximum."
+msgstr "Proof not accepted: PDF, JPG or PNG, 5 MB at most."
+
+#: includes/gratuite/request-rules.php:47
+msgid "Trop de demandes depuis cette connexion. Réessayez plus tard."
+msgstr "Too many requests from this connection. Please try again later."
+
+#: includes/gratuite/request-rules.php:49
+msgid "Votre demande n'a pas pu être enregistrée. Réessayez plus tard ou écrivez-nous."
+msgstr "Your request could not be saved. Please try again later or write to us."
+
+#: includes/gratuite/request-rules.php:106
+msgid "d/m/Y"
+msgstr "F j, Y"
+
+#: includes/gratuite/subscription-admin.php:15
+msgid "Compte et abonnement"
+msgstr "Account and subscription"
+
+#: includes/gratuite/subscription-admin.php:26
+msgid "Compte :"
+msgstr "Account:"
+
+#: includes/gratuite/subscription-admin.php:30
+msgid "Abonnement :"
+msgstr "Subscription:"
+
+#: includes/gratuite/subscription-admin.php:34
+msgid "Commande :"
+msgstr "Order:"
+
+#: includes/gratuite/subscription-admin.php:38
+msgid "À vérifier : cette personne a peut-être déjà un compte ou une demande :"
+msgstr "To check: this person may already have an account or a request:"
+
+#: includes/gratuite/subscription-admin.php:46
+msgid "Accepter la demande"
+msgstr "Accept the request"
+
+#: includes/gratuite/subscription-admin.php:47
+msgid "Crée le compte si besoin, active l'abonnement pour un an, supprime le justificatif et prévient la personne."
+msgstr "Creates the account if needed, activates the subscription for one year, deletes the proof document and informs the person."
+
+#: includes/gratuite/subscription-admin.php:48
+msgid "Motif du refus (facultatif, transmis à la personne)"
+msgstr "Reason for refusal (optional, sent to the person)"
+
+#: includes/gratuite/subscription-admin.php:52
+msgid "Refuser la demande"
+msgstr "Refuse the request"
+
+#: includes/gratuite/subscription-admin.php:53
+msgid "Supprime le justificatif et prévient la personne, qui pourra redéposer une demande tout de suite."
+msgstr "Deletes the proof document and informs the person, who can send a new request right away."
+
+#: includes/gratuite/subscription-admin.php:56
+msgid "Demande acceptée"
+msgstr "Request accepted"
+
+#: includes/gratuite/subscription-admin.php:56
+msgid "Demande refusée"
+msgstr "Request refused"
+
+#: includes/gratuite/subscription-admin.php:59
+msgid "Motif :"
+msgstr "Reason:"
+
+#: includes/gratuite/subscription-admin.php:62
+msgid "Rien n'est créé tant que la demande n'est pas confirmée par e-mail et acceptée."
+msgstr "Nothing is created until the request is confirmed by e-mail and accepted."
+
+#: includes/gratuite/subscription-admin.php:70
+msgid "Action non autorisée."
+msgstr "Action not allowed."

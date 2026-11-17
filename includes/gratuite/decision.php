@@ -35,12 +35,10 @@ function on_gratuite_account_url( $lang ) {
 
 /** A date written in the language of the request (month names included). */
 function on_gratuite_format_date( $timestamp, $lang ) {
-    $switched = function_exists( 'switch_to_locale' ) ? switch_to_locale( 'en' === $lang ? 'en_US' : 'fr_FR' ) : false;
-    $text     = wp_date( 'en' === $lang ? 'F j, Y' : 'j F Y', $timestamp );
-    if ( $switched ) {
-        restore_previous_locale();
-    }
-    return $text;
+    return on_gratuite_in_lang( $lang, static function () use ( $timestamp ) {
+        /* translators: date format (PHP date() syntax): 9 novembre 2026 in French, November 9, 2026 in English. */
+        return wp_date( __( 'j F Y', 'orgues-nouvelles' ), $timestamp );
+    } );
 }
 
 /** Send the acceptance or refusal e-mail. @return bool */

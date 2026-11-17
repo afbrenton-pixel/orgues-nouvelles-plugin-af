@@ -7,65 +7,49 @@
  */
 defined( 'ABSPATH' ) || exit;
 
-/** Messages shown to the visitor, in French and English. */
+/**
+ * Messages shown to the visitor, in the language of the request.
+ * Written in French; the English text is in languages/orgues-nouvelles-en_GB.po.
+ */
 function on_gratuite_message( $key, $lang = 'fr', $limit = 0, $extra = '' ) {
-    $en = ( 'en' === $lang );
-    $messages = array(
-        'bad_dob'     => array( 'Date de naissance non valide.', 'Invalid date of birth.' ),
-        'too_old'     => array(
-            sprintf( 'Cette offre est réservée aux jeunes jusqu\'à %d ans (avant leur %de anniversaire).', $limit - 1, $limit ),
-            sprintf( 'This offer is for people aged %d or under (before their %dth birthday).', $limit - 1, $limit ),
-        ),
-        'promo_not_yet' => array(
-            sprintf( 'Cette offre n\'est pas encore ouverte : les demandes ouvriront le %s.', $extra ),
-            sprintf( 'This offer is not open yet: requests will open on %s.', $extra ),
-        ),
-        'promo_closed' => array(
-            sprintf( 'Cette offre est terminée : les demandes étaient ouvertes jusqu\'au %s.', $extra ),
-            sprintf( 'This offer has ended: requests were open until %s.', $extra ),
-        ),
-        'login_first' => array(
-            'Un compte existe déjà avec cette adresse. Connectez-vous d\'abord à votre compte, puis refaites votre demande depuis cette page.',
-            'An account already exists with this address. Please log in to your account first, then submit your request again from this page.',
-        ),
-        'email_mismatch' => array(
-            sprintf( 'Vous êtes connecté(e) : la demande se fait avec l\'adresse de votre compte (%s). Pour demander pour une autre personne, cochez la case prévue.', $extra ),
-            sprintf( 'You are logged in: the request is made with the address of your account (%s). To apply for someone else, tick the box provided.', $extra ),
-        ),
-        'login_for_other' => array(
-            'Pour faire une demande pour une autre personne, connectez-vous d\'abord à votre compte.',
-            'To apply for another person, please log in to your account first.',
-        ),
-        'same_email'  => array(
-            'Cette adresse est celle de votre compte. Décochez la case « pour une autre personne », ou indiquez l\'adresse de la personne concernée.',
-            'This is the address of your account. Untick the "for another person" box, or enter the address of the person concerned.',
-        ),
-        'pending'     => array(
-            'Une demande est déjà en cours d\'examen pour cette adresse.',
-            'A request is already being reviewed for this address.',
-        ),
-        'renewal_unavailable' => array(
-            sprintf( 'Un abonnement gratuit a déjà été obtenu avec cette adresse au titre de cette offre. Le renouvellement en ligne n\'est pas encore disponible ; il sera ouvert %d jours avant la date d\'expiration de l\'abonnement. Pour toute question sur un abonnement, écrivez-nous à %s.', $limit, $extra ),
-            sprintf( 'A free subscription has already been obtained with this address under this offer. Online renewal is not available yet; it will open %d days before the subscription expires. If you have any question about a subscription, please write to us at %s.', $limit, $extra ),
-        ),
-        'no_proof'    => array( 'Veuillez joindre un justificatif.', 'Please attach a proof document.' ),
-        'bad_proof'   => array(
-            'Justificatif non accepté : PDF, JPG ou PNG, 5 Mo au maximum.',
-            'Proof not accepted: PDF, JPG or PNG, 5 MB at most.',
-        ),
-        'rate_limit'  => array(
-            'Trop de demandes depuis cette connexion. Réessayez plus tard.',
-            'Too many requests from this connection. Please try again later.',
-        ),
-        'technical'   => array(
-            'Votre demande n\'a pas pu être enregistrée. Réessayez plus tard ou écrivez-nous.',
-            'Your request could not be saved. Please try again later or write to us.',
-        ),
-    );
-    if ( ! isset( $messages[ $key ] ) ) {
+    return on_gratuite_in_lang( $lang, static function () use ( $key, $limit, $extra ) {
+        switch ( $key ) {
+            case 'bad_dob':
+                return __( 'Date de naissance non valide.', 'orgues-nouvelles' );
+            case 'too_old':
+                /* translators: 1: last age allowed, 2: age at which the offer stops. */
+                return sprintf( __( 'Cette offre est réservée aux jeunes jusqu\'à %1$d ans (avant leur %2$de anniversaire).', 'orgues-nouvelles' ), $limit - 1, $limit );
+            case 'promo_not_yet':
+                /* translators: %s: date. */
+                return sprintf( __( 'Cette offre n\'est pas encore ouverte : les demandes ouvriront le %s.', 'orgues-nouvelles' ), $extra );
+            case 'promo_closed':
+                /* translators: %s: date. */
+                return sprintf( __( 'Cette offre est terminée : les demandes étaient ouvertes jusqu\'au %s.', 'orgues-nouvelles' ), $extra );
+            case 'login_first':
+                return __( 'Un compte existe déjà avec cette adresse. Connectez-vous d\'abord à votre compte, puis refaites votre demande depuis cette page.', 'orgues-nouvelles' );
+            case 'email_mismatch':
+                /* translators: %s: e-mail address of the account. */
+                return sprintf( __( 'Vous êtes connecté(e) : la demande se fait avec l\'adresse de votre compte (%s). Pour demander pour une autre personne, cochez la case prévue.', 'orgues-nouvelles' ), $extra );
+            case 'login_for_other':
+                return __( 'Pour faire une demande pour une autre personne, connectez-vous d\'abord à votre compte.', 'orgues-nouvelles' );
+            case 'same_email':
+                return __( 'Cette adresse est celle de votre compte. Décochez la case « pour une autre personne », ou indiquez l\'adresse de la personne concernée.', 'orgues-nouvelles' );
+            case 'pending':
+                return __( 'Une demande est déjà en cours d\'examen pour cette adresse.', 'orgues-nouvelles' );
+            case 'renewal_unavailable':
+                /* translators: 1: number of days, 2: contact e-mail address. */
+                return sprintf( __( 'Un abonnement gratuit a déjà été obtenu avec cette adresse au titre de cette offre. Le renouvellement en ligne n\'est pas encore disponible ; il sera ouvert %1$d jours avant la date d\'expiration de l\'abonnement. Pour toute question sur un abonnement, écrivez-nous à %2$s.', 'orgues-nouvelles' ), $limit, $extra );
+            case 'no_proof':
+                return __( 'Veuillez joindre un justificatif.', 'orgues-nouvelles' );
+            case 'bad_proof':
+                return __( 'Justificatif non accepté : PDF, JPG ou PNG, 5 Mo au maximum.', 'orgues-nouvelles' );
+            case 'rate_limit':
+                return __( 'Trop de demandes depuis cette connexion. Réessayez plus tard.', 'orgues-nouvelles' );
+            case 'technical':
+                return __( 'Votre demande n\'a pas pu être enregistrée. Réessayez plus tard ou écrivez-nous.', 'orgues-nouvelles' );
+        }
         return '';
-    }
-    return $messages[ $key ][ $en ? 1 : 0 ];
+    } );
 }
 
 /** Parse a YYYY-MM-DD date at midnight, or null if invalid. */
@@ -111,13 +95,16 @@ function on_gratuite_today() {
     return $today ? $today : new DateTimeImmutable( 'today' );
 }
 
-/** A date for a message: 09/11/2026 in French, November 9, 2026 in English. */
+/** A date for a message: 09/11/2026 in French, 9 November 2026 in English (format translated like the texts). */
 function on_gratuite_promo_date_text( $value, $lang ) {
     $date = on_gratuite_parse_date( (string) $value );
     if ( ! $date ) {
         return '';
     }
-    return 'en' === $lang ? $date->format( 'F j, Y' ) : $date->format( 'd/m/Y' );
+    return on_gratuite_in_lang( $lang, static function () use ( $date ) {
+        /* translators: date format (PHP date() syntax) for a day in a message. */
+        return $date->format( __( 'd/m/Y', 'orgues-nouvelles' ) );
+    } );
 }
 
 /**

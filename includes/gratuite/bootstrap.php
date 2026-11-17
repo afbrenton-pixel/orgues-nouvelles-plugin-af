@@ -8,6 +8,7 @@ defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/settings.php';
 require_once __DIR__ . '/private-proof-storage.php';
+require_once __DIR__ . '/i18n.php';
 require_once __DIR__ . '/request-rules.php';
 require_once __DIR__ . '/authorization.php';
 require_once __DIR__ . '/form-action.php';

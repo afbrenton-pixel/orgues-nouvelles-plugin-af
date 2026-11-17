@@ -3,7 +3,7 @@
  * Free student subscription: decision (acceptance or refusal) (HTML).
  *
  * @type string $email_heading      Heading
- * @type string $greeting           "Bonjour Prénom," or "Hello Name,"
+ * @type string $greeting           "Bonjour Prénom," (or its translation)
  * @type string $email_body         Body, already formatted (HTML)
  * @type string $additional_content Additional content (WooCommerce setting)
  */

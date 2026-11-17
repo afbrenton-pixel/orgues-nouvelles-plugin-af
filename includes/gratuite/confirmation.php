@@ -50,29 +50,19 @@ function on_gratuite_is_stale( $created, $now, $days ) {
     return (int) $now - (int) $created > (int) $days * 86400;
 }
 
-/** Messages shown after a click on the link, by lang. */
+/** Messages shown after a click on the link, in the language of the request. */
 function on_gratuite_confirmation_page_message( $result, $lang = 'fr' ) {
-    $en = ( 'en' === $lang );
-    $m  = array(
-        'ok'      => array(
-            array( 'Merci, votre demande est confirmée', 'Nous allons examiner votre justificatif et vous répondrons par e-mail.' ),
-            array( 'Thank you, your request is confirmed', 'We will check your proof document and reply by e-mail.' ),
-        ),
-        'already' => array(
-            array( 'Demande déjà confirmée', 'Votre demande a déjà été confirmée : nous vous répondrons par e-mail.' ),
-            array( 'Request already confirmed', 'Your request has already been confirmed: we will reply by e-mail.' ),
-        ),
-        'expired' => array(
-            array( 'Lien expiré', 'Ce lien n\'est plus valable. Merci de refaire votre demande depuis la page du formulaire.' ),
-            array( 'Link expired', 'This link is no longer valid. Please submit your request again from the form page.' ),
-        ),
-        'invalid' => array(
-            array( 'Lien non valable', 'Ce lien n\'est pas valable. Merci de refaire votre demande depuis la page du formulaire.' ),
-            array( 'Invalid link', 'This link is not valid. Please submit your request again from the form page.' ),
-        ),
-    );
-    $m = isset( $m[ $result ] ) ? $m[ $result ] : $m['invalid'];
-    return $m[ $en ? 1 : 0 ];
+    return on_gratuite_in_lang( $lang, static function () use ( $result ) {
+        switch ( $result ) {
+            case 'ok':
+                return array( __( 'Merci, votre demande est confirmée', 'orgues-nouvelles' ), __( 'Nous allons examiner votre justificatif et vous répondrons par e-mail.', 'orgues-nouvelles' ) );
+            case 'already':
+                return array( __( 'Demande déjà confirmée', 'orgues-nouvelles' ), __( 'Votre demande a déjà été confirmée : nous vous répondrons par e-mail.', 'orgues-nouvelles' ) );
+            case 'expired':
+                return array( __( 'Lien expiré', 'orgues-nouvelles' ), __( 'Ce lien n\'est plus valable. Merci de refaire votre demande depuis la page du formulaire.', 'orgues-nouvelles' ) );
+        }
+        return array( __( 'Lien non valable', 'orgues-nouvelles' ), __( 'Ce lien n\'est pas valable. Merci de refaire votre demande depuis la page du formulaire.', 'orgues-nouvelles' ) );
+    } );
 }
 
 /**
@@ -82,32 +72,28 @@ function on_gratuite_confirmation_page_message( $result, $lang = 'fr' ) {
  * @return array { subject, heading, body } Paragraphs of the body are separated by a blank line.
  */
 function on_gratuite_confirmation_texts( $lang, $for_other = false ) {
-    if ( 'en' === $lang ) {
+    return on_gratuite_in_lang( $lang, static function () use ( $for_other ) {
         $first = $for_other
-            ? 'A request for the free digital subscription for people aged 26 or under was made for you by a user of our website.'
-            : 'We received your request for the free digital subscription for people aged 26 or under.';
+            ? __( 'Une demande d\'abonnement numérique gratuit pour les jeunes jusqu\'à 26 ans a été faite pour vous par un utilisateur de notre site.', 'orgues-nouvelles' )
+            : __( 'Nous avons bien reçu votre demande d\'abonnement numérique gratuit pour les jeunes jusqu\'à 26 ans.', 'orgues-nouvelles' );
         return array(
-            'subject' => 'Orgues Nouvelles: please confirm your request',
-            'heading' => 'Please confirm your request',
-            'body'    => $first . "\n" . 'To confirm that this e-mail address is yours, please click the link below:' . "\n\n"
+            'subject' => __( 'Orgues Nouvelles : merci de confirmer votre demande', 'orgues-nouvelles' ),
+            'heading' => __( 'Confirmez votre demande', 'orgues-nouvelles' ),
+            'body'    => $first . "\n" . __( 'Pour confirmer que cette adresse e-mail est bien la vôtre, cliquez sur le lien ci-dessous :', 'orgues-nouvelles' ) . "\n\n"
                 . '{link}' . "\n\n"
-                . 'The link is valid for {days} days. Without confirmation, your request and the document you sent are deleted.' . "\n"
-                . 'Once confirmed, we check your document and reply by e-mail.' . "\n\n"
-                . 'If you did not make this request, simply ignore this message.',
+                . __( 'Le lien est valable {days} jours. Sans confirmation, votre demande et le document envoyé sont supprimés.', 'orgues-nouvelles' ) . "\n"
+                . __( 'Une fois confirmée, nous examinons votre justificatif et nous vous répondons par e-mail.', 'orgues-nouvelles' ) . "\n\n"
+                . __( 'Si vous n\'êtes pas à l\'origine de cette demande, ignorez simplement ce message.', 'orgues-nouvelles' ),
         );
-    }
-    $first = $for_other
-        ? 'Une demande d\'abonnement numérique gratuit pour les jeunes jusqu\'à 26 ans a été faite pour vous par un utilisateur de notre site.'
-        : 'Nous avons bien reçu votre demande d\'abonnement numérique gratuit pour les jeunes jusqu\'à 26 ans.';
-    return array(
-        'subject' => 'Orgues Nouvelles : merci de confirmer votre demande',
-        'heading' => 'Confirmez votre demande',
-        'body'    => $first . "\n" . 'Pour confirmer que cette adresse e-mail est bien la vôtre, cliquez sur le lien ci-dessous :' . "\n\n"
-            . '{link}' . "\n\n"
-            . 'Le lien est valable {days} jours. Sans confirmation, votre demande et le document envoyé sont supprimés.' . "\n"
-            . 'Une fois confirmée, nous examinons votre justificatif et nous vous répondons par e-mail.' . "\n\n"
-            . 'Si vous n\'êtes pas à l\'origine de cette demande, ignorez simplement ce message.',
-    );
+    } );
+}
+
+/** "Bonjour Prénom," in the language of the request. */
+function on_gratuite_greeting( $lang, $first_name ) {
+    return on_gratuite_in_lang( $lang, static function () use ( $first_name ) {
+        /* translators: %s: first name. */
+        return sprintf( __( 'Bonjour %s,', 'orgues-nouvelles' ), $first_name );
+    } );
 }
 
 /** Replace the placeholders of a confirmation text. */
@@ -125,7 +111,7 @@ function on_gratuite_confirmation_mail( $lang, $first_name, $url, $days, $for_ot
     $t = on_gratuite_confirmation_texts( $lang, $for_other );
     return array(
         'subject' => $t['subject'],
-        'body'    => ( 'en' === $lang ? 'Hello ' : 'Bonjour ' ) . $first_name . ",\n\n"
+        'body'    => on_gratuite_greeting( $lang, $first_name ) . "\n\n"
             . on_gratuite_fill_confirmation_text( $t['body'], $first_name, $url, $days ) . "\n\nOrgues Nouvelles",
     );
 }

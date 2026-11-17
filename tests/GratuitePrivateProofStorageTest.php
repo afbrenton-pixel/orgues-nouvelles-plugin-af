@@ -42,9 +42,7 @@ if ( ! function_exists( 'get_posts' ) ) {
         return $ids;
     }
 }
-if ( ! function_exists( '__' ) ) {
-    function __( $text, $domain = '' ) { return $text; }
-}
+require_once __DIR__ . '/gratuite-i18n-stubs.php';
 if ( ! function_exists( 'wp_salt' ) ) {
     function wp_salt( $scheme = 'auth' ) { return $GLOBALS['on_gratuite_test_salt'] ?? 'salt-de-test-' . $scheme; }
 }

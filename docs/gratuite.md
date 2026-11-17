@@ -371,3 +371,13 @@ Pods les enregistre dans les options WordPress `on_gratuite_reglages_promo_debut
 6. **Date du jour du site** : `on_gratuite_today()` (`request-rules.php`) donne la date dans le fuseau du site
    (`wp_date()`), au même format « date seule » que les dates de naissance et de période. Avant, c'était le jour UTC :
    décalage d'une ou deux heures autour de minuit pour l'ouverture et la fin de période et le 27e anniversaire.
+
+## Traductions (système de WordPress)
+
+Tous les textes visibles du module (messages du formulaire, e-mails, dates) sont écrits **une seule fois, en français**, dans `__( 'Texte', 'orgues-nouvelles' )`. Le code ne contient aucune condition « si la langue est le français… ».
+
+- L'anglais est dans `languages/orgues-nouvelles-en_GB.po`, compilé en `languages/orgues-nouvelles-en_GB.mo` ; le modèle est `languages/orgues-nouvelles.pot`.
+- Une demande garde la langue de la personne (champ `langue`) : `on_gratuite_in_lang( $lang, $callback )` (`includes/gratuite/i18n.php`) exécute le code avec les textes de cette langue (`switch_to_locale()`), même si l'administrateur qui clique sur « Accepter » travaille dans une autre langue.
+- Les dates se traduisent par leur format (`__( 'j F Y' )`, `__( 'd/m/Y' )`).
+- Pour ajouter ou changer un texte : l'écrire en français dans `__()`, mettre à jour le `.pot` et le `.po` (`wp i18n make-pot . languages/orgues-nouvelles.pot`, puis compléter le `.po`), recompiler le `.mo` (`wp i18n make-mo languages`, ou `msgfmt`). Le test `tests/GratuiteTranslationsTest.php` échoue si un texte n'a pas de traduction anglaise dans le `.mo`.
+- Les textes des e-mails restent modifiables dans WooCommerce > Réglages > E-mails (une zone par langue) : leurs valeurs par défaut viennent de ces traductions.

@@ -107,7 +107,7 @@ function on_gratuite_notification_lines( $post_id, array $d ) {
         'E-mail : ' . $d['email'],
         'Date de naissance : ' . $d['date_naissance'] . ' (' . (int) $d['age_demande'] . ' ans)',
         'Type : ' . ( 'renouvellement' === $d['type_demande'] ? 'renouvellement annuel' : 'première demande' ),
-        'Langue : ' . ( 'en' === $d['langue'] ? 'anglais' : 'français' ),
+        'Langue : ' . ( 'en' === $d['langue'] ? __( 'anglais', 'orgues-nouvelles' ) : __( 'français', 'orgues-nouvelles' ) ),
     );
     if ( ! empty( $d['pour_autre'] ) ) {
         $requester = ! empty( $d['demandeur_id'] ) ? get_userdata( (int) $d['demandeur_id'] ) : false;
