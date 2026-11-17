@@ -71,16 +71,31 @@ function on_gratuite_debug_i18n( $step ) {
  * @return mixed
  */
 function on_gratuite_in_lang( $lang, callable $callback ) {
-    // DEBUG VARIANT 2: no explicit loading, only switch_to_locale() and logs.
+    $domain   = 'orgues-nouvelles';
     if ( 'en' === $lang ) { on_gratuite_debug_i18n( 'A avant le changement de langue' ); }
     $switched = function_exists( 'switch_to_locale' ) ? switch_to_locale( on_gratuite_locale( $lang ) ) : false;
-    if ( 'en' === $lang ) { on_gratuite_debug_i18n( 'B apres switch_to_locale(' . var_export( $switched, true ) . ')' ); }
+    if ( 'en' === $lang ) { on_gratuite_debug_i18n( 'B apres switch_to_locale(' . var_export( $switched, true ) . '), avant chargement explicite' ); }
+    $reload   = false;
+    if ( function_exists( 'load_textdomain' ) ) {
+        // The plugin text domain was loaded at start-up, in the language of the page: drop it and read the
+        // language file of the request explicitly, whatever the current locale is (French is the language of
+        // the source texts: no file).
+        $reload = true;
+        unload_textdomain( $domain );
+        if ( 'en' === $lang ) {
+            load_textdomain( $domain, dirname( __DIR__, 2 ) . '/languages/' . $domain . '-en_GB.mo', function_exists( 'determine_locale' ) ? determine_locale() : null );
+        }
+    }
     try {
         return $callback();
     } finally {
         if ( $switched ) {
             restore_previous_locale();
         }
-        if ( 'en' === $lang ) { on_gratuite_debug_i18n( 'C apres restore_previous_locale' ); }
+        if ( $reload ) {
+            // Back to the translations of the language of the page.
+            unload_textdomain( $domain );
+            load_plugin_textdomain( $domain, false, dirname( plugin_basename( dirname( __DIR__, 2 ) . '/orgues-nouvelles-plugin.php' ) ) . '/languages/' );
+        }
     }
 }
