@@ -59,6 +59,11 @@ function on_load_plugin() {
         require_once(__DIR__ . '/includes/orders/subscription-link-button.php');
     }
 
+    // Charger le module gratuité -26 ans (stockage privé des justificatifs, autorisations)
+    if (is_plugin_active('woocommerce/woocommerce.php')) {
+        require_once(__DIR__ . '/includes/gratuite/bootstrap.php');
+    }
+
     // Charger les modules de gestion des produits (WooCommerce seul)
     if (is_plugin_active('woocommerce/woocommerce.php')) {
         require_once(__DIR__ . '/includes/products/check-download-product.php');

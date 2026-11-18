@@ -1,0 +1,288 @@
+{
+  "@meta": {
+    "version": "3.3.9.2",
+    "build": 1794387224
+  },
+  "pods": [
+    {
+      "name": "on_abon_autorisation",
+      "id": 50542,
+      "label": "Autorisations gratuité",
+      "description": "Demandes de gratuité -26 ans (abonnement Étudiant gratuit). Données personnelles : accès réservé à l'administration.",
+      "type": "post_type",
+      "storage": "meta",
+      "label_singular": "Autorisation gratuité",
+      "public": "0",
+      "show_ui": "1",
+      "publicly_queryable": "0",
+      "dynamic_features_allow": "inherit",
+      "rest_enable": "0",
+      "supports_title": "1",
+      "supports_editor": "0",
+      "q": "/wp-json/pods/v1/pods/50542",
+      "menu_name": "Gratuité -26 ans",
+      "exclude_from_search": "1",
+      "show_in_menu": "1",
+      "show_in_nav_menus": "0",
+      "show_in_admin_bar": "0",
+      "menu_position": "58",
+      "menu_icon": "dashicons-awards",
+      "has_archive": "0",
+      "hierarchical": "0",
+      "supports_thumbnail": "0",
+      "supports_excerpt": "0",
+      "supports_author": "0",
+      "supports_comments": "0",
+      "query_var": "0",
+      "rewrite": "0",
+      "delete_with_user": "0",
+      "groups": [
+        {
+          "name": "more_fields",
+          "label": "More Fields",
+          "fields": [
+            {
+              "name": "prenom",
+              "id": 50543,
+              "label": "Prénom",
+              "description": "",
+              "weight": 0,
+              "type": "text",
+              "q": "/wp-json/pods/v1/fields"
+            },
+            {
+              "name": "nom",
+              "id": 50544,
+              "label": "Nom",
+              "description": "",
+              "weight": 1,
+              "type": "text",
+              "q": "/wp-json/pods/v1/fields"
+            },
+            {
+              "name": "email",
+              "id": 50545,
+              "label": "E-mail",
+              "description": "",
+              "weight": 2,
+              "type": "email",
+              "q": "/wp-json/pods/v1/fields"
+            },
+            {
+              "name": "date_naissance",
+              "id": 50546,
+              "label": "Date de naissance",
+              "description": "",
+              "weight": 3,
+              "type": "date",
+              "q": "/wp-json/pods/v1/fields"
+            },
+            {
+              "name": "langue",
+              "id": 50547,
+              "label": "Langue",
+              "description": "",
+              "weight": 4,
+              "type": "pick",
+              "pick_object": "custom-simple",
+              "q": "/wp-json/pods/v1/fields",
+              "pick_custom": "fr|Français\nen|English",
+              "pick_format_type": "single",
+              "pick_format_single": "dropdown"
+            },
+            {
+              "name": "type_demande",
+              "id": 50548,
+              "label": "Type de demande",
+              "description": "",
+              "weight": 5,
+              "type": "pick",
+              "pick_object": "custom-simple",
+              "q": "/wp-json/pods/v1/fields",
+              "pick_custom": "premiere|Première demande\nrenouvellement|Renouvellement",
+              "pick_format_type": "single",
+              "pick_format_single": "dropdown"
+            },
+            {
+              "name": "statut",
+              "id": 50549,
+              "label": "Statut",
+              "description": "",
+              "weight": 6,
+              "type": "pick",
+              "pick_object": "custom-simple",
+              "q": "/wp-json/pods/v1/fields/50549",
+              "pick_custom": "a_confirmer|À confirmer\nen_attente|En attente\nacceptee|Acceptée\nrefusee|Refusée",
+              "pick_format_type": "single",
+              "pick_format_single": "dropdown"
+            },
+            {
+              "name": "age_demande",
+              "id": 50550,
+              "label": "Âge au jour de la demande",
+              "description": "",
+              "weight": 7,
+              "type": "number",
+              "q": "/wp-json/pods/v1/fields"
+            },
+            {
+              "name": "client_id",
+              "id": 50551,
+              "label": "Compte client (n°)",
+              "description": "",
+              "weight": 8,
+              "type": "number",
+              "q": "/wp-json/pods/v1/fields"
+            },
+            {
+              "name": "abonnement_id",
+              "id": 50552,
+              "label": "Abonnement (n°)",
+              "description": "",
+              "weight": 9,
+              "type": "number",
+              "q": "/wp-json/pods/v1/fields"
+            },
+            {
+              "name": "demandeur_id",
+              "id": 50576,
+              "label": "Compte du demandeur (n°)",
+              "description": "Compte de la personne qui a rempli le formulaire (0 si non connectée).",
+              "weight": 9,
+              "type": "number",
+              "q": "/wp-json/pods/v1/fields"
+            },
+            {
+              "name": "commande_id",
+              "id": 50553,
+              "label": "Commande (n°)",
+              "description": "",
+              "weight": 10,
+              "type": "number",
+              "q": "/wp-json/pods/v1/fields"
+            },
+            {
+              "name": "pour_autre",
+              "id": 50577,
+              "label": "Demande pour une autre personne",
+              "description": "Cochée si le demandeur a fait la demande pour quelqu’un d’autre (le client est alors le bénéficiaire).",
+              "weight": 10,
+              "type": "boolean",
+              "q": "/wp-json/pods/v1/fields"
+            },
+            {
+              "name": "abonnement_existant",
+              "id": 50554,
+              "label": "Abonnement déjà existant à signaler",
+              "description": "",
+              "weight": 11,
+              "type": "boolean",
+              "q": "/wp-json/pods/v1/fields"
+            },
+            {
+              "name": "newsletter",
+              "id": 50555,
+              "label": "Accepte la newsletter",
+              "description": "",
+              "weight": 12,
+              "type": "boolean",
+              "q": "/wp-json/pods/v1/fields"
+            },
+            {
+              "name": "date_decision",
+              "id": 50556,
+              "label": "Date de la décision",
+              "description": "",
+              "weight": 13,
+              "type": "datetime",
+              "q": "/wp-json/pods/v1/fields"
+            },
+            {
+              "name": "note_interne",
+              "id": 50557,
+              "label": "Note interne",
+              "description": "",
+              "weight": 14,
+              "type": "paragraph",
+              "q": "/wp-json/pods/v1/fields"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "on_gratuite_reglages",
+      "id": 50660,
+      "label": "Gratuité -26 ans : réglages",
+      "description": "",
+      "type": "settings",
+      "storage": "option",
+      "public": "1",
+      "show_ui": "1",
+      "menu_name": "Gratuité -26 ans",
+      "menu_location": "settings",
+      "_migrated_28": "1",
+      "q": "/wp-json/pods/v1/pods/50660",
+      "groups": [
+        {
+          "name": "details",
+          "id": 50661,
+          "label": "Détails",
+          "description": "",
+          "weight": 0,
+          "fields": [
+            {
+              "name": "promo_debut",
+              "id": 50662,
+              "label": "Début de la période",
+              "description": "",
+              "weight": 0,
+              "type": "date",
+              "q": "/wp-json/pods/v1/fields",
+              "date_type": "format",
+              "date_format": "dMy_dash",
+              "date_allow_empty": "1",
+              "date_html5": "0",
+              "repeatable": "0",
+              "repeatable_format": "default",
+              "default_evaluate_tags": "0",
+              "default_empty_fields": "0",
+              "roles_allowed": "administrator",
+              "enable_conditional_logic": "0",
+              "conditional_logic_save_value": "0",
+              "required": "0"
+            },
+            {
+              "name": "promo_fin",
+              "id": 50663,
+              "label": "Fin de la période",
+              "description": "",
+              "weight": 1,
+              "type": "date",
+              "q": "/wp-json/pods/v1/fields",
+              "date_type": "format",
+              "date_format": "dMy_dash",
+              "date_allow_empty": "1",
+              "date_html5": "0",
+              "repeatable": "0",
+              "repeatable_format": "default",
+              "default_evaluate_tags": "0",
+              "default_empty_fields": "0",
+              "roles_allowed": "administrator",
+              "enable_conditional_logic": "0",
+              "conditional_logic_save_value": "0",
+              "required": "0",
+              "logged_in_only": "0",
+              "admin_only": "0",
+              "restrict_role": "0",
+              "restrict_capability": "0",
+              "hidden": "0",
+              "read_only": "0",
+              "read_only_restricted": "0"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
