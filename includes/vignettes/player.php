@@ -8,7 +8,7 @@
  * - pictogramme (audio, textes, partitions) à côté de l'étiquette des ressources compactes.
  *
  * Les adresses sont trouvées dans le contenu de la ressource d'origine et passées au script
- * (window.ONV_MEDIA, indexé par l'identifiant de la vignette). Le script repère les vignettes
+ * (window.ON_MEDIA, indexé par l'identifiant de la vignette). Le script repère les vignettes
  * des Loop Grid Elementor par leur classe `e-loop-item-{identifiant}`.
  */
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /** MP3 (dans l'ordre) ou vidéo Vimeo contenus dans la ressource source d'une vignette. */
 function on_vignettes_media_for( $vignette_id ) {
-	$source = (int) get_post_meta( $vignette_id, '_onv_source_id', true );
+	$source = (int) get_post_meta( $vignette_id, '_on_source_id', true );
 	$post   = $source ? get_post( $source ) : null;
 	if ( ! $post || 'ressource' !== $post->post_type || ! on_vignettes_source_is_public( $post ) ) {
 		return null; // source privée, en brouillon ou protégée par mot de passe : aucune adresse exportée.
@@ -111,7 +111,7 @@ add_action(
 				'fields'           => 'ids',
 				'no_found_rows'    => true,
 				'suppress_filters' => false,
-				'meta_key'         => '_onv_source_type', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_key'         => '_on_source_type', // phpcs:ignore WordPress.DB.SlowDBQuery
 				'meta_value'       => 'ressource', // phpcs:ignore WordPress.DB.SlowDBQuery
 			)
 		);
@@ -157,6 +157,6 @@ add_action(
 			'show_all'    => __( 'Voir les %d pistes', 'orgues-nouvelles' ),
 			'show_fewer'  => __( 'Réduire', 'orgues-nouvelles' ),
 		);
-		wp_add_inline_script( 'on-vignettes-player', 'window.ONV_I18N=' . wp_json_encode( $texts ) . ';window.ONV_MEDIA=' . wp_json_encode( $map ) . ';', 'before' );
+		wp_add_inline_script( 'on-vignettes-player', 'window.ON_I18N=' . wp_json_encode( $texts ) . ';window.ON_MEDIA=' . wp_json_encode( $map ) . ';', 'before' );
 	}
 );

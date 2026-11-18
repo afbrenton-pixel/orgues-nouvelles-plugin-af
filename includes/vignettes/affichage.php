@@ -6,9 +6,9 @@
  * - `masquer_titre` : cache le titre (l'étiquette reste affichée) ;
  * - `afficher_description` : affiche le sous-titre et l'extrait (par défaut, seuls l'étiquette et le titre sont affichés).
  *
- * Le code ajoute les classes `onv-sans-titre` et `onv-sans-description` à la vignette (classes d'article,
+ * Le code ajoute les classes `on-sans-titre` et `on-sans-description` à la vignette (classes d'article,
  * donc présentes sur chaque élément du Loop Grid / Carrousel). Le CSS (assets/css/vignettes-accueil.css)
- * cache alors les widgets des modèles de boucle qui portent la classe `onv-w-titre` ou `onv-w-description`
+ * cache alors les widgets des modèles de boucle qui portent la classe `on-w-titre` ou `on-w-description`
  * (posée sur les widgets du modèle « standard » seulement : les grandes vignettes gardent leur texte).
  */
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,10 +22,10 @@ add_filter(
 			return $classes;
 		}
 		if ( get_post_meta( $post_id, 'masquer_titre', true ) ) {
-			$classes[] = 'onv-sans-titre';
+			$classes[] = 'on-sans-titre';
 		}
 		if ( ! get_post_meta( $post_id, 'afficher_description', true ) ) {
-			$classes[] = 'onv-sans-description';
+			$classes[] = 'on-sans-description';
 		}
 		return $classes;
 	},
@@ -67,14 +67,14 @@ function on_vignettes_post_id_from_url( $url ) {
  * faite à la main), sinon (vignette créée à la main) celui que désigne son lien, si ce lien pointe vers un contenu du site.
  */
 function on_vignettes_attached_post( $vignette_id ) {
-	$source_id = (int) get_post_meta( $vignette_id, '_onv_source_id', true );
+	$source_id = (int) get_post_meta( $vignette_id, '_on_source_id', true );
 	if ( ! $source_id && function_exists( 'pll_get_post_translations' ) ) {
 		// Vignette traduite à la main : objet de la vignette d'origine, dans la langue de la vignette si possible.
 		foreach ( pll_get_post_translations( $vignette_id ) as $translation_id ) {
 			if ( (int) $translation_id === (int) $vignette_id ) {
 				continue;
 			}
-			$origin = (int) get_post_meta( $translation_id, '_onv_source_id', true );
+			$origin = (int) get_post_meta( $translation_id, '_on_source_id', true );
 			if ( ! $origin ) {
 				$lien_origine = (string) get_post_meta( $translation_id, 'lien', true );
 				$origin       = '' !== $lien_origine ? on_vignettes_post_id_from_url( $lien_origine ) : 0;
@@ -107,7 +107,7 @@ add_action(
 			return;
 		}
 		add_meta_box(
-			'onv-objet-source',
+			'on-objet-source',
 			__( 'Objet source', 'orgues-nouvelles' ),
 			function ( $vignette ) {
 				$source = on_vignettes_attached_post( $vignette->ID );

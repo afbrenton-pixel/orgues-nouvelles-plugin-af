@@ -34,7 +34,7 @@ Fichier d'import : `docs/pods/vignette_accueil-package.json` (Pods > Composants 
 | `pistes` | Fichier (plusieurs) | Format playlist : les MP3 de la médiathèque, dans l'ordre de lecture (glisser-déposer). Titre, artiste et durée viennent des étiquettes du MP3, sinon du titre du fichier. |
 | `rang` | Nombre | Place voulue dans la grille (1 = en premier). Vide = ordre par date. |
 
-La photo est l'image à la une de WordPress. Les valeurs internes `_onv_source_id`, `_onv_source_type`, `_onv_locked`, `_onv_autodraft` et `_onv_sans_image` sont gérées par le code, hors Pods.
+La photo est l'image à la une de WordPress. Les valeurs internes `_on_source_id`, `_on_source_type`, `_on_locked`, `_on_autodraft` et `_on_sans_image` sont gérées par le code, hors Pods.
 
 ## Zones
 
@@ -101,7 +101,7 @@ Le type de contenu doit avoir `show_in_nav_menus` = oui (réglage Pods « Affich
 
 ## Éléments masqués au choix
 
-`includes/vignettes/affichage.php` ajoute à chaque vignette les classes `onv-sans-titre` (case « Masquer le titre » cochée) et `onv-sans-description` (case « Afficher la description » non cochée). Le CSS cache les widgets des modèles de boucle portant les classes `onv-w-titre` et `onv-w-description`. Ces classes sont à poser (réglage « Classes CSS » du widget) sur le titre et sur le sous-titre / l'extrait du modèle « standard » ; les grandes vignettes n'ont pas `onv-w-description` et gardent leur texte.
+`includes/vignettes/affichage.php` ajoute à chaque vignette les classes `on-sans-titre` (case « Masquer le titre » cochée) et `on-sans-description` (case « Afficher la description » non cochée). Le CSS cache les widgets des modèles de boucle portant les classes `on-w-titre` et `on-w-description`. Ces classes sont à poser (réglage « Classes CSS » du widget) sur le titre et sur le sous-titre / l'extrait du modèle « standard » ; les grandes vignettes n'ont pas `on-w-description` et gardent leur texte.
 
 ## Vignette playlist
 
@@ -113,3 +113,9 @@ Format `playlist` : une vignette avec photo (image à la une), étiquette, titre
 - Version anglaise : jumelle Polylang de la vignette, avec sa propre liste de pistes.
 - Colonnes fixes (`.on-sticky`) plus hautes que l'écran : `assets/js/vignettes-sticky.js` remonte leur position fixe pour que le bas de la colonne (fin de la playlist) puisse être atteint, puis la colonne reste fixée là.
 - Photo de la playlist : taille, alignement et place réglés dans Elementor, dans le modèle de boucle « Vignette accueil – playlist (Pods) » (widget image : largeur personnalisée, alignement du contenant). Rien dans le CSS du plugin.
+
+## Préfixe des noms (CSS, JavaScript, champs)
+
+Tous les noms propres aux vignettes commencent par `on` comme le reste du plugin : classes CSS `on-…`, attributs `data-on-…`, variables JavaScript `ON_MEDIA` et `ON_I18N`, champs `_on_source_id`, `_on_locked`, etc. (« onv » était un reliquat du premier plugin « Orgues Nouvelles Vignettes »).
+
+`includes/vignettes/migration-prefixe.php` passe un site de l'ancien préfixe au nouveau, **une seule fois** (réglage `on_vignettes_prefix_migration`, qui garde aussi le nombre de champs et de réglages Elementor modifiés) : champs `_onv_…` renommés `_on_…`, classes `onv-…` renommées `on-…` dans les données Elementor et le CSS additionnel, cache Elementor vidé. L'élément en cours de lecture de la playlist, `onv-on`, devient `on-current`. Le fichier peut être supprimé quand tous les sites sont migrés.
