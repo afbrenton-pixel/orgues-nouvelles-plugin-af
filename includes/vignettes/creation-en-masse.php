@@ -186,7 +186,7 @@ function on_vignettes_bulk_collect( $params ) {
 			$rows[] = array(
 				'id'    => (int) $id,
 				'type'  => $type,
-				'title' => wp_strip_all_tags( $title ),
+				'title' => html_entity_decode( wp_strip_all_tags( $title ), ENT_QUOTES, 'UTF-8' ),
 				'has'   => $has,
 			);
 		}
@@ -227,11 +227,11 @@ add_action( 'wp_ajax_on_vignettes_bulk', 'on_vignettes_bulk_ajax' );
 
 function on_vignettes_bulk_ajax() {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Action réservée aux administrateurs.', 'orgues-nouvelles' ) ), 403 );
+		wp_send_json_error( array( 'code' => 'forbidden' ), 403 );
 	}
 	check_ajax_referer( 'on_vignettes_bulk', 'nonce' );
 	if ( ! post_type_exists( ON_VIGNETTES_CPT ) ) {
-		wp_send_json_error( array( 'message' => __( 'Le type de contenu « Vignettes accueil » est absent (Pods).', 'orgues-nouvelles' ) ) );
+		wp_send_json_error( array( 'code' => 'nocpt' ) );
 	}
 
 	$step = isset( $_POST['step'] ) ? sanitize_key( wp_unslash( $_POST['step'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
@@ -240,7 +240,7 @@ function on_vignettes_bulk_ajax() {
 	if ( 'step' === $step ) {
 		$state = get_transient( $key );
 		if ( ! is_array( $state ) ) {
-			wp_send_json_error( array( 'message' => __( 'Aucune création en cours : relancez la simulation.', 'orgues-nouvelles' ) ) );
+			wp_send_json_error( array( 'code' => 'nostate' ) );
 		}
 		$stats = array(
 			'created' => 0,
@@ -260,7 +260,7 @@ function on_vignettes_bulk_ajax() {
 			$result = on_vignettes_bulk_process( $id );
 			++$stats[ $result ];
 			$last[] = array(
-				'title'  => wp_strip_all_tags( get_the_title( $id ) ),
+				'title'  => html_entity_decode( wp_strip_all_tags( get_the_title( $id ) ), ENT_QUOTES, 'UTF-8' ),
 				'result' => $result,
 			);
 			array_shift( $queue );
@@ -289,19 +289,13 @@ function on_vignettes_bulk_ajax() {
 	// Simulation et démarrage : même recherche.
 	$params = on_vignettes_bulk_clean_params( wp_unslash( $_POST ), array_keys( on_vignettes_bulk_labels() ) ); // phpcs:ignore WordPress.Security.NonceVerification
 	if ( $params['error'] ) {
-		$messages = array(
-			'types' => __( 'Cochez au moins un type de contenu.', 'orgues-nouvelles' ),
-			'date'  => __( 'La date de départ n\'est pas valable.', 'orgues-nouvelles' ),
-			'motif' => __( 'Le motif d\'exclusion des produits n\'est pas une expression régulière valable.', 'orgues-nouvelles' ),
-		);
-		wp_send_json_error( array( 'message' => $messages[ $params['error'] ] ) );
+		wp_send_json_error( array( 'code' => $params['error'] ) );
 	}
 	$found  = on_vignettes_bulk_collect( $params );
-	$labels = on_vignettes_bulk_labels();
-	$table  = array();
+	$table = array();
 	foreach ( $found['counts'] as $type => $c ) {
 		$table[] = array(
-			'label' => $labels[ $type ],
+			'type'  => $type,
 			'total' => $c['total'],
 			'has'   => $c['has'],
 			'todo'  => $c['todo'],
@@ -324,8 +318,11 @@ function on_vignettes_bulk_ajax() {
 			'table'  => $table,
 			'todo'   => count( $found['rows'] ),
 			'sample' => array_map(
-				function ( $r ) use ( $labels ) {
-					return $labels[ $r['type'] ] . ' · ' . $r['title'];
+				function ( $r ) {
+					return array(
+						'type'  => $r['type'],
+						'title' => $r['title'],
+					);
 				},
 				array_slice( $found['rows'], 0, 30 )
 			),
@@ -363,7 +360,16 @@ add_action(
 					'nonce'        => wp_create_nonce( 'on_vignettes_bulk' ),
 					'simulating'   => __( 'Simulation en cours…', 'orgues-nouvelles' ),
 					'running'      => __( 'Création en cours : ne fermez pas cette page.', 'orgues-nouvelles' ),
+					'types'        => on_vignettes_bulk_labels(),
 					'error'        => __( 'Erreur : %s', 'orgues-nouvelles' ),
+					'errors'       => array(
+						'forbidden' => __( 'Action réservée aux administrateurs.', 'orgues-nouvelles' ),
+						'nocpt'     => __( 'Le type de contenu « Vignettes accueil » est absent (Pods).', 'orgues-nouvelles' ),
+						'nostate'   => __( 'Aucune création en cours : relancez la simulation.', 'orgues-nouvelles' ),
+						'types'     => __( 'Cochez au moins un type de contenu.', 'orgues-nouvelles' ),
+						'date'      => __( 'La date de départ n\'est pas valable.', 'orgues-nouvelles' ),
+						'motif'     => __( 'Le motif d\'exclusion des produits n\'est pas une expression régulière valable.', 'orgues-nouvelles' ),
+					),
 					'network'      => __( 'La connexion avec le site a échoué. Relancez la simulation puis la création : ce qui est déjà créé ne sera pas refait.', 'orgues-nouvelles' ),
 					/* translators: 1: nombre de contenus traités, 2: nombre total. */
 					'progress'     => __( '%1$d sur %2$d', 'orgues-nouvelles' ),
