@@ -116,6 +116,4 @@ Format `playlist` : une vignette avec photo (image à la une), étiquette, titre
 
 ## Préfixe des noms (CSS, JavaScript, champs)
 
-Tous les noms propres aux vignettes commencent par `on` comme le reste du plugin : classes CSS `on-…`, attributs `data-on-…`, variables JavaScript `ON_MEDIA` et `ON_I18N`, champs `_on_source_id`, `_on_locked`, etc. (« onv » était un reliquat du premier plugin « Orgues Nouvelles Vignettes »).
-
-`includes/vignettes/migration-prefixe.php` passe un site de l'ancien préfixe au nouveau, **une seule fois** (réglage `on_vignettes_prefix_migration`, qui garde aussi le nombre de champs et de réglages Elementor modifiés) : champs `_onv_…` renommés `_on_…`, classes `onv-…` renommées `on-…` dans les données Elementor et le CSS additionnel, cache Elementor vidé. L'élément en cours de lecture de la playlist, `onv-on`, devient `on-current`. Le fichier peut être supprimé quand tous les sites sont migrés.
+Tous les noms propres aux vignettes commencent par `on` comme le reste du plugin : classes CSS `on-…`, attributs `data-on-…`, variables JavaScript `ON_MEDIA` et `ON_I18N`, champs `_on_source_id`, `_on_locked`, etc. L'élément en cours de lecture d'une playlist porte la classe `on-current`.
