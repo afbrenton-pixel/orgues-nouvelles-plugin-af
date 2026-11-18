@@ -58,7 +58,7 @@ Termes de `etiquette_vignette` : Publications, CD, Sorties CD, Vidéos, Échos, 
 
 À la publication d'un article, d'une ressource, d'un produit ou d'un CD (types filtrables avec `on_vignettes_source_types`), la vignette est créée ou mise à jour.
 
-- **Image :** image à la une, sinon première image du texte ; pour une vidéo Vimeo, la miniature est le premier choix. Sans image utilisable (absente, ou quasi uniformément noire ou blanche), la vignette reste en **brouillon** avec une pastille rouge dans le menu « Vignettes accueil ». Seules les ressources (petites vignettes sans photo) en sont dispensées.
+- **Image :** image à la une, sinon première image du texte (pour une ressource vidéo, l'image à la une est la miniature que `includes/content/video-thumbnail.php` y met à l'enregistrement). Sans image utilisable (absente, ou quasi uniformément noire ou blanche), la vignette reste en **brouillon** avec une pastille rouge dans le menu « Vignettes accueil ». Seules les ressources (petites vignettes sans photo) en sont dispensées.
 - **Vignette modifiée à la main :** elle est verrouillée, la mise à jour automatique n'y touche plus.
 - **Contenu dépublié :** sa vignette passe en brouillon. **Contenu supprimé :** sa vignette est supprimée.
 
