@@ -39,7 +39,7 @@
     return fetch(window.ajaxurl, { method: 'POST', credentials: 'same-origin', body: params(step) })
       .then(function (r) { return r.json(); })
       .then(function (j) {
-        if (!j || !j.success) { throw new Error((j && j.data && j.data.message) || ''); }
+        if (!j || !j.success) { var c = j && j.data && j.data.code; throw new Error((T.errors && T.errors[c]) || ''); }
         return j.data;
       });
   }
@@ -58,7 +58,7 @@
     var body = el('tbody');
     rows.forEach(function (r) {
       var tr = el('tr');
-      [r.label, r.total, r.has, r.todo].forEach(function (c) { tr.appendChild(el('td', String(c))); });
+      [(T.types && T.types[r.type]) || r.type, r.total, r.has, r.todo].forEach(function (c) { tr.appendChild(el('td', String(c))); });
       body.appendChild(tr);
     });
     t.appendChild(body);
@@ -87,7 +87,7 @@
         if (d.sample && d.sample.length) {
           result.appendChild(el('p', T.sampleTitle));
           var ul = el('ul', null, { style: 'list-style:disc;margin-left:20px' });
-          d.sample.forEach(function (s) { ul.appendChild(el('li', s)); });
+          d.sample.forEach(function (s) { ul.appendChild(el('li', ((T.types && T.types[s.type]) || s.type) + ' · ' + s.title)); });
           result.appendChild(ul);
         }
         btnRun.disabled = false;
