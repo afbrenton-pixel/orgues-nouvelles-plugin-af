@@ -80,6 +80,7 @@ function on_load_plugin() {
         require_once(__DIR__ . '/includes/vignettes/dynamic-tag.php');
         require_once(__DIR__ . '/includes/vignettes/player.php');
         require_once(__DIR__ . '/includes/vignettes/affichage.php');
+        require_once(__DIR__ . '/includes/vignettes/migration-prefixe.php');
     }
     
     // Charger les modules frontend

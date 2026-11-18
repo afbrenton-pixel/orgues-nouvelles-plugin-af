@@ -12,8 +12,8 @@
  * - Une vignette modifiée à la main n'est plus touchée par la mise à jour automatique.
  * - Un contenu dépublié met sa vignette en brouillon ; supprimé, la vignette est supprimée.
  *
- * Les valeurs internes `_onv_source_id`, `_onv_source_type`, `_onv_locked`, `_onv_autodraft`
- * et `_onv_sans_image` sont gérées par le code, hors Pods.
+ * Les valeurs internes `_on_source_id`, `_on_source_type`, `_on_locked`, `_on_autodraft`
+ * et `_on_sans_image` sont gérées par le code, hors Pods.
  *
  * @package Orgues-Nouvelles Plugin
  */
@@ -102,9 +102,9 @@ function on_vignettes_lock_if_edited_by_hand( $post_id, $post ) {
 	if ( ! isset( $_POST['post_ID'] ) || (int) $_POST['post_ID'] !== (int) $post_id ) { // phpcs:ignore WordPress.Security.NonceVerification
 		return;
 	}
-	if ( get_post_meta( $post_id, '_onv_source_id', true ) ) {
-		update_post_meta( $post_id, '_onv_locked', 1 );
-		delete_post_meta( $post_id, '_onv_sans_image' );
+	if ( get_post_meta( $post_id, '_on_source_id', true ) ) {
+		update_post_meta( $post_id, '_on_locked', 1 );
+		delete_post_meta( $post_id, '_on_sans_image' );
 	}
 }
 
@@ -128,7 +128,7 @@ function on_vignettes_find( $source_id, $lang = null ) {
 			'post_status'      => array( 'publish', 'draft', 'pending', 'private', 'future', 'trash' ),
 			'numberposts'      => 1,
 			'fields'           => 'ids',
-			'meta_key'         => '_onv_source_id', // phpcs:ignore WordPress.DB.SlowDBQuery
+			'meta_key'         => '_on_source_id', // phpcs:ignore WordPress.DB.SlowDBQuery
 			'meta_value'       => (int) $source_id, // phpcs:ignore WordPress.DB.SlowDBQuery
 			'lang'             => (string) $lang,
 			'suppress_filters' => false,
@@ -147,7 +147,7 @@ function on_vignettes_find_all( $source_id ) {
 				'post_status'      => array( 'publish', 'draft', 'pending', 'private', 'future', 'trash' ),
 				'numberposts'      => -1,
 				'fields'           => 'ids',
-				'meta_key'         => '_onv_source_id', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_key'         => '_on_source_id', // phpcs:ignore WordPress.DB.SlowDBQuery
 				'meta_value'       => (int) $source_id, // phpcs:ignore WordPress.DB.SlowDBQuery
 				'lang'             => '',
 				'suppress_filters' => false,
@@ -207,7 +207,7 @@ function on_vignettes_sync_twins( $source, $vid ) {
 			continue; // vraie traduction de la ressource : elle a sa propre vignette.
 		}
 		$twin = on_vignettes_find( $source->ID, $lang );
-		if ( $twin && ( 'trash' === get_post_status( $twin ) || get_post_meta( $twin, '_onv_locked', true ) ) ) {
+		if ( $twin && ( 'trash' === get_post_status( $twin ) || get_post_meta( $twin, '_on_locked', true ) ) ) {
 			continue; // masquée ou retouchée à la main.
 		}
 		$fr   = get_post( $vid );
@@ -241,9 +241,9 @@ function on_vignettes_sync_twins( $source, $vid ) {
 				update_post_meta( $twin, $key, $val );
 			}
 		}
-		update_post_meta( $twin, '_onv_source_id', (int) $source->ID );
-		update_post_meta( $twin, '_onv_source_type', $source->post_type );
-		update_post_meta( $twin, '_onv_twin', 1 );
+		update_post_meta( $twin, '_on_source_id', (int) $source->ID );
+		update_post_meta( $twin, '_on_source_type', $source->post_type );
+		update_post_meta( $twin, '_on_twin', 1 );
 		$thumb = get_post_thumbnail_id( $vid );
 		if ( $thumb ) {
 			set_post_thumbnail( $twin, $thumb );
@@ -308,11 +308,11 @@ function on_vignettes_vimeo_image_id( $post ) {
 	if ( preg_match( '#https?://[^"\'\s<>]+?\.mp3#i', $c ) ) {
 		return 0; // une ressource audio garde son image.
 	}
-	$cached = (int) get_post_meta( $post->ID, '_onv_vimeo_thumb_' . $vid, true );
+	$cached = (int) get_post_meta( $post->ID, '_on_vimeo_thumb_' . $vid, true );
 	if ( $cached && 'attachment' === get_post_type( $cached ) ) {
 		return $cached;
 	}
-	if ( get_transient( 'onv_vimeo_fail_' . $vid ) ) {
+	if ( get_transient( 'on_vimeo_fail_' . $vid ) ) {
 		return 0;
 	}
 	$hash = '';
@@ -327,7 +327,7 @@ function on_vignettes_vimeo_image_id( $post ) {
 		$thumb = is_array( $data ) && ! empty( $data['thumbnail_url'] ) ? $data['thumbnail_url'] : '';
 	}
 	if ( ! $thumb ) {
-		set_transient( 'onv_vimeo_fail_' . $vid, 1, HOUR_IN_SECONDS );
+		set_transient( 'on_vimeo_fail_' . $vid, 1, HOUR_IN_SECONDS );
 		return 0;
 	}
 	require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -338,10 +338,10 @@ function on_vignettes_vimeo_image_id( $post ) {
 		$att = media_sideload_image( $thumb, 0, get_the_title( $post ) . ' (miniature Vimeo)', 'id' );
 	}
 	if ( is_wp_error( $att ) || ! $att ) {
-		set_transient( 'onv_vimeo_fail_' . $vid, 1, HOUR_IN_SECONDS );
+		set_transient( 'on_vimeo_fail_' . $vid, 1, HOUR_IN_SECONDS );
 		return 0;
 	}
-	update_post_meta( $post->ID, '_onv_vimeo_thumb_' . $vid, (int) $att );
+	update_post_meta( $post->ID, '_on_vimeo_thumb_' . $vid, (int) $att );
 	return (int) $att;
 }
 
@@ -354,11 +354,11 @@ function on_vignettes_vimeo_will_fetch( $post ) {
 	if ( preg_match( '#https?://[^"\'\s<>]+?\.mp3#i', $c ) ) {
 		return false;
 	}
-	$cached = (int) get_post_meta( $post->ID, '_onv_vimeo_thumb_' . $v[1], true );
+	$cached = (int) get_post_meta( $post->ID, '_on_vimeo_thumb_' . $v[1], true );
 	if ( $cached && 'attachment' === get_post_type( $cached ) ) {
 		return false;
 	}
-	return ! get_transient( 'onv_vimeo_fail_' . $v[1] );
+	return ! get_transient( 'on_vimeo_fail_' . $v[1] );
 }
 
 /**
@@ -514,7 +514,7 @@ function on_vignettes_upsert( $post ) {
 					)
 				);
 				on_vignettes_busy( false );
-				update_post_meta( $vid_all, '_onv_autodraft', 1 );
+				update_post_meta( $vid_all, '_on_autodraft', 1 );
 			}
 		}
 		return;
@@ -539,7 +539,7 @@ function on_vignettes_upsert( $post ) {
 	on_vignettes_busy( true );
 	if ( $existing ) {
 		$status = get_post_status( $existing );
-		if ( 'trash' === $status || get_post_meta( $existing, '_onv_locked', true ) ) {
+		if ( 'trash' === $status || get_post_meta( $existing, '_on_locked', true ) ) {
 			on_vignettes_busy( false );
 			return; // supprimée ou modifiée à la main : on n'y touche pas.
 		}
@@ -569,19 +569,19 @@ function on_vignettes_upsert( $post ) {
 
 	// Brouillon faute d'image : drapeau pour la pastille rouge ; il disparaît dès que l'image est là.
 	if ( $problem ) {
-		update_post_meta( $vid, '_onv_image_probleme', $problem );
+		update_post_meta( $vid, '_on_image_probleme', $problem );
 	} else {
-		delete_post_meta( $vid, '_onv_image_probleme' );
+		delete_post_meta( $vid, '_on_image_probleme' );
 	}
 	if ( 'draft' === $new_status ) {
-		update_post_meta( $vid, '_onv_sans_image', 1 );
+		update_post_meta( $vid, '_on_sans_image', 1 );
 	} else {
-		delete_post_meta( $vid, '_onv_sans_image' );
-		delete_post_meta( $vid, '_onv_autodraft' );
+		delete_post_meta( $vid, '_on_sans_image' );
+		delete_post_meta( $vid, '_on_autodraft' );
 	}
 
-	update_post_meta( $vid, '_onv_source_id', (int) $post->ID );
-	update_post_meta( $vid, '_onv_source_type', $post->post_type );
+	update_post_meta( $vid, '_on_source_id', (int) $post->ID );
+	update_post_meta( $vid, '_on_source_type', $post->post_type );
 	update_post_meta( $vid, 'sous_titre', on_vignettes_soustitre_for( $post ) );
 	update_post_meta( $vid, 'lien', esc_url_raw( get_permalink( $post ) ) );
 	if ( $image_id ) {
@@ -626,7 +626,7 @@ function on_vignettes_missing_image_count() {
 			'post_status'      => 'draft',
 			'numberposts'      => -1,
 			'fields'           => 'ids',
-			'meta_key'         => '_onv_sans_image', // phpcs:ignore WordPress.DB.SlowDBQuery
+			'meta_key'         => '_on_sans_image', // phpcs:ignore WordPress.DB.SlowDBQuery
 			'meta_value'       => '1', // phpcs:ignore WordPress.DB.SlowDBQuery
 			'lang'             => '',
 			'suppress_filters' => false,
@@ -675,13 +675,13 @@ add_action(
 			)
 		);
 		foreach ( $ids as $id ) {
-			if ( has_post_thumbnail( $id ) || get_post_meta( $id, '_onv_locked', true ) ) {
+			if ( has_post_thumbnail( $id ) || get_post_meta( $id, '_on_locked', true ) ) {
 				continue; // déjà illustrée, ou modifiée à la main.
 			}
 			if ( has_term( array( 'gauche-ressources', 'gauche-fixe', 'droite-fixe' ), 'zone_vignette', $id ) ) {
 				continue;
 			}
-			$source = (int) get_post_meta( $id, '_onv_source_id', true );
+			$source = (int) get_post_meta( $id, '_on_source_id', true );
 			$image  = $source && get_post( $source ) ? on_vignettes_image_id( get_post( $source ) ) : 0;
 			if ( $image ) {
 				set_post_thumbnail( $id, $image );
@@ -692,7 +692,7 @@ add_action(
 						'post_status' => 'draft',
 					)
 				);
-				update_post_meta( $id, '_onv_sans_image', 1 );
+				update_post_meta( $id, '_on_sans_image', 1 );
 			}
 		}
 		update_option( 'on_vignettes_images_done', '2' );
@@ -718,17 +718,17 @@ add_action(
 				'numberposts'      => -1,
 				'fields'           => 'ids',
 				'suppress_filters' => true,
-				'meta_key'         => '_onv_source_type', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_key'         => '_on_source_type', // phpcs:ignore WordPress.DB.SlowDBQuery
 				'meta_value'       => 'ressource', // phpcs:ignore WordPress.DB.SlowDBQuery
 			)
 		);
 		$budget = 4;
 		$left   = false;
 		foreach ( $ids as $id ) {
-			if ( get_post_meta( $id, '_onv_vimeo_checked', true ) || get_post_meta( $id, '_onv_locked', true ) ) {
+			if ( get_post_meta( $id, '_on_vimeo_checked', true ) || get_post_meta( $id, '_on_locked', true ) ) {
 				continue;
 			}
-			$source = get_post( (int) get_post_meta( $id, '_onv_source_id', true ) );
+			$source = get_post( (int) get_post_meta( $id, '_on_source_id', true ) );
 			if ( $source ) {
 				if ( on_vignettes_vimeo_will_fetch( $source ) ) {
 					if ( $budget <= 0 ) {
@@ -742,7 +742,7 @@ add_action(
 					set_post_thumbnail( $id, $image );
 				}
 			}
-			update_post_meta( $id, '_onv_vimeo_checked', 1 );
+			update_post_meta( $id, '_on_vimeo_checked', 1 );
 		}
 		if ( ! $left ) {
 			update_option( 'on_vignettes_vimeo_done', '1' );
@@ -771,10 +771,10 @@ add_action(
 			)
 		);
 		foreach ( $ids as $id ) {
-			if ( get_post_meta( $id, '_onv_locked', true ) ) {
+			if ( get_post_meta( $id, '_on_locked', true ) ) {
 				continue;
 			}
-			$source = get_post( (int) get_post_meta( $id, '_onv_source_id', true ) );
+			$source = get_post( (int) get_post_meta( $id, '_on_source_id', true ) );
 			$thumb  = get_post_thumbnail_id( $id );
 			if ( ! $source || ! $thumb || ! on_vignettes_needs_image( $source ) ) {
 				continue;
@@ -789,8 +789,8 @@ add_action(
 					)
 				);
 				on_vignettes_busy( false );
-				update_post_meta( $id, '_onv_sans_image', 1 );
-				update_post_meta( $id, '_onv_image_probleme', $problem );
+				update_post_meta( $id, '_on_sans_image', 1 );
+				update_post_meta( $id, '_on_image_probleme', $problem );
 			}
 		}
 		update_option( 'on_vignettes_quality_done', '1' );
@@ -816,13 +816,13 @@ add_action(
 				'numberposts'      => -1,
 				'fields'           => 'ids',
 				'suppress_filters' => true,
-				'meta_key'         => '_onv_source_type', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_key'         => '_on_source_type', // phpcs:ignore WordPress.DB.SlowDBQuery
 				'meta_value'       => 'ressource', // phpcs:ignore WordPress.DB.SlowDBQuery
 			)
 		);
 		foreach ( $ids as $id ) {
-			$source = get_post( (int) get_post_meta( $id, '_onv_source_id', true ) );
-			if ( $source && on_vignettes_is_video( $source ) && ! get_post_meta( $id, '_onv_locked', true ) ) {
+			$source = get_post( (int) get_post_meta( $id, '_on_source_id', true ) );
+			if ( $source && on_vignettes_is_video( $source ) && ! get_post_meta( $id, '_on_locked', true ) ) {
 				wp_set_object_terms( $id, array( (int) $zone->term_id ), 'zone_vignette' );
 			}
 		}
@@ -851,12 +851,12 @@ add_action(
 				'fields'           => 'ids',
 				'lang'             => pll_default_language(),
 				'suppress_filters' => false,
-				'meta_key'         => '_onv_source_type', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_key'         => '_on_source_type', // phpcs:ignore WordPress.DB.SlowDBQuery
 				'meta_value'       => 'ressource', // phpcs:ignore WordPress.DB.SlowDBQuery
 			)
 		);
 		foreach ( $ids as $id ) {
-			$source = get_post( (int) get_post_meta( $id, '_onv_source_id', true ) );
+			$source = get_post( (int) get_post_meta( $id, '_on_source_id', true ) );
 			if ( $source && on_vignettes_is_shareable( $source ) && on_vignettes_source_is_public( $source ) ) {
 				on_vignettes_sync_twins( $source, $id );
 			}
