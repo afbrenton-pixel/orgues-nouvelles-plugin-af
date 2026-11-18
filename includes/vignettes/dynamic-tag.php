@@ -38,7 +38,7 @@ add_action(
 						$url = reset( $url );
 					}
 					if ( ! $url && $id ) {
-						$source = (int) get_post_meta( $id, '_onv_source_id', true );
+						$source = (int) get_post_meta( $id, '_on_source_id', true );
 						$url    = $source ? get_permalink( $source ) : '';
 					}
 					return $url ? esc_url_raw( (string) $url ) : '';
