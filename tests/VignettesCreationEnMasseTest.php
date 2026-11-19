@@ -9,14 +9,13 @@ if ( ! function_exists( 'apply_filters' ) ) { function apply_filters( $hook, $va
 require_once dirname( __DIR__ ) . '/includes/vignettes/creation-en-masse.php';
 
 class VignettesCreationEnMasseTest extends TestCase {
-	public function test_default_exclusion_keeps_real_books_and_drops_the_rest() {
-		$p = on_vignettes_bulk_default_exclusion();
-		foreach ( array( 'Orgues Nouvelles n°73', 'ONED12 Dossier', 'CahPart 61', 'Test produit', 'Abonnement numérique', 'Download Jehan Alain', 'Booklet', 'Miscellanées 1 (in English)', 'Calendrier 2027', 'Calendar 2027' ) as $title ) {
-			$this->assertTrue( on_vignettes_bulk_title_matches( $title, $p ), $title . ' doit être écarté' );
-		}
-		foreach ( array( 'Miscellanées 1', 'Jehan Alain', 'Itinéraires', 'Louis Thiry' ) as $title ) {
-			$this->assertFalse( on_vignettes_bulk_title_matches( $title, $p ), $title . ' doit être gardé' );
-		}
+	public function test_example_patterns_match_what_the_help_text_says() {
+		$this->assertTrue( on_vignettes_bulk_title_matches( 'Calendrier 2027', 'Calendrier|Calendar' ) );
+		$this->assertTrue( on_vignettes_bulk_title_matches( 'Calendar 2027', 'Calendrier|Calendar' ) );
+		$this->assertTrue( on_vignettes_bulk_title_matches( 'Test produit', '^Test' ) );
+		$this->assertFalse( on_vignettes_bulk_title_matches( 'Le grand Test', '^Test' ) );
+		$this->assertTrue( on_vignettes_bulk_title_matches( 'Miscellanées 1 (in English)', 'Download|Booklet|in English' ) );
+		$this->assertFalse( on_vignettes_bulk_title_matches( 'Miscellanées 1', 'Download|Booklet|in English' ) );
 	}
 
 	public function test_titles_are_compared_without_tags_entities_or_case() {
