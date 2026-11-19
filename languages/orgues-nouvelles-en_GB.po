@@ -1098,149 +1098,153 @@ msgstr "CDs"
 msgid "Produits de la boutique"
 msgstr "Shop products"
 
-#: includes/vignettes/creation-en-masse.php:345 includes/vignettes/creation-en-masse.php:346 includes/vignettes/creation-en-masse.php:405 includes/vignettes/creation-en-masse.php:447
+#: includes/vignettes/creation-en-masse.php:337 includes/vignettes/creation-en-masse.php:338 includes/vignettes/creation-en-masse.php:397 includes/vignettes/creation-en-masse.php:440
 msgid "Créer les vignettes"
 msgstr "Create the thumbnails"
 
-#: includes/vignettes/creation-en-masse.php:361
+#: includes/vignettes/creation-en-masse.php:353
 msgid "Simulation en cours…"
 msgstr "Simulation in progress…"
 
-#: includes/vignettes/creation-en-masse.php:362
+#: includes/vignettes/creation-en-masse.php:354
 msgid "Création en cours : ne fermez pas cette page."
 msgstr "Creation in progress: do not close this page."
 
-#: includes/vignettes/creation-en-masse.php:364
+#: includes/vignettes/creation-en-masse.php:356
 #, php-format
 msgid "Erreur : %s"
 msgstr "Error: %s"
 
-#: includes/vignettes/creation-en-masse.php:366
+#: includes/vignettes/creation-en-masse.php:358
 msgid "Action réservée aux administrateurs."
 msgstr "This action is reserved for administrators."
 
-#: includes/vignettes/creation-en-masse.php:367
+#: includes/vignettes/creation-en-masse.php:359
 msgid "Le type de contenu « Vignettes accueil » est absent (Pods)."
 msgstr "The “Home page thumbnails” content type is missing (Pods)."
 
-#: includes/vignettes/creation-en-masse.php:368
+#: includes/vignettes/creation-en-masse.php:360
 msgid "Aucune création en cours : relancez la simulation."
 msgstr "No creation in progress: run the simulation again."
 
-#: includes/vignettes/creation-en-masse.php:369
+#: includes/vignettes/creation-en-masse.php:361
 msgid "Cochez au moins un type de contenu."
 msgstr "Tick at least one content type."
 
-#: includes/vignettes/creation-en-masse.php:370
+#: includes/vignettes/creation-en-masse.php:362
 msgid "La date de départ n'est pas valable."
 msgstr "The start date is not valid."
 
-#: includes/vignettes/creation-en-masse.php:371
-msgid "Le motif d'exclusion des produits n'est pas une expression régulière valable."
-msgstr "The product exclusion pattern is not a valid regular expression."
+#: includes/vignettes/creation-en-masse.php:363
+msgid "Le motif des titres à écarter n'est pas une expression régulière valable."
+msgstr "The pattern for titles to leave out is not a valid regular expression."
 
-#: includes/vignettes/creation-en-masse.php:373
+#: includes/vignettes/creation-en-masse.php:365
 msgid "La connexion avec le site a échoué. Relancez la simulation puis la création : ce qui est déjà créé ne sera pas refait."
 msgstr "The connection with the site failed. Run the simulation again, then the creation: what is already created will not be redone."
 
-#: includes/vignettes/creation-en-masse.php:375
+#: includes/vignettes/creation-en-masse.php:367
 #, php-format
 msgid "%1$d sur %2$d"
 msgstr "%1$d of %2$d"
 
-#: includes/vignettes/creation-en-masse.php:376
+#: includes/vignettes/creation-en-masse.php:368
 msgid "Rien à créer avec ces réglages."
 msgstr "Nothing to create with these settings."
 
-#: includes/vignettes/creation-en-masse.php:377
+#: includes/vignettes/creation-en-masse.php:369
 msgid "Type"
 msgstr "Type"
 
-#: includes/vignettes/creation-en-masse.php:378
+#: includes/vignettes/creation-en-masse.php:370
 msgid "Contenus publiés retenus"
 msgstr "Published items selected"
 
-#: includes/vignettes/creation-en-masse.php:379
+#: includes/vignettes/creation-en-masse.php:371
 msgid "Ont déjà une vignette"
 msgstr "Already have a thumbnail"
 
-#: includes/vignettes/creation-en-masse.php:380
+#: includes/vignettes/creation-en-masse.php:372
 msgid "À traiter"
 msgstr "To process"
 
-#: includes/vignettes/creation-en-masse.php:382
+#: includes/vignettes/creation-en-masse.php:374
 #, php-format
 msgid "%d contenu(s) à traiter. Si cela vous convient, cliquez sur « Créer les vignettes »."
 msgstr "%d item(s) to process. If this suits you, click “Create the thumbnails”."
 
-#: includes/vignettes/creation-en-masse.php:383
+#: includes/vignettes/creation-en-masse.php:375
 msgid "Les premiers contenus à traiter :"
 msgstr "The first items to process:"
 
-#: includes/vignettes/creation-en-masse.php:384
+#: includes/vignettes/creation-en-masse.php:376
 msgid "créées"
 msgstr "created"
 
-#: includes/vignettes/creation-en-masse.php:385
+#: includes/vignettes/creation-en-masse.php:377
 msgid "mises à jour"
 msgstr "updated"
 
-#: includes/vignettes/creation-en-masse.php:386
+#: includes/vignettes/creation-en-masse.php:378
 msgid "créées en brouillon (image manquante)"
 msgstr "created as drafts (missing image)"
 
-#: includes/vignettes/creation-en-masse.php:387
+#: includes/vignettes/creation-en-masse.php:379
 msgid "ignorées"
 msgstr "skipped"
 
-#: includes/vignettes/creation-en-masse.php:388
+#: includes/vignettes/creation-en-masse.php:380
 msgid "en échec"
 msgstr "failed"
 
-#: includes/vignettes/creation-en-masse.php:389
+#: includes/vignettes/creation-en-masse.php:381
 msgid "Terminé. Le cache d'Elementor a été vidé."
 msgstr "Done. The Elementor cache has been cleared."
 
-#: includes/vignettes/creation-en-masse.php:390
+#: includes/vignettes/creation-en-masse.php:382
 msgid "Les vignettes en brouillon attendent une image : voir la pastille rouge dans le menu « Vignettes accueil »."
 msgstr "Thumbnails saved as drafts are waiting for an image: see the red badge in the “Home page thumbnails” menu."
 
-#: includes/vignettes/creation-en-masse.php:406
+#: includes/vignettes/creation-en-masse.php:398
 msgid "Le plugin crée une vignette quand on enregistre un contenu. Cette page crée celles des contenus déjà publiés, avec leur jumelle anglaise quand il y en a une. Les contenus ne sont pas réenregistrés : leur date de modification ne change pas. Vous pouvez relancer sans risque : les vignettes modifiées à la main ou mises à la corbeille ne sont pas touchées."
 msgstr "The plugin creates a thumbnail when a content item is saved. This page creates the ones for items that are already published, with their English twin where there is one. The items are not saved again: their modification date does not change. You can run it again safely: thumbnails edited by hand or moved to the trash are left alone."
 
-#: includes/vignettes/creation-en-masse.php:410
+#: includes/vignettes/creation-en-masse.php:402
 msgid "Types de contenu"
 msgstr "Content types"
 
-#: includes/vignettes/creation-en-masse.php:418
-msgid "Produits : décochés par défaut. Quand on les coche, seuls les produits dont le titre ne correspond pas au motif ci-dessous sont retenus."
-msgstr "Products: unticked by default. When ticked, only products whose title does not match the pattern below are included."
+#: includes/vignettes/creation-en-masse.php:410
+msgid "Produits : décochés par défaut."
+msgstr "Products: unticked by default."
 
-#: includes/vignettes/creation-en-masse.php:422
+#: includes/vignettes/creation-en-masse.php:414
 msgid "Publiés depuis le"
 msgstr "Published since"
 
-#: includes/vignettes/creation-en-masse.php:425
+#: includes/vignettes/creation-en-masse.php:417
 msgid "Facultatif. Vide : tous les contenus publiés, quelle que soit leur date."
 msgstr "Optional. Empty: all published items, whatever their date."
 
+#: includes/vignettes/creation-en-masse.php:421
+msgid "Titres à écarter"
+msgstr "Titles to leave out"
+
+#: includes/vignettes/creation-en-masse.php:424
+msgid "Facultatif. Vide : aucun contenu n'est écarté. Sinon, expression régulière appliquée au titre de tous les types cochés (majuscules et minuscules sans importance) : les contenus dont le titre correspond sont écartés. Elle marche mieux avec un seul type coché."
+msgstr "Optional. Empty: nothing is left out. Otherwise, a regular expression applied to the title of all ticked types (upper and lower case do not matter): content whose title matches is left out. It works best with a single type ticked."
+
+#: includes/vignettes/creation-en-masse.php:425
+msgid "Exemples : « Calendrier|Calendar » écarte les titres qui contiennent l'un ou l'autre mot ; « ^Test » écarte les titres qui commencent par Test ; « Download|Booklet|in English » écarte les fichiers à télécharger et les versions anglaises en double."
+msgstr "Examples: “Calendrier|Calendar” leaves out titles containing either word; “^Test” leaves out titles starting with Test; “Download|Booklet|in English” leaves out downloadable files and duplicate English versions."
+
 #: includes/vignettes/creation-en-masse.php:429
-msgid "Produits à écarter"
-msgstr "Products to leave out"
-
-#: includes/vignettes/creation-en-masse.php:432
-msgid "Expression régulière appliquée au titre des produits (majuscules et minuscules sans importance). Par défaut : numéros de la revue, fichiers à télécharger, cahiers de partitions, abonnements, produits de test, versions anglaises en double et calendrier (sa vignette est faite à la main)."
-msgstr "Regular expression applied to product titles (upper and lower case do not matter). By default: magazine issues, downloadable files, score booklets, subscriptions, test products, duplicate English versions and the calendar (its thumbnail is made by hand)."
-
-#: includes/vignettes/creation-en-masse.php:436
 msgid "Contenus déjà dotés d'une vignette"
 msgstr "Items that already have a thumbnail"
 
-#: includes/vignettes/creation-en-masse.php:440
+#: includes/vignettes/creation-en-masse.php:433
 msgid "Ne traiter que les contenus qui n'ont pas encore de vignette"
 msgstr "Only process items that do not have a thumbnail yet"
 
-#: includes/vignettes/creation-en-masse.php:446
+#: includes/vignettes/creation-en-masse.php:439
 msgid "Simulation"
 msgstr "Simulation"

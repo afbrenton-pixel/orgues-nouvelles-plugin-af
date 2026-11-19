@@ -39,14 +39,6 @@ function on_vignettes_bulk_labels() {
 	return array_intersect_key( $all, array_flip( $types ) );
 }
 
-/**
- * Titres de produits écartés par défaut : numéros de la revue, fichiers à télécharger, cahiers de partitions,
- * abonnements, produits de test, versions anglaises en double, calendrier (sa vignette est faite à la main).
- */
-function on_vignettes_bulk_default_exclusion() {
-	return (string) apply_filters( 'on_vignettes_bulk_default_exclusion', '^(Orgues Nouvelles n°\d+|ONED|CahPart|Test|Abonnement)|Download|Booklet|in English|Calendrier|Calendar' );
-}
-
 /** Expression régulière complète (avec délimiteurs) pour un motif saisi à la main. */
 function on_vignettes_bulk_regex( $pattern ) {
 	return '#' . str_replace( '#', '\#', (string) $pattern ) . '#iu';
@@ -171,7 +163,7 @@ function on_vignettes_bulk_collect( $params ) {
 		);
 		foreach ( get_posts( $args ) as $id ) {
 			$title = get_the_title( $id );
-			if ( 'product' === $type && on_vignettes_bulk_title_matches( $title, $params['exclude'] ) ) {
+			if ( on_vignettes_bulk_title_matches( $title, $params['exclude'] ) ) {
 				continue;
 			}
 			$has = (bool) on_vignettes_find( $id );
@@ -368,7 +360,7 @@ add_action(
 						'nostate'   => __( 'Aucune création en cours : relancez la simulation.', 'orgues-nouvelles' ),
 						'types'     => __( 'Cochez au moins un type de contenu.', 'orgues-nouvelles' ),
 						'date'      => __( 'La date de départ n\'est pas valable.', 'orgues-nouvelles' ),
-						'motif'     => __( 'Le motif d\'exclusion des produits n\'est pas une expression régulière valable.', 'orgues-nouvelles' ),
+						'motif'     => __( 'Le motif des titres à écarter n\'est pas une expression régulière valable.', 'orgues-nouvelles' ),
 					),
 					'network'      => __( 'La connexion avec le site a échoué. Relancez la simulation puis la création : ce qui est déjà créé ne sera pas refait.', 'orgues-nouvelles' ),
 					/* translators: 1: nombre de contenus traités, 2: nombre total. */
@@ -415,7 +407,7 @@ function on_vignettes_bulk_page() {
 								<?php echo esc_html( $label ); ?>
 							</label>
 						<?php endforeach; ?>
-						<p class="description"><?php esc_html_e( 'Produits : décochés par défaut. Quand on les coche, seuls les produits dont le titre ne correspond pas au motif ci-dessous sont retenus.', 'orgues-nouvelles' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Produits : décochés par défaut.', 'orgues-nouvelles' ); ?></p>
 					</td>
 				</tr>
 				<tr>
@@ -426,10 +418,11 @@ function on_vignettes_bulk_page() {
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="on-bulk-exclude"><?php esc_html_e( 'Produits à écarter', 'orgues-nouvelles' ); ?></label></th>
+					<th scope="row"><label for="on-bulk-exclude"><?php esc_html_e( 'Titres à écarter', 'orgues-nouvelles' ); ?></label></th>
 					<td>
-						<input type="text" id="on-bulk-exclude" name="exclude" class="large-text code" value="<?php echo esc_attr( on_vignettes_bulk_default_exclusion() ); ?>">
-						<p class="description"><?php esc_html_e( 'Expression régulière appliquée au titre des produits (majuscules et minuscules sans importance). Par défaut : numéros de la revue, fichiers à télécharger, cahiers de partitions, abonnements, produits de test, versions anglaises en double et calendrier (sa vignette est faite à la main).', 'orgues-nouvelles' ); ?></p>
+						<input type="text" id="on-bulk-exclude" name="exclude" class="large-text code" value="" placeholder="Calendrier|Calendar">
+						<p class="description"><?php esc_html_e( 'Facultatif. Vide : aucun contenu n\'est écarté. Sinon, expression régulière appliquée au titre de tous les types cochés (majuscules et minuscules sans importance) : les contenus dont le titre correspond sont écartés. Elle marche mieux avec un seul type coché.', 'orgues-nouvelles' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Exemples : « Calendrier|Calendar » écarte les titres qui contiennent l\'un ou l\'autre mot ; « ^Test » écarte les titres qui commencent par Test ; « Download|Booklet|in English » écarte les fichiers à télécharger et les versions anglaises en double.', 'orgues-nouvelles' ); ?></p>
 					</td>
 				</tr>
 				<tr>

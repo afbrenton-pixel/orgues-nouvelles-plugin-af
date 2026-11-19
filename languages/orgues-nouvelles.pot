@@ -1099,149 +1099,153 @@ msgstr ""
 msgid "Produits de la boutique"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:345 includes/vignettes/creation-en-masse.php:346 includes/vignettes/creation-en-masse.php:405 includes/vignettes/creation-en-masse.php:447
+#: includes/vignettes/creation-en-masse.php:337 includes/vignettes/creation-en-masse.php:338 includes/vignettes/creation-en-masse.php:397 includes/vignettes/creation-en-masse.php:440
 msgid "Créer les vignettes"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:361
+#: includes/vignettes/creation-en-masse.php:353
 msgid "Simulation en cours…"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:362
+#: includes/vignettes/creation-en-masse.php:354
 msgid "Création en cours : ne fermez pas cette page."
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:364
+#: includes/vignettes/creation-en-masse.php:356
 #, php-format
 msgid "Erreur : %s"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:366
+#: includes/vignettes/creation-en-masse.php:358
 msgid "Action réservée aux administrateurs."
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:367
+#: includes/vignettes/creation-en-masse.php:359
 msgid "Le type de contenu « Vignettes accueil » est absent (Pods)."
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:368
+#: includes/vignettes/creation-en-masse.php:360
 msgid "Aucune création en cours : relancez la simulation."
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:369
+#: includes/vignettes/creation-en-masse.php:361
 msgid "Cochez au moins un type de contenu."
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:370
+#: includes/vignettes/creation-en-masse.php:362
 msgid "La date de départ n'est pas valable."
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:371
-msgid "Le motif d'exclusion des produits n'est pas une expression régulière valable."
+#: includes/vignettes/creation-en-masse.php:363
+msgid "Le motif des titres à écarter n'est pas une expression régulière valable."
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:373
+#: includes/vignettes/creation-en-masse.php:365
 msgid "La connexion avec le site a échoué. Relancez la simulation puis la création : ce qui est déjà créé ne sera pas refait."
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:375
+#: includes/vignettes/creation-en-masse.php:367
 #, php-format
 msgid "%1$d sur %2$d"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:376
+#: includes/vignettes/creation-en-masse.php:368
 msgid "Rien à créer avec ces réglages."
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:377
+#: includes/vignettes/creation-en-masse.php:369
 msgid "Type"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:378
+#: includes/vignettes/creation-en-masse.php:370
 msgid "Contenus publiés retenus"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:379
+#: includes/vignettes/creation-en-masse.php:371
 msgid "Ont déjà une vignette"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:380
+#: includes/vignettes/creation-en-masse.php:372
 msgid "À traiter"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:382
+#: includes/vignettes/creation-en-masse.php:374
 #, php-format
 msgid "%d contenu(s) à traiter. Si cela vous convient, cliquez sur « Créer les vignettes »."
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:383
+#: includes/vignettes/creation-en-masse.php:375
 msgid "Les premiers contenus à traiter :"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:384
+#: includes/vignettes/creation-en-masse.php:376
 msgid "créées"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:385
+#: includes/vignettes/creation-en-masse.php:377
 msgid "mises à jour"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:386
+#: includes/vignettes/creation-en-masse.php:378
 msgid "créées en brouillon (image manquante)"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:387
+#: includes/vignettes/creation-en-masse.php:379
 msgid "ignorées"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:388
+#: includes/vignettes/creation-en-masse.php:380
 msgid "en échec"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:389
+#: includes/vignettes/creation-en-masse.php:381
 msgid "Terminé. Le cache d'Elementor a été vidé."
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:390
+#: includes/vignettes/creation-en-masse.php:382
 msgid "Les vignettes en brouillon attendent une image : voir la pastille rouge dans le menu « Vignettes accueil »."
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:406
+#: includes/vignettes/creation-en-masse.php:398
 msgid "Le plugin crée une vignette quand on enregistre un contenu. Cette page crée celles des contenus déjà publiés, avec leur jumelle anglaise quand il y en a une. Les contenus ne sont pas réenregistrés : leur date de modification ne change pas. Vous pouvez relancer sans risque : les vignettes modifiées à la main ou mises à la corbeille ne sont pas touchées."
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:410
+#: includes/vignettes/creation-en-masse.php:402
 msgid "Types de contenu"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:418
-msgid "Produits : décochés par défaut. Quand on les coche, seuls les produits dont le titre ne correspond pas au motif ci-dessous sont retenus."
+#: includes/vignettes/creation-en-masse.php:410
+msgid "Produits : décochés par défaut."
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:422
+#: includes/vignettes/creation-en-masse.php:414
 msgid "Publiés depuis le"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:425
+#: includes/vignettes/creation-en-masse.php:417
 msgid "Facultatif. Vide : tous les contenus publiés, quelle que soit leur date."
 msgstr ""
 
+#: includes/vignettes/creation-en-masse.php:421
+msgid "Titres à écarter"
+msgstr ""
+
+#: includes/vignettes/creation-en-masse.php:424
+msgid "Facultatif. Vide : aucun contenu n'est écarté. Sinon, expression régulière appliquée au titre de tous les types cochés (majuscules et minuscules sans importance) : les contenus dont le titre correspond sont écartés. Elle marche mieux avec un seul type coché."
+msgstr ""
+
+#: includes/vignettes/creation-en-masse.php:425
+msgid "Exemples : « Calendrier|Calendar » écarte les titres qui contiennent l'un ou l'autre mot ; « ^Test » écarte les titres qui commencent par Test ; « Download|Booklet|in English » écarte les fichiers à télécharger et les versions anglaises en double."
+msgstr ""
+
 #: includes/vignettes/creation-en-masse.php:429
-msgid "Produits à écarter"
-msgstr ""
-
-#: includes/vignettes/creation-en-masse.php:432
-msgid "Expression régulière appliquée au titre des produits (majuscules et minuscules sans importance). Par défaut : numéros de la revue, fichiers à télécharger, cahiers de partitions, abonnements, produits de test, versions anglaises en double et calendrier (sa vignette est faite à la main)."
-msgstr ""
-
-#: includes/vignettes/creation-en-masse.php:436
 msgid "Contenus déjà dotés d'une vignette"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:440
+#: includes/vignettes/creation-en-masse.php:433
 msgid "Ne traiter que les contenus qui n'ont pas encore de vignette"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:446
+#: includes/vignettes/creation-en-masse.php:439
 msgid "Simulation"
 msgstr ""

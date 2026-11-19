@@ -122,7 +122,7 @@ Tous les noms propres aux vignettes commencent par `on` comme le reste du plugin
 
 Menu « Vignettes accueil » > « Créer les vignettes » (administrateurs seulement). Le plugin ne crée une vignette qu'à l'enregistrement d'un contenu ; cette page crée celles des contenus **déjà publiés** (avec leur jumelle anglaise quand il y en a une), par exemple une seule fois à la mise en production.
 
-1. Choisir les types (actualités, ressources, CD, produits ; les produits sont décochés au départ), une date de départ facultative et, pour les produits, un motif d'exclusion (expression régulière sur le titre ; par défaut : numéros de la revue, fichiers à télécharger, cahiers de partitions, abonnements, produits de test, doublons anglais, calendrier). Le motif par défaut se change avec le filtre `on_vignettes_bulk_default_exclusion`.
+1. Choisir les types (actualités, ressources, CD, produits ; les produits sont décochés au départ), une date de départ facultative et, si besoin, un motif de titres à écarter (expression régulière appliquée au titre de tous les types cochés ; vide au départ : rien n'est écarté ; plus pratique avec un seul type coché). Exemples : `Calendrier|Calendar`, `^Test`, `Download|Booklet|in English`.
 2. **Simulation** : tableau par type (contenus retenus, ceux qui ont déjà une vignette, ceux à traiter) et les 30 premiers titres. Rien n'est écrit. Le bouton « Créer » reste grisé tant que la simulation n'est pas faite avec les réglages affichés.
 3. **Créer les vignettes** : traitement par lots de 5 contenus (au plus 20 secondes par requête) avec barre de progression. À la fin, le cache d'Elementor est vidé.
 
