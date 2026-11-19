@@ -1,0 +1,137 @@
+/*
+ * Page d'accueil : mise en page des colonnes (reprise de l'ancien plugin « Vignettes d'accueil »).
+ * Les parties fixes (newsletter, calendrier) utilisent l'option « Sticky » d'Elementor Pro sur un conteneur.
+ * Classes à mettre dans « Classes CSS » des conteneurs Elementor :
+ *   on-col-centre (colonne centrale), on-col-bonus (colonne de gauche), on-col-pubs (colonne de droite).
+ * Titres de section : <h3 class="on-sep-title">.
+ */
+.on-sep-title {
+	margin: 0;
+	text-align: center;
+	font-size: 1.15rem;
+	line-height: 1.2;
+	letter-spacing: .3em;
+	text-transform: uppercase;
+	color: var(--e-global-color-primary, #444);
+	font-weight: 600;
+}
+
+/* Tablette et mobile : ordre centre, ressources, pubs */
+@media (max-width: 1024px) {
+	.e-con.on-col-centre { order: 1 !important; }
+	.e-con.on-col-bonus { order: 2 !important; }
+	.e-con.on-col-pubs { order: 3 !important; }
+}
+
+@media (min-width: 1025px) {
+	/* Les trois colonnes occupent toute la largeur */
+	.e-con:has(> .on-col-centre) { justify-content: space-between; }
+}
+
+/* Newsletter et pubs : même rapport qu'une vignette produit, image entière */
+.on-col-bonus .elementor-widget-loop-grid:first-child img,
+.on-col-pubs .e-loop-item img {
+	aspect-ratio: 1 / 1.3;
+	object-fit: contain;
+	width: 100%;
+}
+
+/* Téléphone : pubs en 2 colonnes, format portrait */
+@media (max-width: 767px) {
+	.on-col-pubs .e-loop-item img { aspect-ratio: 1 / 1.285; }
+}
+
+/* ---- Lecteur audio / vidéo des vignettes (voir assets/js/vignettes-player.js) ---- */
+.on-has-audio .on-media > a,
+.on-has-video .on-media > a { position: relative; display: block; cursor: pointer; }
+.on-play { position: absolute; left: 50%; top: 50%; width: 54px; height: 54px; margin: -27px 0 0 -27px; pointer-events: none; opacity: .95; transition: transform .15s; }
+.on-has-audio .on-media > a:hover .on-play,
+.on-has-video .on-media > a:hover .on-play { transform: scale(1.1); }
+.on-has-audio.on-playing .on-play { display: none; }
+.on-has-audio.on-active .on-media > a::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 3px var(--e-global-color-e778dc5, #f0502a); pointer-events: none; }
+.on-mini { display: none; align-items: center; gap: 7px; margin: 10px 0 4px; }
+.on-active .on-mini { display: inline-flex; }
+.on-mbtn { width: 26px; height: 26px; padding: 0; border: 2px solid var(--e-global-color-e778dc5, #f0502a); border-radius: 50%; background: #fff; color: var(--e-global-color-e778dc5, #f0502a); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; line-height: 1; }
+.on-mbtn:hover { background: var(--e-global-color-e778dc5, #f0502a); color: #fff; }
+.on-bar { display: inline-block; width: 64px; height: 7px; background: #cfd4e0; border-radius: 4px; overflow: hidden; cursor: pointer; }
+.on-fill { display: block; height: 100%; width: 0; background: var(--e-global-color-e778dc5, #f0502a); }
+.on-count { font-size: .7rem; color: #5b6377; font-weight: 700; }
+.on-nbtn { display: none; width: 22px; height: 22px; padding: 0; border: 0; background: transparent; color: var(--e-global-color-e778dc5, #f0502a); cursor: pointer; align-items: center; justify-content: center; }
+.on-multi .on-nbtn { display: inline-flex; }
+.on-nbtn:hover { color: #1f2a44; }
+.on-multi .on-mini { gap: 4px; }
+.on-multi .on-bar { width: 40px; }
+
+/* Vidéo : la vignette prend toute la rangée, le lecteur remplace l'image */
+.e-loop-item.on-video-on { grid-column: 1 / -1; }
+.on-video-on .elementor-widget-image { aspect-ratio: 16 / 9 !important; width: 100% !important; height: auto !important; flex-shrink: 0 !important; }
+.on-video-on .on-media { position: absolute !important; inset: 0; width: 100% !important; height: 100% !important; aspect-ratio: auto !important; background: #000; }
+.on-vwrap { position: absolute; inset: 0; }
+.on-vwrap iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+/* Ressources compactes : pictogramme à côté de l'étiquette, vraie barre de lecteur */
+.on-trow { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; }
+.on-picto { flex: 0 0 auto; width: 1.6em; height: 1.6em; color: #1f2a44; display: block; }
+.on-picto svg { display: block; width: 100%; height: 100%; }
+.on-has-audio .on-picto { cursor: pointer; }
+.on-barfull .on-mini { display: flex; width: 100%; margin: 10px 0 0; gap: 8px; box-sizing: border-box; }
+.on-barfull .on-bar { flex: 1 1 auto; height: 8px; cursor: pointer; }
+.on-barfull .on-mbtn { flex: 0 0 auto; }
+.on-compactcard.on-active { border-left: 3px solid var(--e-global-color-e778dc5, #f0502a); padding-left: 8px; }
+
+/* Croix pour fermer la vidéo et revenir à la grille */
+
+.on-vclose { position: absolute; top: 6px; right: 6px; z-index: 5; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 0; background: transparent !important; box-shadow: none; color: #fff !important; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; line-height: 1; filter: drop-shadow(0 0 2px rgba(0,0,0,.8)); opacity: .9; }
+.on-vclose svg { width: 12px; height: 12px; }
+.on-vclose:hover { opacity: 1; transform: scale(1.15); }
+
+/* Lecteur audio : barre de lecture soignée (neutralise le style des boutons du thème) */
+.on-mini { display: none; align-items: center; gap: 8px; }
+.on-active .on-mini { display: flex; }
+.on-mini button { -webkit-appearance: none; appearance: none; box-shadow: none !important; text-transform: none; letter-spacing: 0; min-width: 0; min-height: 0; margin: 0; font: inherit; }
+.on-mini .on-mbtn { order: 1; flex: 0 0 auto; width: 28px; height: 28px; border: 0 !important; border-radius: 50% !important; background: var(--e-global-color-e778dc5, #f0502a) !important; color: #fff !important; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+.on-mini .on-mbtn:hover { background: #1f2a44 !important; }
+.on-mini .on-mbtn svg { width: 11px; height: 11px; }
+.on-mini .on-nbtn { display: none !important; flex: 0 0 auto; width: 22px; height: 22px; padding: 0; border: 0 !important; border-radius: 0 !important; background: transparent !important; color: #1f2a44 !important; align-items: center; justify-content: center; }
+.on-multi .on-mini .on-nbtn { display: inline-flex !important; }
+.on-mini .on-nbtn:hover { color: var(--e-global-color-e778dc5, #f0502a) !important; }
+.on-mini .on-prev { order: 2; }
+.on-mini .on-bar { order: 3; flex: 1 1 auto; width: auto; min-width: 40px; height: 6px; background: #cfd4e0; border-radius: 3px; }
+.on-mini .on-fill { background: var(--e-global-color-e778dc5, #f0502a); border-radius: 3px; }
+.on-mini .on-count { order: 4; flex: 0 0 auto; font-size: .7rem; font-weight: 700; color: #5b6377; }
+.on-mini .on-next { order: 5; }
+.on-barfull .on-mini { width: 100%; margin: 10px 0 0; }
+
+/* Croix : x gras blanc, sans cadre (neutralise bordure/contour des boutons du thème) */
+.on-vwrap button.on-vclose, .on-vwrap button.on-vclose:hover, .on-vwrap button.on-vclose:active { border: 0 !important; outline: none !important; box-shadow: none !important; background: transparent !important; color: #fff !important; border-radius: 0; padding: 0; min-width: 0; min-height: 0; -webkit-appearance: none; appearance: none; }
+.on-vwrap button.on-vclose:focus { outline: none !important; box-shadow: none !important; }
+/* Navigation au clavier : le bouton de fermeture garde un indicateur de focus visible. */
+.on-vwrap button.on-vclose:focus-visible { outline: 2px solid #fff !important; outline-offset: 2px; background: rgba(0,0,0,.55) !important; }
+.on-vwrap button.on-vclose { width: 24px; height: 24px; top: 4px; right: 4px; }
+.on-vwrap button.on-vclose svg { width: 15px; height: 15px; }
+
+/* Rangée newsletter + calendrier (tablette et téléphone) : même cadre portrait pour les deux images */
+.on-fixes-row .e-loop-item img { aspect-ratio: 1 / 1.3; object-fit: contain; width: 100%; }
+@media (max-width: 767px) {
+	.on-fixes-row .e-loop-item img { aspect-ratio: 1 / 1.285; }
+}
+
+/* ---- Éléments masqués au choix, vignette par vignette (voir includes/vignettes/affichage.php) ---- */
+.on-sans-titre .on-w-titre,
+.on-sans-description .on-w-description { display: none !important; }
+
+/* Audio avec image : la barre de lecture est visible dès l'affichage (la hauteur de la vignette ne change plus au clic). */
+.on-has-audio:not(.on-compactcard) .on-mini { display: flex; }
+
+/* Vignette « playlist » : liste de pistes sous le texte (construite par vignettes-player.js). */
+.on-pl { list-style: none; margin: 10px 0 0; padding: 0; width: 100%; }
+.on-pl li { display: flex; align-items: baseline; gap: 8px; padding: 6px 4px; border-top: 1px solid #cfd4e0; cursor: pointer; font-size: .85rem; line-height: 1.25; }
+.on-pl li:last-child { border-bottom: 1px solid #cfd4e0; }
+.on-pl li:hover, .on-pl li:focus-visible { color: var(--e-global-color-e778dc5, #f0502a); outline: 0; }
+.on-pl .on-pl-n { flex: 0 0 1.4em; color: #5b6377; font-weight: 700; font-size: .75rem; }
+.on-pl .on-pl-t { flex: 1 1 auto; min-width: 0; }
+.on-pl .on-pl-a { display: block; font-size: .75rem; color: #5b6377; }
+.on-pl .on-pl-d { flex: 0 0 auto; color: #5b6377; font-size: .75rem; }
+.on-pl li.on-current { color: var(--e-global-color-e778dc5, #f0502a); font-weight: 700; }
+.on-playlist:not(.on-pl-open) .on-pl .on-pl-more { display: none; }
+.on-pl-toggle { -webkit-appearance: none; appearance: none; background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 8px 4px 0 !important; margin: 0; font: inherit; font-size: .8rem; font-weight: 700; color: var(--e-global-color-e778dc5, #f0502a) !important; text-transform: none; letter-spacing: 0; cursor: pointer; text-align: left; }

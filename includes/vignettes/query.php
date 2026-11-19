@@ -1,0 +1,268 @@
+<?php
+/**
+ * Vignettes d'accueil : ordre des Loop Grid Elementor.
+ *
+ * Dans le Loop Grid, section « Requête », champ « ID de la requête » :
+ *   vignettes_rang  → les vignettes qui ont un rang (champ « rang ») viennent
+ *                     d'abord, du plus petit au plus grand ; les autres suivent,
+ *                     de la plus récente à la plus ancienne.
+ */
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Identifiants des vignettes à afficher, dans l'ordre voulu : d'abord celles dont le rang est strictement positif
+ * (du plus petit au plus grand), puis les autres, de la plus récente à la plus ancienne.
+ * Le tri est fait ici et non en SQL : un tri numérique croissant placerait les rangs vides ou nuls avant le rang 1.
+ */
+function on_vignettes_ordered_ids( $query ) {
+	$args = array(
+		'post_type'        => 'vignette_accueil',
+		'post_status'      => 'publish',
+		'nopaging'         => true, // pas de LIMIT : Elementor injecte le décalage (offset) de la grille dans toute requête créée pendant son affichage, ce qui ferait perdre les premières vignettes.
+		'fields'           => 'ids',
+		'no_found_rows'    => true,
+		'suppress_filters' => true,
+		'orderby'          => 'date',
+		'order'            => 'DESC',
+	);
+	$tax_query = $query->get( 'tax_query' );
+	if ( is_array( $tax_query ) && $tax_query ) {
+		$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery
+	}
+	if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
+		$args['lang'] = pll_current_language(); // Polylang filtre sur `pre_get_posts` : pas besoin des filtres SQL.
+	}
+	$ids = array_map( 'intval', ( new WP_Query( $args ) )->posts );
+	// Les vignettes « playlist » ont leur propre grille (requête vignettes_playlist) : jamais dans les autres.
+	$ids = array_values(
+		array_filter(
+			$ids,
+			function ( $id ) {
+				return 'playlist' !== get_post_meta( $id, 'format', true );
+			}
+		)
+	);
+	return on_vignettes_sort_by_rank( array_slice( $ids, 0, 200 ) );
+}
+
+/** Trie des identifiants (déjà du plus récent au plus ancien) : rangs positifs d'abord, puis le reste (tri stable). */
+function on_vignettes_sort_by_rank( $ids ) {
+	$rank = array();
+	foreach ( $ids as $id ) {
+		$r          = (int) get_post_meta( $id, 'rang', true );
+		$rank[ $id ] = $r > 0 ? $r : PHP_INT_MAX;
+	}
+	$pos = array_flip( $ids );
+	usort(
+		$ids,
+		function ( $a, $b ) use ( $rank, $pos ) {
+			return $rank[ $a ] === $rank[ $b ] ? $pos[ $a ] <=> $pos[ $b ] : $rank[ $a ] <=> $rank[ $b ];
+		}
+	);
+	return $ids;
+}
+
+add_action(
+	'elementor/query/vignettes_rang',
+	function ( $query ) {
+		static $running = false;
+		if ( $running ) {
+			return; // la requête interne de on_vignettes_ordered_ids() repasse par ce filtre d'Elementor.
+		}
+		$running = true;
+		try {
+			$ids = on_vignettes_ordered_ids( $query );
+			$query->set( 'meta_query', array() );
+			$query->set( 'tax_query', array() );
+			$query->set( 'post__in', $ids ? $ids : array( 0 ) );
+			$query->set( 'orderby', 'post__in' );
+		} catch ( \Throwable $e ) {
+			unset( $e );
+		}
+		$running = false;
+	}
+);
+
+/**
+ * Grandes vignettes aux bonnes places.
+ *
+ * Dans le Loop Grid, « ID de la requête » : vignettes_centre
+ *
+ * Les vignettes dont le champ « format » vaut « large » sont mises aux places
+ * 1 et 6 de la liste (filtre `on_vignettes_grandes_places` pour changer).
+ * Elles sont prises dans l'ordre des rangs, puis des dates ; les autres vignettes
+ * suivent le même ordre. Le modèle alternatif du Loop Grid (positions 1 et 6)
+ * tombe alors sur les bonnes vignettes.
+ */
+add_action(
+	'elementor/query/vignettes_centre',
+	function ( $query ) {
+		static $running = false;
+		if ( $running ) {
+			return;
+		}
+		$running = true;
+		try {
+			$ids = on_vignettes_ordered_ids( $query );
+
+			$places = (array) apply_filters( 'on_vignettes_grandes_places', array( 1, 14 ) );
+			$bigs   = array();
+			foreach ( $ids as $id ) {
+				if ( 'large' === get_post_meta( $id, 'format', true ) ) {
+					$bigs[] = $id;
+				}
+			}
+			$bigs   = array_slice( $bigs, 0, count( $places ) );
+			$others = array_values( array_diff( $ids, $bigs ) );
+
+			$result = array();
+			$total  = count( $ids );
+			for ( $slot = 1; $slot <= $total; $slot++ ) {
+				if ( in_array( $slot, $places, true ) && $bigs ) {
+					$result[] = array_shift( $bigs );
+				} elseif ( $others ) {
+					$result[] = array_shift( $others );
+				}
+			}
+			$result = array_merge( $result, $bigs, $others );
+
+			// Dernière rangée complète : après la dernière grande vignette, un multiple de trois vignettes.
+			$last_big = max( $places );
+			$n        = count( $result );
+			if ( $n > $last_big ) {
+				$result = array_slice( $result, 0, $last_big + 3 * (int) floor( ( $n - $last_big ) / 3 ) );
+			} elseif ( $n > 1 ) {
+				$result = array_slice( $result, 0, 1 + 3 * (int) floor( ( $n - 1 ) / 3 ) );
+			}
+
+			$query->set( 'meta_query', array() );
+			$query->set( 'tax_query', array() );
+			$query->set( 'post__in', $result ? $result : array( 0 ) );
+			$query->set( 'orderby', 'post__in' );
+		} catch ( \Throwable $e ) {
+			// En cas de problème, on garde la requête d'origine.
+			unset( $e );
+		}
+		$running = false;
+	}
+);
+
+/**
+ * Grandes vignettes et vignettes standard dans des grilles séparées.
+ *
+ * Dans le Loop Grid, « ID de la requête » :
+ *   vignettes_larges    → seulement les vignettes dont le champ « format » vaut « large »
+ *                         (par rang puis date). Une grille par grande vignette : la 1ère avec
+ *                         décalage 0, la suivante avec décalage 1, etc.
+ *   vignettes_standard  → toutes les autres vignettes (rang puis date). Le nombre de vignettes
+ *                         et le décalage de chaque grille se règlent dans le Loop Grid.
+ * La zone (zone_vignette) se choisit dans le Loop Grid.
+ */
+function on_vignettes_split_query( $query, $want_large ) {
+	static $running = false;
+	if ( $running ) {
+		return;
+	}
+	$running = true;
+	try {
+		$ids    = on_vignettes_ordered_ids( $query );
+		$result = array();
+		foreach ( $ids as $id ) {
+			$is_large = 'large' === get_post_meta( $id, 'format', true );
+			if ( $is_large === $want_large ) {
+				$result[] = $id;
+			}
+		}
+		$query->set( 'meta_query', array() );
+		$query->set( 'tax_query', array() );
+		$query->set( 'post__in', $result ? $result : array( 0 ) );
+		$query->set( 'orderby', 'post__in' );
+	} catch ( \Throwable $e ) {
+		unset( $e );
+	}
+	$running = false;
+}
+
+add_action(
+	'elementor/query/vignettes_larges',
+	function ( $query ) {
+		on_vignettes_split_query( $query, true );
+	}
+);
+
+add_action(
+	'elementor/query/vignettes_standard',
+	function ( $query ) {
+		on_vignettes_split_query( $query, false );
+	}
+);
+
+/**
+ * Vignettes de format « playlist » (liste de pistes MP3).
+ *
+ * Dans le Loop Grid, « ID de la requête » : vignettes_playlist
+ *
+ * Ne garde que les vignettes dont le champ « format » vaut « playlist » (rang puis date).
+ * La zone se choisit dans le Loop Grid ; le modèle de boucle est « Vignette accueil – playlist ».
+ */
+add_action(
+	'elementor/query/vignettes_playlist',
+	function ( $query ) {
+		static $running = false;
+		if ( $running ) {
+			return;
+		}
+		$running = true;
+		try {
+			$args = array(
+				'post_type'        => 'vignette_accueil',
+				'post_status'      => 'publish',
+				'nopaging'         => true,
+				'fields'           => 'ids',
+				'no_found_rows'    => true,
+				'suppress_filters' => true,
+				'orderby'          => 'date',
+				'order'            => 'DESC',
+				'meta_key'         => 'format', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_value'       => 'playlist', // phpcs:ignore WordPress.DB.SlowDBQuery
+			);
+			$tax  = $query->get( 'tax_query' );
+			if ( is_array( $tax ) && $tax ) {
+				$args['tax_query'] = $tax; // phpcs:ignore WordPress.DB.SlowDBQuery
+			}
+			if ( function_exists( 'pll_current_language' ) && pll_current_language() ) {
+				$args['lang'] = pll_current_language();
+			}
+			$ids = on_vignettes_sort_by_rank( array_map( 'intval', ( new WP_Query( $args ) )->posts ) );
+			$query->set( 'meta_query', array() );
+			$query->set( 'tax_query', array() );
+			$query->set( 'post__in', $ids ? $ids : array( 0 ) );
+			$query->set( 'orderby', 'post__in' );
+		} catch ( \Throwable $e ) {
+			unset( $e );
+		}
+		$running = false;
+	}
+);
+
+/** Mise en page des colonnes de la page d'accueil (titres de section, colonnes fixes, pubs). */
+add_action(
+	'wp_enqueue_scripts',
+	function () {
+		wp_enqueue_style(
+			'on-vignettes-accueil',
+			plugins_url( 'assets/css/vignettes-accueil.css', dirname( __DIR__, 2 ) . '/orgues-nouvelles-plugin.php' ),
+			array(),
+			(string) filemtime( dirname( __DIR__, 2 ) . '/assets/css/vignettes-accueil.css' )
+		);
+		wp_enqueue_script(
+			'on-vignettes-sticky',
+			plugins_url( 'assets/js/vignettes-sticky.js', dirname( __DIR__, 2 ) . '/orgues-nouvelles-plugin.php' ),
+			array(),
+			(string) filemtime( dirname( __DIR__, 2 ) . '/assets/js/vignettes-sticky.js' ),
+			true
+		);
+	}
+);

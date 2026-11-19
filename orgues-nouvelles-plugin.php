@@ -79,6 +79,12 @@ function on_load_plugin() {
     // Charger les modules Pods transverses.
     if (is_plugin_active('pods/init.php')) {
         require_once(__DIR__ . '/includes/core/pods-pick-field-labels.php');
+        require_once(__DIR__ . '/includes/vignettes/terms.php');
+        require_once(__DIR__ . '/includes/vignettes/auto-create.php');
+        require_once(__DIR__ . '/includes/vignettes/query.php');
+        require_once(__DIR__ . '/includes/vignettes/dynamic-tag.php');
+        require_once(__DIR__ . '/includes/vignettes/player.php');
+        require_once(__DIR__ . '/includes/vignettes/affichage.php');
     }
     
     // Charger les modules frontend
