@@ -49,7 +49,8 @@ function on_usage_page_product($motif = '')
     $args = array(
         'post_type'      => 'product',
         'post_status'    => 'publish',
-        'posts_per_page' => 30,
+        // nopaging : Elementor injecte le décalage d'une grille dans toute requête créée pendant son affichage.
+        'nopaging'       => true,
         'fields'         => 'ids',
         'no_found_rows'  => true,
         'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery
@@ -129,10 +130,10 @@ add_action(
                     $this->add_control(
                         'motif',
                         array(
-                            'label'       => 'Le nom du produit contient',
+                            'label'       => __('Le nom du produit contient', 'orgues-nouvelles'),
                             'type'        => \Elementor\Controls_Manager::TEXT,
                             'default'     => '',
-                            'description' => 'Laisser vide s\'il n\'y a qu\'un produit pour ce numéro. Sinon, un morceau du nom, par exemple CahPart ou ONED.',
+                            'description' => __('Laisser vide s\'il n\'y a qu\'un produit pour ce numéro. Sinon, un morceau du nom, par exemple CahPart ou ONED.', 'orgues-nouvelles'),
                         )
                     );
                 }
@@ -149,7 +150,7 @@ add_action(
 
                 public function get_title()
                 {
-                    return 'Adresse de lecture';
+                    return __('Adresse de lecture', 'orgues-nouvelles');
                 }
 
                 public function get_value(array $options = array())
@@ -169,7 +170,7 @@ add_action(
 
                 public function get_title()
                 {
-                    return 'Adresse de téléchargement';
+                    return __('Adresse de téléchargement', 'orgues-nouvelles');
                 }
 
                 public function get_value(array $options = array())

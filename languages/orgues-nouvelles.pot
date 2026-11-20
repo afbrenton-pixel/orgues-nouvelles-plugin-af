@@ -1353,3 +1353,23 @@ msgstr ""
 #: includes/vignettes/creation-en-masse.php:449
 msgid "Simulation"
 msgstr ""
+
+#: includes/usage/dynamic-tags.php:133
+msgid "Le nom du produit contient"
+msgstr ""
+
+#: includes/usage/dynamic-tags.php:136
+msgid "Laisser vide s'il n'y a qu'un produit pour ce numéro. Sinon, un morceau du nom, par exemple CahPart ou ONED."
+msgstr ""
+
+#: includes/usage/dynamic-tags.php:153
+msgid "Adresse de lecture"
+msgstr ""
+
+#: includes/usage/dynamic-tags.php:173
+msgid "Adresse de téléchargement"
+msgstr ""
+
+#: includes/usage/rest-api.php:91
+msgid "Paramètre since invalide (exemple : 2026-01-31)."
+msgstr ""
