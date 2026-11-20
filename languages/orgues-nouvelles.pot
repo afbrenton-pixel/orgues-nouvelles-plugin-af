@@ -1269,3 +1269,191 @@ msgstr ""
 #: includes/usage/rest-api.php:91
 msgid "Paramètre since invalide (exemple : 2026-01-31)."
 msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:35
+msgid "Lecteur PDF en ligne"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:67
+msgid "Lecteur"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:70
+msgid "Document à lire"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:74 includes/elementor/widgets/online-reader.php:137
+msgid "Cahier de partitions"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:75 includes/elementor/widgets/online-reader.php:138
+msgid "Magazine"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:83
+msgid "Laisser vide : CahPart pour un cahier, ONED pour un magazine. Sinon un morceau du nom du produit."
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:87
+msgid "Texte du bouton"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:90
+msgid "Laisser vide : « Lire en ligne », dans la langue de la page."
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:94
+msgid "Titre dans le lecteur"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:97
+msgid "Laisser vide : « Cahier de partitions » ou « Magazine », dans la langue de la page."
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:103
+msgid "Bouton"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:108
+msgid "Couleur du fond"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:113
+msgid "Couleur du texte"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:118
+msgid "Hauteur du lecteur"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:136
+msgid "Lire en ligne"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:139
+msgid "Enregistrements"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:140
+msgid "Touchez le titre pour ouvrir la partition, ou le bouton pour écouter. Le son continue quand vous tournez les pages."
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:141
+msgid "Fermer"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:142
+msgid "Plein écran"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:143
+msgid "Pages précédentes"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:144
+msgid "Pages suivantes"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:145
+msgctxt "zoom du lecteur"
+msgid "Réduire"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:146
+msgctxt "zoom du lecteur"
+msgid "Agrandir"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:147
+msgid "Chargement…"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:148
+msgid "Lecteur audio"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:149
+msgid "Aucune pièce en cours"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:150
+msgid "Touchez le haut-parleur d'une partition pour l'écouter."
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:151
+msgid "Voir la page"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:152
+msgid "Position dans l'enregistrement"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:155
+msgid "Écouter"
+msgstr ""
+
+#. translators: %s: titre de l'enregistrement
+#: includes/elementor/widgets/online-reader.php:157
+msgid "Écouter « %s »"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:158
+msgid "Cet enregistrement n'a pas pu être lu. Vérifiez la connexion, puis réessayez."
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:159
+msgid "Ouvrir le lien"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:160
+msgid "Cette page n'a pas pu être affichée."
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:161
+msgid "Pièce"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:162
+msgid "Aucun enregistrement dans ce document."
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:163
+msgid "page"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:164
+msgid "La visionneuse n'a pas pu se charger."
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:165
+msgid "Le document n'a pas pu être ouvert."
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:166
+msgid "La lecture en ligne n'est pas disponible pour ce numéro avec votre compte."
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:185
+msgid "Lecteur PDF en ligne : aucun produit lisible pour cette page et ce compte (rien ne s'affiche aux visiteurs sans droit)."
+msgstr ""
+
+#. translators: %s: numéro du magazine ou du cahier
+#: includes/elementor/widgets/online-reader.php:202
+msgid "Orgues Nouvelles n° %s"
+msgstr ""
+
+#: includes/products/read-online.php:196
+msgid "Connexion requise."
+msgstr ""
+
+#: includes/products/read-online.php:201
+msgid "Produit introuvable."
+msgstr ""
+
+#: includes/products/read-online.php:205
+msgid "Accès non autorisé à ce numéro."
+msgstr ""
+
+#: includes/products/read-online.php:210
+msgid "Fichier PDF indisponible."
+msgstr ""

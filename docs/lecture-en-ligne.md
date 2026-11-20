@@ -49,6 +49,6 @@ Remplace le bloc HTML provisoire des modèles. À glisser dans le modèle de pag
 - **Document à lire** : cahier de partitions ou magazine. Le produit est retrouvé tout seul : même numéro (champ `numero`) que la page, même langue (Polylang), téléchargeable, gratuit pour la personne connectée (`on_usage_page_product`). Le champ « Le nom du produit contient » est facultatif (par défaut `CahPart` ou `ONED`).
 - Le PDF est lu par `/?on_action=read_pdf&product_id=…` : l'adresse réelle du fichier n'apparaît jamais, la lecture est comptée.
 - Sans droit de lecture, l'élément n'affiche rien (le bandeau « Abonnés Magazines » reste géré à part).
-- Textes français / anglais selon la langue de la page. Les enregistrements sont repérés par les liens `.mp3` du PDF.
+- Les textes sont écrits en français avec le système de traduction de WordPress (domaine `orgues-nouvelles`) ; l’anglais est dans `languages/orgues-nouvelles-en_GB.po`. Les enregistrements sont repérés par les liens `.mp3` du PDF.
 - Pas d'extrait pour les visiteurs sans droit dans cette première version.
 - Fichiers : `includes/elementor/widgets/online-reader.php`, `assets/js/online-reader.js`, `assets/css/online-reader.css` (PDF.js 3.11.174 depuis cdnjs, chargé seulement quand l'élément est sur la page).
