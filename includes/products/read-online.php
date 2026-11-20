@@ -8,7 +8,8 @@
  *
  *   le produit est gratuit pour la personne connectée, c'est-à-dire que son
  *   numéro figure dans on_liste_numeros() pour les plans du produit
- *   (voir product-free-for-plans.php).
+ *   (voir product-free-for-plans.php), ou bien elle a déjà acheté ce produit
+ *   (cahier vendu seul : on_usage_customer_owns()).
  *
  * Adresse : /?on_action=read_pdf&product=cahpart73   (slug du produit)
  *      ou : /?on_action=read_pdf&product_id=47598    (identifiant du produit)
@@ -50,7 +51,9 @@ function on_read_online_user_can_read($product)
 {
     $can = is_user_logged_in()
         && $product->is_downloadable()
-        && (float) $product->get_price() <= 0;
+        && ((float) $product->get_price() <= 0
+            // Un cahier vendu seul : payant, mais acheté par ce client.
+            || (function_exists('on_usage_customer_owns') && on_usage_customer_owns($product)));
 
     // Un produit non publié ou protégé par mot de passe n'est lisible que par
     // quelqu'un qui peut le modifier (liste de contrôle, point 1).
