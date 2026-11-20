@@ -1449,3 +1449,191 @@ msgstr "Download address"
 #: includes/usage/rest-api.php:91
 msgid "Paramètre since invalide (exemple : 2026-01-31)."
 msgstr "Invalid since parameter (example: 2026-01-31)."
+
+#: includes/elementor/widgets/online-reader.php:35
+msgid "Lecteur PDF en ligne"
+msgstr "Online PDF reader"
+
+#: includes/elementor/widgets/online-reader.php:67
+msgid "Lecteur"
+msgstr "Reader"
+
+#: includes/elementor/widgets/online-reader.php:70
+msgid "Document à lire"
+msgstr "Document to read"
+
+#: includes/elementor/widgets/online-reader.php:74 includes/elementor/widgets/online-reader.php:137
+msgid "Cahier de partitions"
+msgstr "Score booklet"
+
+#: includes/elementor/widgets/online-reader.php:75 includes/elementor/widgets/online-reader.php:138
+msgid "Magazine"
+msgstr "Magazine"
+
+#: includes/elementor/widgets/online-reader.php:83
+msgid "Laisser vide : CahPart pour un cahier, ONED pour un magazine. Sinon un morceau du nom du produit."
+msgstr "Leave empty: CahPart for a booklet, ONED for a magazine. Otherwise part of the product name."
+
+#: includes/elementor/widgets/online-reader.php:87
+msgid "Texte du bouton"
+msgstr "Button text"
+
+#: includes/elementor/widgets/online-reader.php:90
+msgid "Laisser vide : « Lire en ligne », dans la langue de la page."
+msgstr "Leave empty: the default button text, in the language of the page."
+
+#: includes/elementor/widgets/online-reader.php:94
+msgid "Titre dans le lecteur"
+msgstr "Title in the reader"
+
+#: includes/elementor/widgets/online-reader.php:97
+msgid "Laisser vide : « Cahier de partitions » ou « Magazine », dans la langue de la page."
+msgstr "Leave empty: “Score booklet” or “Magazine”, in the language of the page."
+
+#: includes/elementor/widgets/online-reader.php:103
+msgid "Bouton"
+msgstr "Button"
+
+#: includes/elementor/widgets/online-reader.php:108
+msgid "Couleur du fond"
+msgstr "Background colour"
+
+#: includes/elementor/widgets/online-reader.php:113
+msgid "Couleur du texte"
+msgstr "Text colour"
+
+#: includes/elementor/widgets/online-reader.php:118
+msgid "Hauteur du lecteur"
+msgstr "Reader height"
+
+#: includes/elementor/widgets/online-reader.php:136
+msgid "Lire en ligne"
+msgstr "Read online"
+
+#: includes/elementor/widgets/online-reader.php:139
+msgid "Enregistrements"
+msgstr "Recordings"
+
+#: includes/elementor/widgets/online-reader.php:140
+msgid "Touchez le titre pour ouvrir la partition, ou le bouton pour écouter. Le son continue quand vous tournez les pages."
+msgstr "Tap a title to open the score, or the button to listen. Sound keeps playing while you turn pages."
+
+#: includes/elementor/widgets/online-reader.php:141
+msgid "Fermer"
+msgstr "Close"
+
+#: includes/elementor/widgets/online-reader.php:142
+msgid "Plein écran"
+msgstr "Full screen"
+
+#: includes/elementor/widgets/online-reader.php:143
+msgid "Pages précédentes"
+msgstr "Previous pages"
+
+#: includes/elementor/widgets/online-reader.php:144
+msgid "Pages suivantes"
+msgstr "Next pages"
+
+#: includes/elementor/widgets/online-reader.php:145
+msgctxt "zoom du lecteur"
+msgid "Réduire"
+msgstr "Zoom out"
+
+#: includes/elementor/widgets/online-reader.php:146
+msgctxt "zoom du lecteur"
+msgid "Agrandir"
+msgstr "Zoom in"
+
+#: includes/elementor/widgets/online-reader.php:147
+msgid "Chargement…"
+msgstr "Loading…"
+
+#: includes/elementor/widgets/online-reader.php:148
+msgid "Lecteur audio"
+msgstr "Audio player"
+
+#: includes/elementor/widgets/online-reader.php:149
+msgid "Aucune pièce en cours"
+msgstr "No track playing"
+
+#: includes/elementor/widgets/online-reader.php:150
+msgid "Touchez le haut-parleur d'une partition pour l'écouter."
+msgstr "Tap a speaker icon on the page to listen."
+
+#: includes/elementor/widgets/online-reader.php:151
+msgid "Voir la page"
+msgstr "Show the page"
+
+#: includes/elementor/widgets/online-reader.php:152
+msgid "Position dans l'enregistrement"
+msgstr "Position in the recording"
+
+#: includes/elementor/widgets/online-reader.php:155
+msgid "Écouter"
+msgstr "Listen"
+
+#. translators: %s: titre de l'enregistrement
+#: includes/elementor/widgets/online-reader.php:157
+msgid "Écouter « %s »"
+msgstr "Listen to “%s”"
+
+#: includes/elementor/widgets/online-reader.php:158
+msgid "Cet enregistrement n'a pas pu être lu. Vérifiez la connexion, puis réessayez."
+msgstr "This recording could not be played. Check your connection and try again."
+
+#: includes/elementor/widgets/online-reader.php:159
+msgid "Ouvrir le lien"
+msgstr "Open link"
+
+#: includes/elementor/widgets/online-reader.php:160
+msgid "Cette page n'a pas pu être affichée."
+msgstr "This page could not be displayed."
+
+#: includes/elementor/widgets/online-reader.php:161
+msgid "Pièce"
+msgstr "Track"
+
+#: includes/elementor/widgets/online-reader.php:162
+msgid "Aucun enregistrement dans ce document."
+msgstr "No recordings in this document."
+
+#: includes/elementor/widgets/online-reader.php:163
+msgid "page"
+msgstr "page"
+
+#: includes/elementor/widgets/online-reader.php:164
+msgid "La visionneuse n'a pas pu se charger."
+msgstr "The reader could not be loaded."
+
+#: includes/elementor/widgets/online-reader.php:165
+msgid "Le document n'a pas pu être ouvert."
+msgstr "The document could not be opened."
+
+#: includes/elementor/widgets/online-reader.php:166
+msgid "La lecture en ligne n'est pas disponible pour ce numéro avec votre compte."
+msgstr "Online reading is not available for this issue with your account."
+
+#: includes/elementor/widgets/online-reader.php:185
+msgid "Lecteur PDF en ligne : aucun produit lisible pour cette page et ce compte (rien ne s'affiche aux visiteurs sans droit)."
+msgstr "Online PDF reader: no readable product for this page and this account (nothing is shown to visitors without access)."
+
+#. translators: %s: numéro du magazine ou du cahier
+#: includes/elementor/widgets/online-reader.php:202
+msgid "Orgues Nouvelles n° %s"
+msgstr "Orgues Nouvelles issue %s"
+
+#: includes/products/read-online.php:196
+msgid "Connexion requise."
+msgstr "Login required."
+
+#: includes/products/read-online.php:201
+msgid "Produit introuvable."
+msgstr "Product not found."
+
+#: includes/products/read-online.php:205
+msgid "Accès non autorisé à ce numéro."
+msgstr "You do not have access to this issue."
+
+#: includes/products/read-online.php:210
+msgid "Fichier PDF indisponible."
+msgstr "PDF file unavailable."

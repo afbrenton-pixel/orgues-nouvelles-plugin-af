@@ -32,7 +32,7 @@ class ON_Online_Reader extends Widget_Base
 
     public function get_title()
     {
-        return 'Lecteur PDF en ligne';
+        return __('Lecteur PDF en ligne', 'orgues-nouvelles');
     }
 
     public function get_icon()
@@ -64,37 +64,37 @@ class ON_Online_Reader extends Widget_Base
 
     protected function register_controls()
     {
-        $this->start_controls_section('on_reader_content', array('label' => 'Lecteur'));
+        $this->start_controls_section('on_reader_content', array('label' => __('Lecteur', 'orgues-nouvelles')));
 
         $this->add_control('type', array(
-            'label'   => 'Document à lire',
+            'label'   => __('Document à lire', 'orgues-nouvelles'),
             'type'    => Controls_Manager::SELECT,
             'default' => 'cahier',
             'options' => array(
-                'cahier'   => 'Cahier de partitions',
-                'magazine' => 'Magazine',
+                'cahier'   => __('Cahier de partitions', 'orgues-nouvelles'),
+                'magazine' => __('Magazine', 'orgues-nouvelles'),
             ),
         ));
 
         $this->add_control('motif', array(
-            'label'       => 'Le nom du produit contient',
+            'label'       => __('Le nom du produit contient', 'orgues-nouvelles'),
             'type'        => Controls_Manager::TEXT,
             'default'     => '',
-            'description' => 'Laisser vide : CahPart pour un cahier, ONED pour un magazine. Sinon un morceau du nom du produit.',
+            'description' => __('Laisser vide : CahPart pour un cahier, ONED pour un magazine. Sinon un morceau du nom du produit.', 'orgues-nouvelles'),
         ));
 
         $this->add_control('button_label', array(
-            'label'       => 'Texte du bouton',
+            'label'       => __('Texte du bouton', 'orgues-nouvelles'),
             'type'        => Controls_Manager::TEXT,
             'default'     => '',
-            'description' => 'Laisser vide : « Lire en ligne » (FR) ou « Read online » (EN) selon la langue de la page.',
+            'description' => __('Laisser vide : « Lire en ligne », dans la langue de la page.', 'orgues-nouvelles'),
         ));
 
         $this->add_control('title', array(
-            'label'       => 'Titre dans le lecteur',
+            'label'       => __('Titre dans le lecteur', 'orgues-nouvelles'),
             'type'        => Controls_Manager::TEXT,
             'default'     => '',
-            'description' => 'Laisser vide : « Cahier de partitions » ou « Magazine » (FR/EN) suivi du numéro.',
+            'description' => __('Laisser vide : « Cahier de partitions » ou « Magazine », dans la langue de la page.', 'orgues-nouvelles'),
         ));
 
         $this->end_controls_section();
@@ -128,22 +128,22 @@ class ON_Online_Reader extends Widget_Base
         $this->end_controls_section();
 
         $this->start_controls_section('on_reader_style', array(
-            'label' => 'Bouton',
+            'label' => __('Bouton', 'orgues-nouvelles'),
             'tab'   => Controls_Manager::TAB_STYLE,
         ));
 
         $this->add_control('button_color', array(
-            'label'     => 'Couleur du fond',
+            'label'     => __('Couleur du fond', 'orgues-nouvelles'),
             'type'      => Controls_Manager::COLOR,
             'selectors' => array('{{WRAPPER}} .on-rd-open' => 'background-color: {{VALUE}};'),
         ));
         $this->add_control('button_text_color', array(
-            'label'     => 'Couleur du texte',
+            'label'     => __('Couleur du texte', 'orgues-nouvelles'),
             'type'      => Controls_Manager::COLOR,
             'selectors' => array('{{WRAPPER}} .on-rd-open' => 'color: {{VALUE}};'),
         ));
         $this->add_control('reader_height', array(
-            'label'      => 'Hauteur du lecteur',
+            'label'      => __('Hauteur du lecteur', 'orgues-nouvelles'),
             'type'       => Controls_Manager::SLIDER,
             'size_units' => array('px', 'vh'),
             'range'      => array('px' => array('min' => 400, 'max' => 1400), 'vh' => array('min' => 40, 'max' => 100)),
@@ -153,38 +153,45 @@ class ON_Online_Reader extends Widget_Base
         $this->end_controls_section();
     }
 
-    /** Textes selon la langue de la page (Polylang), français par défaut. */
-    private static function labels($lang)
+    /**
+     * Textes du lecteur : écrits une fois, en français, avec le système de
+     * traduction de WordPress (l'anglais est dans languages/orgues-nouvelles-en_GB.po).
+     * Ils sont aussi transmis au JavaScript (attribut data-labels).
+     */
+    private static function labels()
     {
-        if ($lang === 'en') {
-            return array(
-                'open' => 'Read online', 'cahier' => 'Score booklet', 'magazine' => 'Magazine',
-                'issue' => 'issue', 'toc' => 'Recordings', 'tocHint' => 'Tap a title to open the score, or the button to listen. Sound keeps playing while you turn pages.',
-                'close' => 'Close', 'fs' => 'Full screen', 'prev' => 'Previous pages', 'next' => 'Next pages',
-                'zoomOut' => 'Zoom out', 'zoomIn' => 'Zoom in', 'loading' => 'Loading…', 'player' => 'Audio player',
-                'none' => 'No track playing', 'hint' => 'Tap a speaker icon on the page to listen.',
-                'showPage' => 'Show the page', 'seek' => 'Position in the recording',
-                'play' => 'Play', 'pause' => 'Pause', 'listen' => 'Listen', 'listenTitle' => 'Listen to “%s”',
-                'audioError' => 'This recording could not be played. Check your connection and try again.',
-                'openLink' => 'Open link', 'pageFail' => 'This page could not be displayed.', 'piece' => 'Track',
-                'noRecordings' => 'No recordings in this document.', 'pageWord' => 'page',
-                'libFail' => 'The reader could not be loaded.', 'openFail' => 'The document could not be opened.',
-                'noAccess' => 'Online reading is not available for this issue with your account.',
-            );
-        }
         return array(
-            'open' => 'Lire en ligne', 'cahier' => 'Cahier de partitions', 'magazine' => 'Magazine',
-            'issue' => 'n°', 'toc' => 'Enregistrements', 'tocHint' => 'Touchez le titre pour ouvrir la partition, ou le bouton pour écouter. Le son continue quand vous tournez les pages.',
-            'close' => 'Fermer', 'fs' => 'Plein écran', 'prev' => 'Pages précédentes', 'next' => 'Pages suivantes',
-            'zoomOut' => 'Réduire', 'zoomIn' => 'Agrandir', 'loading' => 'Chargement…', 'player' => 'Lecteur audio',
-            'none' => 'Aucune pièce en cours', 'hint' => 'Touchez le haut-parleur d\'une partition pour l\'écouter.',
-            'showPage' => 'Voir la page', 'seek' => 'Position dans l\'enregistrement',
-            'play' => 'Lecture', 'pause' => 'Pause', 'listen' => 'Écouter', 'listenTitle' => 'Écouter « %s »',
-            'audioError' => 'Cet enregistrement n\'a pas pu être lu. Vérifiez la connexion, puis réessayez.',
-            'openLink' => 'Ouvrir le lien', 'pageFail' => 'Cette page n\'a pas pu être affichée.', 'piece' => 'Pièce',
-            'noRecordings' => 'Aucun enregistrement dans ce document.', 'pageWord' => 'page',
-            'libFail' => 'La visionneuse n\'a pas pu se charger.', 'openFail' => 'Le document n\'a pas pu être ouvert.',
-            'noAccess' => 'La lecture en ligne n\'est pas disponible pour ce numéro avec votre compte.',
+            'open' => __('Lire en ligne', 'orgues-nouvelles'),
+            'cahier' => __('Cahier de partitions', 'orgues-nouvelles'),
+            'magazine' => __('Magazine', 'orgues-nouvelles'),
+            'toc' => __('Enregistrements', 'orgues-nouvelles'),
+            'tocHint' => __('Touchez le titre pour ouvrir la partition, ou le bouton pour écouter. Le son continue quand vous tournez les pages.', 'orgues-nouvelles'),
+            'close' => __('Fermer', 'orgues-nouvelles'),
+            'fs' => __('Plein écran', 'orgues-nouvelles'),
+            'prev' => __('Pages précédentes', 'orgues-nouvelles'),
+            'next' => __('Pages suivantes', 'orgues-nouvelles'),
+            'zoomOut' => _x('Réduire', 'zoom du lecteur', 'orgues-nouvelles'),
+            'zoomIn' => _x('Agrandir', 'zoom du lecteur', 'orgues-nouvelles'),
+            'loading' => __('Chargement…', 'orgues-nouvelles'),
+            'player' => __('Lecteur audio', 'orgues-nouvelles'),
+            'none' => __('Aucune pièce en cours', 'orgues-nouvelles'),
+            'hint' => __('Touchez le haut-parleur d\'une partition pour l\'écouter.', 'orgues-nouvelles'),
+            'showPage' => __('Voir la page', 'orgues-nouvelles'),
+            'seek' => __('Position dans l\'enregistrement', 'orgues-nouvelles'),
+            'play' => __('Lecture', 'orgues-nouvelles'),
+            'pause' => __('Pause', 'orgues-nouvelles'),
+            'listen' => __('Écouter', 'orgues-nouvelles'),
+            /* translators: %s: titre de l'enregistrement */
+            'listenTitle' => __('Écouter « %s »', 'orgues-nouvelles'),
+            'audioError' => __('Cet enregistrement n\'a pas pu être lu. Vérifiez la connexion, puis réessayez.', 'orgues-nouvelles'),
+            'openLink' => __('Ouvrir le lien', 'orgues-nouvelles'),
+            'pageFail' => __('Cette page n\'a pas pu être affichée.', 'orgues-nouvelles'),
+            'piece' => __('Pièce', 'orgues-nouvelles'),
+            'noRecordings' => __('Aucun enregistrement dans ce document.', 'orgues-nouvelles'),
+            'pageWord' => __('page', 'orgues-nouvelles'),
+            'libFail' => __('La visionneuse n\'a pas pu se charger.', 'orgues-nouvelles'),
+            'openFail' => __('Le document n\'a pas pu être ouvert.', 'orgues-nouvelles'),
+            'noAccess' => __('La lecture en ligne n\'est pas disponible pour ce numéro avec votre compte.', 'orgues-nouvelles'),
         );
     }
 
@@ -192,9 +199,7 @@ class ON_Online_Reader extends Widget_Base
     {
         $s    = $this->get_settings_for_display();
         $type = ($s['type'] === 'magazine') ? 'magazine' : 'cahier';
-        $lang = function_exists('pll_current_language') ? (string) pll_current_language() : substr(get_locale(), 0, 2);
-        $lang = ($lang === 'en') ? 'en' : 'fr';
-        $L    = self::labels($lang);
+        $L    = self::labels();
 
         $motif = trim((string) $s['motif']);
         if ($motif === '') {
@@ -205,7 +210,7 @@ class ON_Online_Reader extends Widget_Base
         if (!$product) {
             // Pas de droit (ou pas de produit) : rien pour le visiteur.
             if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
-                echo '<p style="padding:8px;border:1px dashed #999;font:14px sans-serif">Lecteur PDF en ligne : aucun produit lisible pour cette page et ce compte (rien ne s\'affiche aux visiteurs sans droit).</p>';
+                echo '<p style="padding:8px;border:1px dashed #999;font:14px sans-serif">' . esc_html__('Lecteur PDF en ligne : aucun produit lisible pour cette page et ce compte (rien ne s\'affiche aux visiteurs sans droit).', 'orgues-nouvelles') . '</p>';
             }
             return;
         }
@@ -220,7 +225,10 @@ class ON_Online_Reader extends Widget_Base
 
         $numero = function_exists('pods_field') ? pods_field(get_post_type(), get_the_ID(), 'numero', true) : '';
         $numero = is_scalar($numero) ? (string) $numero : '';
-        $sub    = 'Orgues Nouvelles' . ($numero !== '' ? ' ' . $L['issue'] . ' ' . $numero : '');
+        $sub    = ($numero !== '')
+            /* translators: %s: numéro du magazine ou du cahier */
+            ? sprintf(__('Orgues Nouvelles n° %s', 'orgues-nouvelles'), $numero)
+            : 'Orgues Nouvelles';
         $title  = trim((string) $s['title']) !== '' ? $s['title'] : $L[$type];
         $btn    = trim((string) $s['button_label']) !== '' ? $s['button_label'] : $L['open'];
         $uid    = 'on-rd-' . $this->get_id();
