@@ -193,21 +193,21 @@ function on_read_online_handle_request()
     }
 
     if (!is_user_logged_in()) {
-        on_read_online_deny(401, 'Connexion requise.');
+        on_read_online_deny(401, __('Connexion requise.', 'orgues-nouvelles'));
     }
 
     $product = on_read_online_get_product();
     if (!$product) {
-        on_read_online_deny(404, 'Produit introuvable.');
+        on_read_online_deny(404, __('Produit introuvable.', 'orgues-nouvelles'));
     }
 
     if (!on_read_online_user_can_read($product)) {
-        on_read_online_deny(403, 'Accès non autorisé à ce numéro.');
+        on_read_online_deny(403, __('Accès non autorisé à ce numéro.', 'orgues-nouvelles'));
     }
 
     $path = on_read_online_file_path($product);
     if ($path === '' || strtolower(pathinfo($path, PATHINFO_EXTENSION)) !== 'pdf') {
-        on_read_online_deny(404, 'Fichier PDF indisponible.');
+        on_read_online_deny(404, __('Fichier PDF indisponible.', 'orgues-nouvelles'));
     }
 
     on_read_online_stream($path, $product);
