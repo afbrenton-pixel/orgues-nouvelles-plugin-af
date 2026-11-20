@@ -1,6 +1,6 @@
 <?php
 /**
- * Vignettes d'accueil : page « Créer les vignettes » (menu « Vignettes accueil »).
+ * Vignettes d'accueil : page « Importer les vignettes » (menu « Vignettes accueil »).
  *
  * Crée les vignettes des contenus déjà publiés, une seule fois en production (le plugin, lui, ne crée une
  * vignette qu'à l'enregistrement d'un contenu). On choisit les types, une date de départ facultative et les
@@ -166,12 +166,14 @@ function on_vignettes_bulk_collect( $params ) {
 			if ( on_vignettes_bulk_title_matches( $title, $params['exclude'] ) ) {
 				continue;
 			}
-			$has = (bool) on_vignettes_find( $id );
+			$existing = on_vignettes_find( $id );
+			$has      = (bool) $existing;
 			++$counts[ $type ]['total'];
 			if ( $has ) {
 				++$counts[ $type ]['has'];
 			}
-			if ( $params['only_missing'] && $has ) {
+			// Déjà une vignette : ignorée en mode « manquantes seulement » ; en réimport, ignorée aussi si elle est protégée.
+			if ( $has && ( $params['only_missing'] || on_vignettes_bulk_is_protected( $existing ) ) ) {
 				continue;
 			}
 			++$counts[ $type ]['todo'];
@@ -189,6 +191,11 @@ function on_vignettes_bulk_collect( $params ) {
 	);
 }
 
+/** Vignette à la corbeille ou modifiée à la main (verrouillée) : le plugin n'y touche jamais. */
+function on_vignettes_bulk_is_protected( $vignette_id ) {
+	return $vignette_id && ( 'trash' === get_post_status( $vignette_id ) || get_post_meta( $vignette_id, '_on_locked', true ) );
+}
+
 /**
  * Crée ou met à jour la vignette d'un contenu.
  *
@@ -200,6 +207,9 @@ function on_vignettes_bulk_process( $id ) {
 		return 'skipped';
 	}
 	$before = on_vignettes_find( $post->ID );
+	if ( on_vignettes_bulk_is_protected( $before ) ) {
+		return 'skipped'; // corbeille ou modifiée à la main : on_vignettes_upsert n'y touche pas, ce n'est pas une mise à jour.
+	}
 	on_vignettes_upsert( $post );
 	$after = on_vignettes_find( $post->ID );
 	if ( ! $after ) {
@@ -334,8 +344,8 @@ add_action(
 		}
 		$hook = add_submenu_page(
 			'edit.php?post_type=' . ON_VIGNETTES_CPT,
-			__( 'Créer les vignettes', 'orgues-nouvelles' ),
-			__( 'Créer les vignettes', 'orgues-nouvelles' ),
+			__( 'Importer les vignettes', 'orgues-nouvelles' ),
+			__( 'Importer les vignettes', 'orgues-nouvelles' ),
 			'manage_options',
 			'on-vignettes-creation',
 			'on_vignettes_bulk_page'
@@ -365,13 +375,13 @@ add_action(
 					'network'      => __( 'La connexion avec le site a échoué. Relancez la simulation puis la création : ce qui est déjà créé ne sera pas refait.', 'orgues-nouvelles' ),
 					/* translators: 1: nombre de contenus traités, 2: nombre total. */
 					'progress'     => __( '%1$d sur %2$d', 'orgues-nouvelles' ),
-					'nothing'      => __( 'Rien à créer avec ces réglages.', 'orgues-nouvelles' ),
+					'nothing'      => __( 'Rien à importer avec ces réglages.', 'orgues-nouvelles' ),
 					'colType'      => __( 'Type', 'orgues-nouvelles' ),
 					'colTotal'     => __( 'Contenus publiés retenus', 'orgues-nouvelles' ),
 					'colHas'       => __( 'Ont déjà une vignette', 'orgues-nouvelles' ),
 					'colTodo'      => __( 'À traiter', 'orgues-nouvelles' ),
 					/* translators: %d: nombre de vignettes à traiter. */
-					'toDo'         => __( '%d contenu(s) à traiter. Si cela vous convient, cliquez sur « Créer les vignettes ».', 'orgues-nouvelles' ),
+					'toDo'         => __( '%d contenu(s) à traiter. Si cela vous convient, cliquez sur « Importer les vignettes ».', 'orgues-nouvelles' ),
 					'sampleTitle'  => __( 'Les premiers contenus à traiter :', 'orgues-nouvelles' ),
 					'created'      => __( 'créées', 'orgues-nouvelles' ),
 					'updated'      => __( 'mises à jour', 'orgues-nouvelles' ),
@@ -394,7 +404,7 @@ function on_vignettes_bulk_page() {
 	}
 	?>
 	<div class="wrap" id="on-bulk">
-		<h1><?php esc_html_e( 'Créer les vignettes', 'orgues-nouvelles' ); ?></h1>
+		<h1><?php esc_html_e( 'Importer les vignettes', 'orgues-nouvelles' ); ?></h1>
 		<p><?php esc_html_e( 'Le plugin crée une vignette quand on enregistre un contenu. Cette page crée celles des contenus déjà publiés, avec leur jumelle anglaise quand il y en a une. Les contenus ne sont pas réenregistrés : leur date de modification ne change pas. Vous pouvez relancer sans risque : les vignettes modifiées à la main ou mises à la corbeille ne sont pas touchées.', 'orgues-nouvelles' ); ?></p>
 		<form id="on-bulk-form" onsubmit="return false;">
 			<table class="form-table" role="presentation">
@@ -437,7 +447,7 @@ function on_vignettes_bulk_page() {
 			</table>
 			<p>
 				<button type="button" class="button button-secondary" id="on-bulk-simulate"><?php esc_html_e( 'Simulation', 'orgues-nouvelles' ); ?></button>
-				<button type="button" class="button button-primary" id="on-bulk-run" disabled><?php esc_html_e( 'Créer les vignettes', 'orgues-nouvelles' ); ?></button>
+				<button type="button" class="button button-primary" id="on-bulk-run" disabled><?php esc_html_e( 'Importer les vignettes', 'orgues-nouvelles' ); ?></button>
 			</p>
 		</form>
 		<div id="on-bulk-result" aria-live="polite"></div>

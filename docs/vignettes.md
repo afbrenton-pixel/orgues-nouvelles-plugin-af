@@ -118,12 +118,12 @@ Format `playlist` : une vignette avec photo (image à la une), étiquette, titre
 
 Tous les noms propres aux vignettes commencent par `on` comme le reste du plugin : classes CSS `on-…`, attributs `data-on-…`, variables JavaScript `ON_MEDIA` et `ON_I18N`, champs `_on_source_id`, `_on_locked`, etc. L'élément en cours de lecture d'une playlist porte la classe `on-current`.
 
-## Page « Créer les vignettes » (reprise des contenus déjà publiés)
+## Page « Importer les vignettes » (reprise des contenus déjà publiés)
 
-Menu « Vignettes accueil » > « Créer les vignettes » (administrateurs seulement). Le plugin ne crée une vignette qu'à l'enregistrement d'un contenu ; cette page crée celles des contenus **déjà publiés** (avec leur jumelle anglaise quand il y en a une), par exemple une seule fois à la mise en production.
+Menu « Vignettes accueil » > « Importer les vignettes » (administrateurs seulement). Le plugin ne crée une vignette qu'à l'enregistrement d'un contenu ; cette page crée celles des contenus **déjà publiés** (avec leur jumelle anglaise quand il y en a une), par exemple une seule fois à la mise en production.
 
 1. Choisir les types (actualités, ressources, CD, produits ; les produits sont décochés au départ), une date de départ facultative et, si besoin, un motif de titres à écarter (expression régulière appliquée au titre de tous les types cochés ; vide au départ : rien n'est écarté ; plus pratique avec un seul type coché). Exemples : `Calendrier|Calendar`, `^Test`, `Download|Booklet|in English`.
 2. **Simulation** : tableau par type (contenus retenus, ceux qui ont déjà une vignette, ceux à traiter) et les 30 premiers titres. Rien n'est écrit. Le bouton « Créer » reste grisé tant que la simulation n'est pas faite avec les réglages affichés.
-3. **Créer les vignettes** : traitement par lots de 5 contenus (au plus 20 secondes par requête) avec barre de progression. À la fin, le cache d'Elementor est vidé.
+3. **Importer les vignettes** : traitement par lots de 5 contenus (au plus 20 secondes par requête) avec barre de progression. À la fin, le cache d'Elementor est vidé.
 
 Détails : la page appelle `on_vignettes_upsert()` pour chaque contenu, **sans réenregistrer le contenu** : sa date de modification ne change pas. On peut relancer sans doublon ; les vignettes modifiées à la main ou à la corbeille ne sont pas touchées (règle de `on_vignettes_upsert()`). La case « ne traiter que les contenus qui n'ont pas encore de vignette » est cochée au départ. Les contenus protégés par mot de passe sont ignorés. Une vignette créée sans image utilisable reste en brouillon avec la pastille rouge du menu. Fichiers : `includes/vignettes/creation-en-masse.php`, `assets/js/vignettes-creation.js`, `tests/VignettesCreationEnMasseTest.php`.

@@ -1,4 +1,4 @@
-/* Page « Créer les vignettes » : simulation puis création par lots (voir includes/vignettes/creation-en-masse.php).
+/* Page « Importer les vignettes » : simulation puis création par lots (voir includes/vignettes/creation-en-masse.php).
    Les textes viennent de PHP (window.ON_BULK), rien n'est écrit en dur ici. */
 (function () {
   var T = window.ON_BULK || {};
