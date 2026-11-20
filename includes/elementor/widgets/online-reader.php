@@ -206,7 +206,7 @@ class ON_Online_Reader extends Widget_Base
             $motif = ($type === 'magazine') ? 'ONED' : 'CahPart';
         }
 
-        $product = function_exists('on_usage_page_product') ? on_usage_page_product($motif) : null;
+        $product = function_exists('on_usage_page_product') ? on_usage_page_product($motif, true) : null;
         if (!$product) {
             // Pas de droit (ou pas de produit) : rien pour le visiteur.
             if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
