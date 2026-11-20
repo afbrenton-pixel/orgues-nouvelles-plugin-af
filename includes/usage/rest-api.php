@@ -88,7 +88,7 @@ function on_usage_rest_get($request)
     if ($since !== '') {
         $ts = strtotime($since . ' UTC');
         if ($ts === false) {
-            return new WP_Error('on_usage_bad_since', 'Paramètre since invalide (exemple : 2026-01-31).', array('status' => 400));
+            return new WP_Error('on_usage_bad_since', __('Paramètre since invalide (exemple : 2026-01-31).', 'orgues-nouvelles'), array('status' => 400));
         }
         $where[] = 'u.last_at >= %s';
         $args[] = gmdate('Y-m-d H:i:s', $ts);

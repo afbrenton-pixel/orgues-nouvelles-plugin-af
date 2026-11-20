@@ -1248,3 +1248,23 @@ msgstr "Only process items that do not have a thumbnail yet"
 #: includes/vignettes/creation-en-masse.php:449
 msgid "Simulation"
 msgstr "Simulation"
+
+#: includes/usage/dynamic-tags.php:133
+msgid "Le nom du produit contient"
+msgstr "The product name contains"
+
+#: includes/usage/dynamic-tags.php:136
+msgid "Laisser vide s'il n'y a qu'un produit pour ce numéro. Sinon, un morceau du nom, par exemple CahPart ou ONED."
+msgstr "Leave empty if there is only one product for this issue. Otherwise, part of the name, for example CahPart or ONED."
+
+#: includes/usage/dynamic-tags.php:153
+msgid "Adresse de lecture"
+msgstr "Reading address"
+
+#: includes/usage/dynamic-tags.php:173
+msgid "Adresse de téléchargement"
+msgstr "Download address"
+
+#: includes/usage/rest-api.php:91
+msgid "Paramètre since invalide (exemple : 2026-01-31)."
+msgstr "Invalid since parameter (example: 2026-01-31)."
