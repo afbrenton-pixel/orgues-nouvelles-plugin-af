@@ -52,3 +52,12 @@ Remplace le bloc HTML provisoire des modèles. À glisser dans le modèle de pag
 - Textes français / anglais selon la langue de la page. Les enregistrements sont repérés par les liens `.mp3` du PDF.
 - Pas d'extrait pour les visiteurs sans droit dans cette première version.
 - Fichiers : `includes/elementor/widgets/online-reader.php`, `assets/js/online-reader.js`, `assets/css/online-reader.css` (PDF.js 3.11.174 depuis cdnjs, chargé seulement quand l'élément est sur la page).
+
+## Affichage des pages (1 ou 2 pages) et zoom
+
+Réglé dans l'élément Elementor, section « Affichage des pages » :
+- **Pages affichées**, par type d'écran (ordinateur, tablette, téléphone) : *Automatique* (2 pages si la zone du lecteur est assez large), *1 page* ou *2 pages côte à côte*. Par défaut : ordinateur automatique, tablette et téléphone 1 page.
+- **Largeur minimale pour 2 pages** (mode automatique) : 860 px par défaut.
+- Les seuils tablette et téléphone sont ceux d'Elementor (`breakpoints`), transmis au script dans l'attribut `data-pages`.
+- **Zoom** : si deux pages sont affichées (et que le mode n'est pas « 2 pages »), le premier clic sur « + » passe à une page (la page de gauche) et applique le premier niveau de zoom ; « − » au zoom minimal revient aux deux pages. En mode « 2 pages », « + » agrandit sans changer de mode ; en mode « 1 page », « − » ne remet jamais deux pages.
+

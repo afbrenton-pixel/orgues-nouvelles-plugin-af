@@ -4,6 +4,7 @@ function onReaderInit(root){
 function q(r){return root.querySelector('[data-r="'+r+'"]');}
 var PDF_URL=root.getAttribute("data-pdf");
 var L={};try{L=JSON.parse(root.getAttribute("data-labels")||"{}");}catch(e){}
+var P={d:"auto",t:"1",m:"1",min:860,bpT:1024,bpM:767};try{var P0=JSON.parse(root.getAttribute("data-pages")||"{}");for(var k in P0)P[k]=P0[k];}catch(e){}
 function t(k,v){var x=L[k]||k;return v===undefined?x:x.replace("%s",v);}
 function roman(n){var m=[[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]],s="";m.forEach(function(x){while(n>=x[0]){s+=x[1];n-=x[0];}});return s;}
 function fmt(t){if(!isFinite(t))return"0:00";var m=Math.floor(t/60),s=Math.floor(t%60);return m+":"+(s<10?"0":"")+s;}
@@ -28,9 +29,12 @@ seek.addEventListener("change",function(){if(isFinite(audio.duration))audio.curr
 q("Show").addEventListener("click",function(){if(current)goTo(current.page);});
 
 var pdfDoc=null,total=0,spreads=[],idx=0,token=0,view=q("View"),spreadEl=q("Spread");
-var ZL=[1,1.5,2,3],zi=0;
-function setZoom(d){var n=Math.max(0,Math.min(ZL.length-1,zi+d));if(n===zi)return;zi=n;q("ZoomV").textContent=Math.round(ZL[zi]*100)+" %";q("ZoomOut").disabled=zi===0;q("ZoomIn").disabled=zi===ZL.length-1;view.classList.toggle("zoomed",zi>0);render();}
-function wide(){return view.clientWidth>=860;}
+var ZL=[1,1.5,2,3],zi=0,ov=null;
+function setZoom(d){var n=Math.max(0,Math.min(ZL.length-1,zi+d));if(n===zi)return;var cur=spreads[idx]?spreads[idx][0]:1,chg=false;
+ if(d>0&&zi===0&&ov===null&&wide()&&mode()!=="2"){ov=false;chg=true;}else if(d<0&&n===0&&ov===false){ov=null;chg=true;}
+ zi=n;q("ZoomV").textContent=Math.round(ZL[zi]*100)+" %";q("ZoomOut").disabled=zi===0;q("ZoomIn").disabled=zi===ZL.length-1;view.classList.toggle("zoomed",zi>0);if(chg){build();idx=spreadOf(cur);}render();}
+function mode(){var w=window.innerWidth,m=w<=P.bpM?P.m:(w<=P.bpT?P.t:P.d);return m==="1"||m==="2"?m:"auto";}
+function wide(){if(ov!==null)return ov;var m=mode();if(m==="1")return false;if(m==="2")return true;return view.clientWidth>=P.min;}
 q("ZoomOut").addEventListener("click",function(){setZoom(-1);});q("ZoomIn").addEventListener("click",function(){setZoom(1);});q("ZoomOut").disabled=true;
 function build(){spreads=[];if(wide()){spreads.push([1]);for(var p=2;p<=total;p+=2)spreads.push(p+1<=total?[p,p+1]:[p]);}else{for(var q=1;q<=total;q++)spreads.push([q]);}}
 function spreadOf(pg){for(var i=0;i<spreads.length;i++)if(spreads[i].indexOf(pg)>=0)return i;return 0;}
