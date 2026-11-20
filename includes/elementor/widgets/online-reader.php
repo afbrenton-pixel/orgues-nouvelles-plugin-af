@@ -99,6 +99,34 @@ class ON_Online_Reader extends Widget_Base
 
         $this->end_controls_section();
 
+        $this->start_controls_section('on_reader_pages', array('label' => 'Affichage des pages'));
+
+        $this->add_responsive_control('pages_mode', array(
+            'label'          => 'Pages affichées',
+            'type'           => Controls_Manager::SELECT,
+            'default'        => 'auto',
+            'tablet_default' => '1',
+            'mobile_default' => '1',
+            'options'        => array(
+                'auto' => 'Automatique (selon la largeur du lecteur)',
+                '1'    => '1 page',
+                '2'    => '2 pages côte à côte',
+            ),
+            'description'    => 'Réglage par type d\'écran (icônes ordinateur, tablette, téléphone). En mode « 2 pages », le bouton « + » du zoom agrandit sans changer de mode ; sinon le premier clic sur « + » passe à une page et agrandit, et « − » revient aux deux pages.',
+        ));
+
+        $this->add_control('two_pages_min', array(
+            'label'       => 'Largeur minimale pour 2 pages (mode automatique)',
+            'type'        => Controls_Manager::NUMBER,
+            'default'     => 860,
+            'min'         => 400,
+            'max'         => 2400,
+            'step'        => 10,
+            'description' => 'En pixels, largeur de la zone du lecteur. En dessous, une seule page.',
+        ));
+
+        $this->end_controls_section();
+
         $this->start_controls_section('on_reader_style', array(
             'label' => 'Bouton',
             'tab'   => Controls_Manager::TAB_STYLE,
@@ -197,6 +225,33 @@ class ON_Online_Reader extends Widget_Base
         $btn    = trim((string) $s['button_label']) !== '' ? $s['button_label'] : $L['open'];
         $uid    = 'on-rd-' . $this->get_id();
 
+        // Affichage des pages par type d'écran (réglages du widget) et seuils d'écran d'Elementor.
+        $bp_mobile = 767;
+        $bp_tablet = 1024;
+        try {
+            $bps = \Elementor\Plugin::$instance->breakpoints->get_breakpoints();
+            if (isset($bps['mobile'])) {
+                $bp_mobile = (int) $bps['mobile']->get_value();
+            }
+            if (isset($bps['tablet'])) {
+                $bp_tablet = (int) $bps['tablet']->get_value();
+            }
+        } catch (\Throwable $e) {
+            // Valeurs par défaut d'Elementor.
+        }
+        $mode = function ($v, $d) {
+            $v = (string) $v;
+            return in_array($v, array('auto', '1', '2'), true) ? $v : $d;
+        };
+        $pages_cfg = array(
+            'd'   => $mode($s['pages_mode'] ?? 'auto', 'auto'),
+            't'   => $mode($s['pages_mode_tablet'] ?? '1', '1'),
+            'm'   => $mode($s['pages_mode_mobile'] ?? '1', '1'),
+            'min' => max(400, (int) ($s['two_pages_min'] ?? 860)),
+            'bpT' => $bp_tablet,
+            'bpM' => $bp_mobile,
+        );
+
         $chev_l = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
         $chev_r = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
         ?>
@@ -205,6 +260,7 @@ class ON_Online_Reader extends Widget_Base
             <div class="on-rd" id="<?php echo esc_attr($uid); ?>" data-r="Panel" hidden
                  data-pdf="<?php echo esc_url($url); ?>"
                  data-sub="<?php echo esc_attr($sub); ?>"
+                 data-pages="<?php echo esc_attr(wp_json_encode($pages_cfg)); ?>"
                  data-labels="<?php echo esc_attr(wp_json_encode($L)); ?>">
                 <header class="top">
                     <div><h2 data-r="Title"><?php echo esc_html($title); ?></h2><p class="sub" data-r="Sub"><?php echo esc_html($sub); ?></p></div>
