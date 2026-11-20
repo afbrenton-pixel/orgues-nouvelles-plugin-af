@@ -24,12 +24,33 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Le client connecté a-t-il déjà acheté ce produit (commande payée) ?
+ *
+ * Sert à lire en ligne un cahier vendu seul : il n'est pas « gratuit » pour le
+ * client (le champ Magazine du produit est vide, voir on_ajouter_numero_apres_achat),
+ * mais il l'a payé.
+ *
+ * @param WC_Product $product Produit.
+ * @return bool
+ */
+function on_usage_customer_owns($product)
+{
+    $user = wp_get_current_user();
+    if (!$user || !$user->ID || !$product || !function_exists('wc_customer_bought_product')) {
+        return false;
+    }
+    return (bool) wc_customer_bought_product($user->user_email, $user->ID, $product->get_id());
+}
+
+/**
  * Produit à lire ou télécharger pour la page courante et le client connecté.
  *
- * @param string $motif Texte que le nom du produit doit contenir (facultatif).
+ * @param string $motif       Texte que le nom du produit doit contenir (facultatif).
+ * @param bool   $allow_owned Accepter aussi un produit payant déjà acheté par ce client
+ *                            (lecture en ligne ; pas pour le téléchargement gratuit, qui refuse un produit payant).
  * @return WC_Product|null
  */
-function on_usage_page_product($motif = '')
+function on_usage_page_product($motif = '', $allow_owned = false)
 {
     if (!is_user_logged_in() || !function_exists('wc_get_product')) {
         return null;
@@ -65,7 +86,10 @@ function on_usage_page_product($motif = '')
     $motif = trim((string) $motif);
     foreach (get_posts($args) as $product_id) {
         $product = wc_get_product($product_id);
-        if (!$product || !$product->is_downloadable() || (float) $product->get_price() > 0) {
+        if (!$product || !$product->is_downloadable()) {
+            continue;
+        }
+        if ((float) $product->get_price() > 0 && !($allow_owned && on_usage_customer_owns($product))) {
             continue;
         }
         if ($motif !== '' && stripos($product->get_name(), $motif) === false) {
@@ -80,7 +104,7 @@ function on_usage_page_product($motif = '')
 /** Adresse de lecture du produit, ou ''. */
 function on_usage_read_url($motif = '')
 {
-    $product = on_usage_page_product($motif);
+    $product = on_usage_page_product($motif, true);
     if (!$product) {
         return '';
     }
