@@ -99,30 +99,30 @@ class ON_Online_Reader extends Widget_Base
 
         $this->end_controls_section();
 
-        $this->start_controls_section('on_reader_pages', array('label' => 'Affichage des pages'));
+        $this->start_controls_section('on_reader_pages', array('label' => __('Affichage des pages', 'orgues-nouvelles')));
 
         $this->add_responsive_control('pages_mode', array(
-            'label'          => 'Pages affichées',
+            'label'          => __('Pages affichées', 'orgues-nouvelles'),
             'type'           => Controls_Manager::SELECT,
             'default'        => 'auto',
             'tablet_default' => '1',
             'mobile_default' => '1',
             'options'        => array(
-                'auto' => 'Automatique (selon la largeur du lecteur)',
-                '1'    => '1 page',
-                '2'    => '2 pages côte à côte',
+                'auto' => __('Automatique (selon la largeur du lecteur)', 'orgues-nouvelles'),
+                '1'    => __('1 page', 'orgues-nouvelles'),
+                '2'    => __('2 pages côte à côte', 'orgues-nouvelles'),
             ),
-            'description'    => 'Réglage par type d\'écran (icônes ordinateur, tablette, téléphone). En mode « 2 pages », le bouton « + » du zoom agrandit sans changer de mode ; sinon le premier clic sur « + » passe à une page et agrandit, et « − » revient aux deux pages.',
+            'description'    => __('Réglage par type d\'écran (icônes ordinateur, tablette, téléphone). En mode « 2 pages », le bouton « + » du zoom agrandit sans changer de mode ; sinon le premier clic sur « + » passe à une page et agrandit, et « − » revient aux deux pages.', 'orgues-nouvelles'),
         ));
 
         $this->add_control('two_pages_min', array(
-            'label'       => 'Largeur minimale pour 2 pages (mode automatique)',
+            'label'       => __('Largeur minimale pour 2 pages (mode automatique)', 'orgues-nouvelles'),
             'type'        => Controls_Manager::NUMBER,
             'default'     => 860,
             'min'         => 400,
             'max'         => 2400,
             'step'        => 10,
-            'description' => 'En pixels, largeur de la zone du lecteur. En dessous, une seule page.',
+            'description' => __('En pixels, largeur de la zone du lecteur. En dessous, une seule page.', 'orgues-nouvelles'),
         ));
 
         $this->end_controls_section();

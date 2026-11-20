@@ -1561,3 +1561,35 @@ msgstr ""
 #: includes/products/read-online.php:210
 msgid "Fichier PDF indisponible."
 msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:102
+msgid "Affichage des pages"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:105
+msgid "Pages affichées"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:111
+msgid "Automatique (selon la largeur du lecteur)"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:112
+msgid "1 page"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:113
+msgid "2 pages côte à côte"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:115
+msgid "Réglage par type d'écran (icônes ordinateur, tablette, téléphone). En mode « 2 pages », le bouton « + » du zoom agrandit sans changer de mode ; sinon le premier clic sur « + » passe à une page et agrandit, et « − » revient aux deux pages."
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:119
+msgid "Largeur minimale pour 2 pages (mode automatique)"
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:125
+msgid "En pixels, largeur de la zone du lecteur. En dessous, une seule page."
+msgstr ""

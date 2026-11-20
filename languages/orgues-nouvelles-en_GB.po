@@ -1637,3 +1637,35 @@ msgstr "You do not have access to this issue."
 #: includes/products/read-online.php:210
 msgid "Fichier PDF indisponible."
 msgstr "PDF file unavailable."
+
+#: includes/elementor/widgets/online-reader.php:102
+msgid "Affichage des pages"
+msgstr "Page display"
+
+#: includes/elementor/widgets/online-reader.php:105
+msgid "Pages affichées"
+msgstr "Pages shown"
+
+#: includes/elementor/widgets/online-reader.php:111
+msgid "Automatique (selon la largeur du lecteur)"
+msgstr "Automatic (according to the width of the reader)"
+
+#: includes/elementor/widgets/online-reader.php:112
+msgid "1 page"
+msgstr "1 page"
+
+#: includes/elementor/widgets/online-reader.php:113
+msgid "2 pages côte à côte"
+msgstr "2 pages side by side"
+
+#: includes/elementor/widgets/online-reader.php:115
+msgid "Réglage par type d'écran (icônes ordinateur, tablette, téléphone). En mode « 2 pages », le bouton « + » du zoom agrandit sans changer de mode ; sinon le premier clic sur « + » passe à une page et agrandit, et « − » revient aux deux pages."
+msgstr "Setting per screen type (computer, tablet and phone icons). In “2 pages” mode, the zoom “+” button enlarges without changing mode; otherwise the first click on “+” switches to one page and enlarges, and “−” goes back to two pages."
+
+#: includes/elementor/widgets/online-reader.php:119
+msgid "Largeur minimale pour 2 pages (mode automatique)"
+msgstr "Minimum width for 2 pages (automatic mode)"
+
+#: includes/elementor/widgets/online-reader.php:125
+msgid "En pixels, largeur de la zone du lecteur. En dessous, une seule page."
+msgstr "In pixels, width of the reader area. Below this, a single page."
