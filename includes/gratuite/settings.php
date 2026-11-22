@@ -15,12 +15,12 @@ function on_gratuite_settings() {
         'age_renew'          => 27,   // Yearly renewal: strictly under this age, i.e. until the 27th birthday.
         'renew_window_days'  => 60,   // Renewal allowed this many days before the end (enforced in step 5).
         'renew_enabled'      => false, // Renewal workflow (step 5) not built yet: a request from someone already accepted is refused. Step 5 switches this on.
-        'variation_fr'       => 257,  // "1 an / Étudiant" (test site IDs, to confirm on production).
-        'variation_en'       => 30365, // "1 year / Student".
+        'variation_fr'       => 257,  // "1 an / Étudiant" (same ID on the test site and on production, checked on 22 November 2026).
+        'variation_en'       => 30365, // "1 year / Student" (same ID on the test site and on production, checked on 22 November 2026).
         'discount_percent'   => 100,
         'fee_label'          => 'Gratuité -26 ans',
         'notify_email'       => 'etudiant@orgues-nouvelles.org',
-        'form_page_id'       => 49840, // French page with the form (the English one is found through Polylang).
+        'form_page_id'       => 282958, // French page with the form, on production (test site: 49840). The English page (283108 on production) is found through Polylang.
         'rate_limit_per_hour' => 5,   // Requests per IP and per hour.
         'confirm_days'       => 7,    // The e-mail confirmation link is valid this many days.
         'auto_purge_unconfirmed' => true,  // Daily purge of the requests never confirmed within `confirm_days` (decision of 10 November: the site uses WP-Cron, confirmed by the webmaster). The manual purge link stays available.
