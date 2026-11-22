@@ -272,7 +272,7 @@ supprime le justificatif ; fiche « refusée » ; e-mail de refus. Rien n'est cr
 `{account_url}`, `{form_url}`, `{contact}`, `{reason}`. Envoyés à la personne bénéficiaire (adresse de la demande).
 Dans une demande pour une autre personne, le **demandeur reçoit une copie** (décidé le 7 novembre), avec un **texte court et propre à la copie** (décidé le 9 novembre) : la décision, le nom et l'adresse de la personne, la date de fin de l'abonnement (acceptation) ou le motif (refus). Rien sur la lecture en ligne, « Mon compte » ou le renouvellement, puisque ce n'est pas son abonnement. Textes dans `on_gratuite_copy_texts()` (`decision-rules.php`), fixes (non modifiables dans WooCommerce).
 
-Réglage ajouté : `form_page_id` (49840), page du formulaire citée dans l'e-mail de refus (traduction trouvée par Polylang).
+Réglage ajouté : `form_page_id`, page du formulaire citée dans l'e-mail de refus (traduction trouvée par Polylang). Valeur **282958** en production (page française « Gratuité moins de 26 ans » ; page anglaise 283108, liée par Polylang) ; 49840 sur le site de test. Les variations d'abonnement étudiant 257 (français) et 30365 (anglais) ont les mêmes numéros sur le site de test et en production (contrôlé le 22 novembre 2026).
 
 ## À vérifier sur le site de test
 
