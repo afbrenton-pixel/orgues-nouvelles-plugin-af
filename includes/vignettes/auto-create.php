@@ -430,7 +430,7 @@ function on_vignettes_etiquette_for( $post ) {
 					return $found;
 				}
 			}
-			return 'actus';
+			return 'echos'; // sans catégorie reconnue : étiquette Échos (Echoes en anglais).
 	}
 }
 
