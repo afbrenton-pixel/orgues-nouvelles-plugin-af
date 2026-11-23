@@ -419,6 +419,9 @@ function on_vignettes_etiquette_for( $post ) {
 				if ( 'cd' === $slug ) {
 					return 'sorties-cd';
 				}
+				if ( 'blog' === $slug ) {
+					return 'echos'; // la catégorie « Blog » est la traduction de « Echoes » : étiquette Échos / Echoes.
+				}
 				if ( 'uncategorized' === $slug ) {
 					continue;
 				}
