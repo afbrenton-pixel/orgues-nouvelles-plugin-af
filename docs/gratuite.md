@@ -73,6 +73,104 @@ Fichier : `includes/gratuite/private-proof-storage.php`.
 | `on_gratuite_proof_types` | pdf, jpg, jpeg, png |
 | `on_gratuite_proof_max_bytes` | 5 Mo |
 
+### Message de période sur la page du formulaire
+
+`includes/gratuite/period-notice.php`. Le raccourci **`[on_gratuite_periode]`**, à placer dans un widget
+« Shortcode » au-dessus du formulaire (sur la page française et sur la page anglaise), affiche un message quand
+l'offre n'est pas encore ouverte (« …ouvriront le 01/12/2026 ») ou est terminée (« …jusqu'au 31/03/2027 ») ;
+rien pendant la période. Les textes sont ceux que le formulaire donne déjà en cas de refus (anglais dans le
+fichier .po), les dates viennent de la page de réglages. Hors période, le widget formulaire qui porte la classe CSS
+**`on-gratuite-formulaire`** (Elementor, onglet Avancé > Classes CSS) est masqué ; sans cette classe, le formulaire
+reste visible (le refus côté serveur reste actif dans tous les cas). Aperçu pour les administrateurs :
+ajouter `?gratuite_apercu=avant`, `apres` ou `ouvert` à l'adresse de la page. Test : `tests/GratuitePeriodNoticeTest.php`.
+
+### Données enregistrées sur la fiche (méta)
+
+`_on_gratuite_justificatif` (nom du fichier), `_on_gratuite_justificatif_nom`
+(nom d'origine), `_on_gratuite_justificatif_mime`, `_on_gratuite_justificatif_date`
+(horodatage), `_on_gratuite_justificatif_supprime` (horodatage de suppression),
+`_on_gratuite_justificatif_acces` (une ligne par lecture : `horodatage|utilisateur`).
+
+## Étape 2 : formulaire Elementor et action « Gratuité -26 ans (autorisation) »
+
+Fichiers : `includes/gratuite/` : `settings.php`, `request-rules.php`, `authorization.php`,
+`form-action.php`, `class-form-action.php`.
+
+### Le formulaire (dans Elementor, sans code court)
+
+Widget « Formulaire » d'Elementor Pro, dans la page FR et dans la page EN. **Identifiants
+des champs** (onglet Avancé de chaque champ), à respecter exactement :
+
+| Identifiant | Type de champ | Remarque |
+| --- | --- | --- |
+| `prenom`, `nom` | Texte | Obligatoires |
+| `email` | E-mail | Obligatoire |
+| `date_naissance` | Date | Obligatoire ; format AAAA-MM-JJ (champ date natif) |
+| `justificatif` | Envoi de fichier | **1 fichier**, formats pdf, jpg, jpeg, png, 5 Mo ; obligatoire |
+| `newsletter` | Case à cocher | Facultatif ; seul l'indicateur est enregistré |
+| `pour_autre` | Acceptation | Facultatif : « Je fais cette demande pour une autre personne » (voir « Demande pour une autre personne ») |
+| `consentement` | Acceptation | Obligatoire (traitement des données, durée de conservation) |
+| `langue` | Champ caché | Valeur `fr` ou `en` (une valeur par page) |
+
+Dans « Actions après soumission », choisir **uniquement** « Gratuité -26 ans (autorisation) »
+(et « Redirection » si besoin). Les autres actions (E-mail, Collecter les envois, Webhook,
+etc.) sont **retirées automatiquement** : elles copieraient des données personnelles ou
+l'adresse du justificatif. Ajouter le champ anti-robot d'Elementor (piège invisible ou reCAPTCHA).
+Style : réglages globaux d'Elementor uniquement (règle 14).
+
+### Ce que fait l'action
+
+1. **Avant l'envoi du fichier** (validation) : contrôle de la date de naissance (voir règles),
+   présence et format du justificatif, adresse déjà connue, demande déjà en cours, limite
+   de 5 demandes par heure et par connexion (seul un hachage de l'adresse IP est gardé 1 h).
+   Les erreurs s'affichent sous le champ concerné, en français ou en anglais selon `langue`.
+   Si l'une échoue, **aucun fichier n'est enregistré**.
+2. **À l'envoi** : création de la fiche (statut « **à confirmer** »), déplacement du justificatif
+   dans le stockage privé chiffré, suppression du fichier de la partie publique
+   d'Elementor (y compris en cas d'erreur), puis **e-mail de confirmation à la personne**
+   (voir étape 2b). Une nouvelle demande de la même adresse remplace (efface) une demande
+   non confirmée précédente. L'équipe n'est prévenue qu'après la confirmation.
+
+### Demande pour une autre personne (décidé le 7 novembre, option B)
+
+Le site propose déjà d'offrir un abonnement (extension WooCommerce Subscriptions Gifting, destinataire
+`_recipient_user`). La gratuité suit la même logique :
+
+- **Pour soi-même** : la personne connectée est le bénéficiaire ; l'adresse de son compte est toujours
+  utilisée. Une adresse différente tapée dans le formulaire est **refusée** avec un message (jamais ignorée
+  sans le dire). Une personne non connectée dont l'adresse a déjà un compte doit d'abord se connecter.
+- **Pour une autre personne** (case `pour_autre`) : il faut être **connecté** ; l'adresse, la date de naissance,
+  le nom et le justificatif sont ceux du **bénéficiaire**. Son adresse doit différer de celle du compte
+  du demandeur. Le bénéficiaire peut déjà avoir un compte (comme pour un cadeau). L'e-mail de confirmation
+  part chez le bénéficiaire (« une demande a été faite pour vous par un utilisateur de notre site »).
+- La fiche garde le bénéficiaire (`client_id`, `email`) et le demandeur (`demandeur_id`) ; la notification à
+  l'équipe indique le demandeur. **Étape 3** : l'abonnement est un abonnement cadeau (acheteur = demandeur,
+  destinataire = bénéficiaire, compte créé s'il n'existe pas) ; les renouvellements suivent le bénéficiaire.
+- L'âge est contrôlé sur la date de naissance du bénéficiaire (décidé le 9 novembre : la première demande et chaque renouvellement sont possibles jusqu'au 27e anniversaire, réglages `age_first` et `age_renew` = 27).
+- Texte du formulaire : les champs prénom, nom, e-mail et date de naissance sont ceux de la personne concernée.
+
+### Règles appliquées
+
+- Première demande : moins de **26 ans** à la date de naissance exacte (le jour du 26e anniversaire est refusé).
+- Renouvellement (le client connecté a déjà une autorisation acceptée) : moins de **27 ans**.
+- Une adresse qui a déjà un compte : la personne doit d'abord se connecter (message), puis refaire sa demande.
+- Une demande **confirmée et en attente de décision** pour la même adresse empêche d'en déposer une autre (une demande seulement « à confirmer » est remplacée).
+- **Pas encore faits** : création du compte, de l'abonnement et de la commande (étape 3),
+  boutons Accepter / Refuser (étape 4), fenêtre des 60 jours avant la fin (étape 5).
+
+### Réglages
+
+`includes/gratuite/settings.php` (fonction `on_gratuite_settings()`). Les valeurs qui changent d'un
+site à l'autre se règlent dans l'administration, page **Réglages > Gratuité -26 ans** (page Pods
+`on_gratuite_reglages`) : période promotionnelle (dates), **page du formulaire**, **variations
+d'abonnement étudiant** (français et anglais), **adresse de l'équipe**, **limite de demandes par
+heure**. Un champ vide garde la valeur par défaut du code (variations 257 et 30365, etudiant@orgues-nouvelles.org,
+5 par heure ; page du formulaire non définie : le lien de l'e-mail de refus renvoie alors vers l'accueil).
+Les autres valeurs (26 et 27 ans, 60 jours, 100 %, libellé des frais, délais) restent dans le code
+(décision du 7 novembre : l'opération n'est pas destinée à être permanente). Après mise à jour du plugin,
+**réimporter le paquet Pods** `docs/pods/gratuite-26.json` pour faire apparaître les nouveaux champs.
+Test : `tests/GratuiteSettingsTest.php`.
+
 ### Données enregistrées sur la fiche (méta)
 
 `_on_gratuite_justificatif` (nom du fichier), `_on_gratuite_justificatif_nom`
@@ -272,7 +370,7 @@ supprime le justificatif ; fiche « refusée » ; e-mail de refus. Rien n'est cr
 `{account_url}`, `{form_url}`, `{contact}`, `{reason}`. Envoyés à la personne bénéficiaire (adresse de la demande).
 Dans une demande pour une autre personne, le **demandeur reçoit une copie** (décidé le 7 novembre), avec un **texte court et propre à la copie** (décidé le 9 novembre) : la décision, le nom et l'adresse de la personne, la date de fin de l'abonnement (acceptation) ou le motif (refus). Rien sur la lecture en ligne, « Mon compte » ou le renouvellement, puisque ce n'est pas son abonnement. Textes dans `on_gratuite_copy_texts()` (`decision-rules.php`), fixes (non modifiables dans WooCommerce).
 
-Réglage ajouté : `form_page_id` (49840), page du formulaire citée dans l'e-mail de refus (traduction trouvée par Polylang).
+Réglage `form_page_id` (page du formulaire, citée dans l'e-mail de refus ; la traduction est trouvée par Polylang) : choisi sur la page de réglages, plus écrit dans le code. Valeurs d'Orgues Nouvelles : 282958 en production (page anglaise 283108, liée par Polylang), 49840 sur le site de test.
 
 ## À vérifier sur le site de test
 
