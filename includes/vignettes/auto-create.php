@@ -366,6 +366,44 @@ function on_vignettes_zone_for( $post ) {
 	return 'centre-actus';
 }
 
+/**
+ * Slug (de la langue par défaut) de l'étiquette qui correspond à une catégorie d'article, '' si aucune.
+ *
+ * On cherche d'abord par slug, puis par nom. Le slug d'une étiquette anglaise porte un suffixe (« echos-en »,
+ * « actus-en »…) alors que la catégorie « Echoes » ou « News » donne « echoes » ou « news » : la recherche par slug
+ * seule ne la trouvait pas, et `term_exists()` (qui compare aussi les noms) disait pourtant oui, d'où une
+ * vignette anglaise sans étiquette. On ramène le terme trouvé à son équivalent dans la langue par défaut ;
+ * la langue de la vignette est rétablie ensuite par on_vignettes_term_in_lang().
+ */
+function on_vignettes_term_for_category( $cat ) {
+	$term = on_vignettes_term_by_slug( sanitize_title( $cat->name ), 'etiquette_vignette' );
+	if ( ! $term ) {
+		$by_name = get_terms(
+			array(
+				'taxonomy'   => 'etiquette_vignette',
+				'name'       => (string) $cat->name,
+				'hide_empty' => false,
+				'number'     => 1,
+				'lang'       => '', // Polylang : toutes les langues.
+			)
+		);
+		$term    = ( is_array( $by_name ) && $by_name ) ? $by_name[0] : null;
+	}
+	if ( ! $term ) {
+		return '';
+	}
+	if ( function_exists( 'pll_get_term' ) && function_exists( 'pll_default_language' ) ) {
+		$default_id = (int) pll_get_term( $term->term_id, pll_default_language() );
+		if ( $default_id && (int) $term->term_id !== $default_id ) {
+			$default = get_term( $default_id, 'etiquette_vignette' );
+			if ( $default && ! is_wp_error( $default ) ) {
+				$term = $default;
+			}
+		}
+	}
+	return $term->slug;
+}
+
 /** Étiquette (slug d'un terme de `etiquette_vignette`) d'un contenu. */
 function on_vignettes_etiquette_for( $post ) {
 	switch ( $post->post_type ) {
@@ -381,8 +419,12 @@ function on_vignettes_etiquette_for( $post ) {
 				if ( 'cd' === $slug ) {
 					return 'sorties-cd';
 				}
-				if ( term_exists( $slug, 'etiquette_vignette' ) && 'uncategorized' !== $slug ) {
-					return $slug;
+				if ( 'uncategorized' === $slug ) {
+					continue;
+				}
+				$found = on_vignettes_term_for_category( $cat );
+				if ( $found ) {
+					return $found;
 				}
 			}
 			return 'actus';
