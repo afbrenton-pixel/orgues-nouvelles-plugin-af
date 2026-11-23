@@ -12,7 +12,7 @@ function on_custom_pods_labels_in_pick_field_data($items, $name, $value, $option
     if (!empty($items) && is_array($items)) {
         // pods_meta_ prefix for Pods backend, pods_field_ prefix for front-facing Pods form.
         $pods_types = array(
-            'magazine' => array('magazines', 'magazine', 'page_magazine'),
+            'magazine' => array('magazines', 'magazine', 'page_magazine', 'journals'),
             'cd' => array('cd', 'cds', 'page_cd'),
             'partition' => array('partitions', 'partition', 'page_partition', 'page_partitions'),
         );
