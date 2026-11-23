@@ -409,6 +409,29 @@ function on_vignettes_soustitre_for( $post ) {
 	return $date;
 }
 
+/**
+ * Terme d'une taxonomie d'après son slug, quelle que soit la langue.
+ *
+ * `get_term_by()` passe par `get_terms()`, que Polylang filtre sur la langue courante de l'administration
+ * (langue du compte, filtre de langue de la barre noire, requête AJAX…). Une étiquette dont le terme est dans
+ * une autre langue que celle-là n'était alors pas trouvée et la vignette restait sans étiquette (les zones,
+ * non traduisibles, n'étaient pas touchées). `'lang' => ''` : tous les termes, toutes langues.
+ *
+ * @return WP_Term|null
+ */
+function on_vignettes_term_by_slug( $slug, $taxonomy ) {
+	$terms = get_terms(
+		array(
+			'taxonomy'   => $taxonomy,
+			'slug'       => (string) $slug,
+			'hide_empty' => false,
+			'number'     => 1,
+			'lang'       => '', // Polylang : toutes les langues.
+		)
+	);
+	return ( is_array( $terms ) && $terms ) ? $terms[0] : null;
+}
+
 /** Terme de la bonne langue (Polylang), sinon le terme donné. */
 function on_vignettes_term_in_lang( $term_id, $lang ) {
 	if ( $lang && function_exists( 'pll_get_term' ) ) {
@@ -518,11 +541,11 @@ function on_vignettes_upsert( $post ) {
 
 	// Zone et étiquette (termes de la langue du contenu pour l'étiquette).
 	$lang = function_exists( 'pll_get_post_language' ) ? pll_get_post_language( $post->ID ) : '';
-	$zone = get_term_by( 'slug', on_vignettes_zone_for( $post ), 'zone_vignette' );
+	$zone = on_vignettes_term_by_slug( on_vignettes_zone_for( $post ), 'zone_vignette' );
 	if ( $zone ) {
 		wp_set_object_terms( $vid, array( (int) $zone->term_id ), 'zone_vignette' );
 	}
-	$etiq = get_term_by( 'slug', on_vignettes_etiquette_for( $post ), 'etiquette_vignette' );
+	$etiq = on_vignettes_term_by_slug( on_vignettes_etiquette_for( $post ), 'etiquette_vignette' );
 	if ( $etiq ) {
 		wp_set_object_terms( $vid, array( on_vignettes_term_in_lang( $etiq->term_id, $lang ) ), 'etiquette_vignette' );
 	}

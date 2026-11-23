@@ -135,3 +135,8 @@
 .on-pl li.on-current { color: var(--e-global-color-e778dc5, #f0502a); font-weight: 700; }
 .on-playlist:not(.on-pl-open) .on-pl .on-pl-more { display: none; }
 .on-pl-toggle { -webkit-appearance: none; appearance: none; background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 8px 4px 0 !important; margin: 0; font: inherit; font-size: .8rem; font-weight: 700; color: var(--e-global-color-e778dc5, #f0502a) !important; text-transform: none; letter-spacing: 0; cursor: pointer; text-align: left; }
+
+/* ---- Grandes vignettes : côté de la photo choisi dans la fiche (champ « image_cote ») ----
+ * Classes posées par includes/vignettes/affichage.php ; elles l'emportent sur le sens du modèle de boucle. */
+.e-loop-item.on-image-gauche > .e-con { --flex-direction: row; flex-direction: row !important; }
+.e-loop-item.on-image-droite > .e-con { --flex-direction: row-reverse; flex-direction: row-reverse !important; }

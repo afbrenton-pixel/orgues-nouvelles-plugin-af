@@ -27,7 +27,7 @@ Fichier d'import : `docs/pods/vignette_accueil-package.json` (Pods > Composants 
 | `sous_titre` | Texte | Ligne sous le titre (facultatif). |
 | `lien` | Site web | Lien de la vignette. Vide = lien vers le contenu d'origine. |
 | `format` | Choix | `standard` (défaut), `large` ou `playlist`. |
-| `image_cote` | Choix | `gauche` (défaut) ou `droite`, pour les grandes vignettes. |
+| `image_cote` | Choix | `gauche` (défaut) ou `droite`, pour les grandes vignettes : la photo se place de ce côté, quel que soit le modèle de boucle de la grille (classes `on-image-gauche` / `on-image-droite`). |
 | `cadrage` | Choix | `carre`, `4-3` ou `original` (défaut). |
 | `masquer_titre` | Oui / non | Cache le titre (l'étiquette reste affichée). |
 | `afficher_description` | Oui / non | Affiche le sous-titre et l'extrait. Non par défaut : seuls l'étiquette et le titre sont affichés. |
