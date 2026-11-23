@@ -79,8 +79,9 @@ function on_vignettes_playlist_for( $vignette_id ) {
 		$title    = preg_replace( '/^\s*\d{1,2}\s*[-.–]\s*/u', '', (string) $title ); // la liste a sa propre numérotation : « 01- Van Soldt » → « Van Soldt ».
 		$audio[]  = esc_url_raw( $url );
 		$tracks[] = array(
-			'title'  => wp_strip_all_tags( (string) $title ),
-			'artist' => ! empty( $meta['artist'] ) ? wp_strip_all_tags( (string) $meta['artist'] ) : '',
+			// Texte brut : le JavaScript l'affiche avec textContent, un « &amp; » resterait visible tel quel (get_the_title() encode « & »).
+			'title'  => html_entity_decode( wp_strip_all_tags( (string) $title ), ENT_QUOTES, 'UTF-8' ),
+			'artist' => ! empty( $meta['artist'] ) ? html_entity_decode( wp_strip_all_tags( (string) $meta['artist'] ), ENT_QUOTES, 'UTF-8' ) : '',
 			'length' => ! empty( $meta['length_formatted'] ) ? (string) $meta['length_formatted'] : '',
 		);
 	}
