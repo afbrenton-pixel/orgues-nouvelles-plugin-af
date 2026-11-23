@@ -73,6 +73,17 @@ Fichier : `includes/gratuite/private-proof-storage.php`.
 | `on_gratuite_proof_types` | pdf, jpg, jpeg, png |
 | `on_gratuite_proof_max_bytes` | 5 Mo |
 
+### Message de période sur la page du formulaire
+
+`includes/gratuite/period-notice.php`. Le raccourci **`[on_gratuite_periode]`**, à placer dans un widget
+« Shortcode » au-dessus du formulaire (sur la page française et sur la page anglaise), affiche un message quand
+l'offre n'est pas encore ouverte (« …ouvriront le 01/12/2026 ») ou est terminée (« …jusqu'au 31/03/2027 ») ;
+rien pendant la période. Les textes sont ceux que le formulaire donne déjà en cas de refus (anglais dans le
+fichier .po), les dates viennent de la page de réglages. Hors période, le widget formulaire qui porte la classe CSS
+**`on-gratuite-formulaire`** (Elementor, onglet Avancé > Classes CSS) est masqué ; sans cette classe, le formulaire
+reste visible (le refus côté serveur reste actif dans tous les cas). Aperçu pour les administrateurs :
+ajouter `?gratuite_apercu=avant`, `apres` ou `ouvert` à l'adresse de la page. Test : `tests/GratuitePeriodNoticeTest.php`.
+
 ### Données enregistrées sur la fiche (méta)
 
 `_on_gratuite_justificatif` (nom du fichier), `_on_gratuite_justificatif_nom`
