@@ -138,5 +138,8 @@
 
 /* ---- Grandes vignettes : côté de la photo choisi dans la fiche (champ « image_cote ») ----
  * Classes posées par includes/vignettes/affichage.php ; elles l'emportent sur le sens du modèle de boucle. */
-.e-loop-item.on-image-gauche > .e-con { --flex-direction: row; flex-direction: row !important; }
-.e-loop-item.on-image-droite > .e-con { --flex-direction: row-reverse; flex-direction: row-reverse !important; }
+/* Le sens des colonnes est sur le conteneur racine (modèle « pleine largeur ») ou sur son conteneur interne .e-con-inner (modèle « boîte »). */
+.e-loop-item.on-image-gauche > .e-con,
+.e-loop-item.on-image-gauche > .e-con > .e-con-inner { --flex-direction: row; flex-direction: row !important; }
+.e-loop-item.on-image-droite > .e-con,
+.e-loop-item.on-image-droite > .e-con > .e-con-inner { --flex-direction: row-reverse; flex-direction: row-reverse !important; }
