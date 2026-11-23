@@ -10,6 +10,9 @@
  * donc présentes sur chaque élément du Loop Grid / Carrousel). Le CSS (assets/css/vignettes-accueil.css)
  * cache alors les widgets des modèles de boucle qui portent la classe `on-w-titre` ou `on-w-description`
  * (posée sur les widgets du modèle « standard » seulement : les grandes vignettes gardent leur texte).
+ *
+ * Les grandes vignettes reçoivent aussi `on-image-gauche` ou `on-image-droite` (champ `image_cote`) : le CSS
+ * place la photo de ce côté, que la grille utilise le modèle « image à gauche » ou « image à droite ».
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -26,6 +29,10 @@ add_filter(
 		}
 		if ( ! get_post_meta( $post_id, 'afficher_description', true ) ) {
 			$classes[] = 'on-sans-description';
+		}
+		// Grandes vignettes : côté de l'image choisi dans la fiche (champ « image_cote »), quel que soit le modèle de boucle.
+		if ( 'large' === get_post_meta( $post_id, 'format', true ) ) {
+			$classes[] = 'droite' === get_post_meta( $post_id, 'image_cote', true ) ? 'on-image-droite' : 'on-image-gauche';
 		}
 		return $classes;
 	},

@@ -27,7 +27,7 @@ Fichier d'import : `docs/pods/vignette_accueil-package.json` (Pods > Composants 
 | `sous_titre` | Texte | Ligne sous le titre (facultatif). |
 | `lien` | Site web | Lien de la vignette. Vide = lien vers le contenu d'origine. |
 | `format` | Choix | `standard` (défaut), `large` ou `playlist`. |
-| `image_cote` | Choix | `gauche` (défaut) ou `droite`, pour les grandes vignettes. |
+| `image_cote` | Choix | `gauche` (défaut) ou `droite`, pour les grandes vignettes : la photo se place de ce côté, quel que soit le modèle de boucle de la grille (classes `on-image-gauche` / `on-image-droite`). |
 | `cadrage` | Choix | `carre`, `4-3` ou `original` (défaut). |
 | `masquer_titre` | Oui / non | Cache le titre (l'étiquette reste affichée). |
 | `afficher_description` | Oui / non | Affiche le sous-titre et l'extrait. Non par défaut : seuls l'étiquette et le titre sont affichés. |
@@ -52,7 +52,7 @@ Termes de `zone_vignette`, créés par le code (une fois, sans jamais modifier u
 
 ## Étiquettes
 
-Termes de `etiquette_vignette` : Publications, CD, Sorties CD, Vidéos, Échos, Blog, Pub, La Revue, Actus, Newsletter, Ressources, Photos. Les étiquettes Audio, Textes et Partitions viennent du type de ressource.
+Termes de `etiquette_vignette` (la catégorie d'article « Blog » donne l'étiquette Échos) : Publications, CD, Sorties CD, Vidéos, Échos, Pub, La Revue, Newsletter, Ressources, Photos. Un contenu sans catégorie reconnue reçoit l'étiquette Échos. Les étiquettes Audio, Textes et Partitions viennent du type de ressource.
 
 ## Création automatique
 
@@ -93,7 +93,7 @@ La fiche d'une vignette affiche, dans la colonne de droite, une boîte « Objet 
 
 ## Polylang
 
-Le type de contenu et les étiquettes sont déclarés traduisibles ; les requêtes suivent la langue courante. Les zones ne sont pas traduisibles. Les traductions anglaises de toutes les étiquettes sont créées avec les termes (Ressources → Resources, Vidéos → Videos, Actus → News, Échos → Echoes, Sorties CD → CD releases, La Revue → The Journal ; Publications, CD, Blog, Pub, Newsletter et Photos gardent leur nom). Une traduction déjà existante n'est pas modifiée. Les vignettes jumelles anglaises reprennent l'étiquette traduite.
+Le type de contenu et les étiquettes sont déclarés traduisibles ; les requêtes suivent la langue courante. Les zones ne sont pas traduisibles. Les traductions anglaises de toutes les étiquettes sont créées avec les termes (Ressources → Resources, Vidéos → Videos, Échos → Echoes, Sorties CD → CD releases, La Revue → The Journal ; Publications, CD, Pub, Newsletter et Photos gardent leur nom). Une traduction déjà existante n'est pas modifiée. Les vignettes jumelles anglaises reprennent l'étiquette traduite.
 
 ## Remarque : source du Loop Grid
 
