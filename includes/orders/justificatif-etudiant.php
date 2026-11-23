@@ -1,5 +1,10 @@
 <?php
 
+// WooCommerce peut être listé comme actif sans être réellement chargé (mise à jour échouée, fichiers manquants).
+if (!defined('WC_PLUGIN_FILE')) {
+    return;
+}
+
 include_once dirname(WC_PLUGIN_FILE) . '/includes/emails/class-wc-email.php';
 if (!class_exists('WC_Email_Justificatif_Etudiant')):
     class WC_Email_Justificatif_Etudiant extends WC_Email
