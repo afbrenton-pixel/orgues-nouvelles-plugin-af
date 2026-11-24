@@ -53,7 +53,7 @@ Un outil externe utilise un « mot de passe d'application » WordPress, en HTTPS
 
 Dans le champ « lien » d'un bouton Elementor ordinaire, choisir la balise dynamique « Adresse de lecture » ou « Adresse de téléchargement ».
 
-Le produit est retrouvé automatiquement : même `numero` que la page, dans la langue de la page (Polylang), téléchargeable, gratuit pour le client connecté. Si la page propose plusieurs produits (magazine, cahier de musique), le champ « Le nom du produit contient » de la balise choisit le bon (par exemple `CahPart`). Aucun produit gratuit pour le client : la balise est vide.
+Le produit est celui du champ Pods « Téléchargement » de la page (magazine ou cahier de partitions) : ce champ désigne le produit WooCommerce du bon numéro et de la bonne langue, sans règle sur le titre du produit. La balise est vide si le produit n'est pas publié, pas téléchargeable ou pas gratuit pour le client connecté, ou si la page n'a pas de produit.
 
 À noter : l'adresse de téléchargement contient un jeton de sécurité (nonce) qui expire. Si Elementor garde la page en cache, le jeton peut périmer : à surveiller sur le site de test.
 

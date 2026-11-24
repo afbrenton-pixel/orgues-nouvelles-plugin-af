@@ -9,12 +9,11 @@
  * Le designer les choisit dans le champ « lien » d'un bouton Elementor
  * ordinaire (icône de balise dynamique), comme « Lien de la vignette ».
  *
- * Le produit est retrouvé automatiquement : même numéro (champ Pods `numero`)
- * que la page, dans la langue de la page, téléchargeable, et gratuit pour le
- * client connecté (la règle de product-free-for-plans.php). Quand la page
- * propose plusieurs produits (magazine, cahier de musique…), le champ
- * « Le nom du produit contient » de la balise choisit le bon (ex. CahPart).
- * Pas de produit gratuit pour ce client : la balise reste vide.
+ * Le produit est celui du champ Pods « Téléchargement » de la page (magazine ou
+ * cahier) : un champ qui désigne le produit WooCommerce du bon numéro et de la
+ * bonne langue. Aucune règle sur le titre ou le numéro du produit. La balise
+ * reste vide si le client n'a pas le droit (produit non gratuit pour lui) ou si
+ * la page n'a pas de produit.
  *
  * Voir docs/comptage-usage.md.
  */
@@ -43,14 +42,46 @@ function on_usage_customer_owns($product)
 }
 
 /**
+ * Identifiant du produit du champ « Téléchargement » d'une page, ou 0.
+ *
+ * Le champ Pods est une relation vers un produit ; selon la façon de le lire,
+ * Pods rend un identifiant, un tableau (clé « ID ») ou un objet.
+ *
+ * @param int $post_id Page (magazine ou cahier de partitions).
+ * @return int
+ */
+function on_usage_page_product_id($post_id)
+{
+    $value = function_exists('pods_field')
+        ? pods_field(get_post_type($post_id), $post_id, 'telechargement', true)
+        : get_post_meta($post_id, 'telechargement', true);
+    if (empty($value)) {
+        $value = get_post_meta($post_id, 'telechargement', true);
+    }
+    if (is_object($value)) {
+        $value = isset($value->ID) ? $value->ID : 0;
+    } elseif (is_array($value)) {
+        $value = isset($value['ID']) ? $value['ID'] : reset($value);
+        if (is_array($value)) {
+            $value = isset($value['ID']) ? $value['ID'] : 0;
+        }
+    }
+    return is_numeric($value) ? (int) $value : 0;
+}
+
+/**
  * Produit à lire ou télécharger pour la page courante et le client connecté.
  *
- * @param string $motif       Texte que le nom du produit doit contenir (facultatif).
+ * C'est le produit du champ « Téléchargement » de la page, à condition qu'il
+ * soit publié, téléchargeable et gratuit pour ce client (la règle de
+ * product-free-for-plans.php), ou déjà acheté quand $allow_owned est vrai.
+ *
+ * @param string $unused      Ancien paramètre (« le nom du produit contient »), ignoré : le produit ne se choisit plus par son nom.
  * @param bool   $allow_owned Accepter aussi un produit payant déjà acheté par ce client
  *                            (lecture en ligne ; pas pour le téléchargement gratuit, qui refuse un produit payant).
  * @return WC_Product|null
  */
-function on_usage_page_product($motif = '', $allow_owned = false)
+function on_usage_page_product($unused = '', $allow_owned = false)
 {
     if (!is_user_logged_in() || !function_exists('wc_get_product')) {
         return null;
@@ -61,50 +92,25 @@ function on_usage_page_product($motif = '', $allow_owned = false)
         return null;
     }
 
-    // Numéro de la page : champ Pods `numero` du contenu courant.
-    $numero = function_exists('pods_field') ? pods_field(get_post_type($post_id), $post_id, 'numero', true) : get_post_meta($post_id, 'numero', true);
-    if (!is_scalar($numero) || $numero === '') {
+    $product_id = on_usage_page_product_id($post_id);
+    if (!$product_id) {
         return null;
     }
 
-    $args = array(
-        'post_type'      => 'product',
-        'post_status'    => 'publish',
-        // nopaging : Elementor injecte le décalage d'une grille dans toute requête créée pendant son affichage.
-        'nopaging'       => true,
-        'fields'         => 'ids',
-        'no_found_rows'  => true,
-        'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery
-            array('key' => 'numero', 'value' => (string) $numero),
-        ),
-    );
-    // Polylang : les produits français et anglais sont des produits distincts.
-    if (function_exists('pll_current_language')) {
-        $args['lang'] = pll_current_language();
+    $product = wc_get_product($product_id);
+    if (!$product || $product->get_status() !== 'publish' || !$product->is_downloadable()) {
+        return null;
     }
-
-    $motif = trim((string) $motif);
-    foreach (get_posts($args) as $product_id) {
-        $product = wc_get_product($product_id);
-        if (!$product || !$product->is_downloadable()) {
-            continue;
-        }
-        if ((float) $product->get_price() > 0 && !($allow_owned && on_usage_customer_owns($product))) {
-            continue;
-        }
-        if ($motif !== '' && stripos($product->get_name(), $motif) === false) {
-            continue;
-        }
-        return $product;
+    if ((float) $product->get_price() > 0 && !($allow_owned && on_usage_customer_owns($product))) {
+        return null;
     }
-
-    return null;
+    return $product;
 }
 
 /** Adresse de lecture du produit, ou ''. */
-function on_usage_read_url($motif = '')
+function on_usage_read_url()
 {
-    $product = on_usage_page_product($motif, true);
+    $product = on_usage_page_product('', true);
     if (!$product) {
         return '';
     }
@@ -115,9 +121,9 @@ function on_usage_read_url($motif = '')
 }
 
 /** Adresse de téléchargement du produit, ou ''. */
-function on_usage_download_url($motif = '')
+function on_usage_download_url()
 {
-    $product = on_usage_page_product($motif);
+    $product = on_usage_page_product();
     if (!$product) {
         return '';
     }
@@ -136,7 +142,7 @@ add_action(
         }
 
         if (!class_exists('ON_Usage_Url_Tag_Base')) {
-            /** Commun aux deux balises : le champ « Le nom du produit contient ». */
+            /** Commun aux deux balises : groupe et catégorie (adresse). */
             abstract class ON_Usage_Url_Tag_Base extends \Elementor\Core\DynamicTags\Data_Tag
             {
                 public function get_group()
@@ -147,19 +153,6 @@ add_action(
                 public function get_categories()
                 {
                     return array(\Elementor\Modules\DynamicTags\Module::URL_CATEGORY);
-                }
-
-                protected function register_controls()
-                {
-                    $this->add_control(
-                        'motif',
-                        array(
-                            'label'       => __('Le nom du produit contient', 'orgues-nouvelles'),
-                            'type'        => \Elementor\Controls_Manager::TEXT,
-                            'default'     => '',
-                            'description' => __('Laisser vide s\'il n\'y a qu\'un produit pour ce numéro. Sinon, un morceau du nom, par exemple CahPart ou ONED.', 'orgues-nouvelles'),
-                        )
-                    );
                 }
             }
         }
@@ -179,7 +172,7 @@ add_action(
 
                 public function get_value(array $options = array())
                 {
-                    return esc_url_raw(on_usage_read_url($this->get_settings('motif')));
+                    return esc_url_raw(on_usage_read_url());
                 }
             }
         }
@@ -199,7 +192,7 @@ add_action(
 
                 public function get_value(array $options = array())
                 {
-                    return esc_url_raw(on_usage_download_url($this->get_settings('motif')));
+                    return esc_url_raw(on_usage_download_url());
                 }
             }
         }

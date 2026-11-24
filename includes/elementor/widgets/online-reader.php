@@ -2,17 +2,20 @@
 /**
  * Élément Elementor « Lecteur PDF en ligne ».
  *
- * Affiche un bouton « Lire en ligne » qui ouvre, sous le bouton, un lecteur
- * du PDF d'un numéro (cahier de partitions ou magazine) avec, quand le PDF
- * contient des liens .mp3, la lecture des enregistrements.
+ * Affiche un bouton « Lire en ligne » qui ouvre, sous le bouton, un lecteur de
+ * PDF avec, quand le PDF contient des liens .mp3, la lecture des enregistrements.
  *
- * Le produit est retrouvé comme pour la balise « Adresse de lecture » : même
- * numéro que la page, même langue, téléchargeable et gratuit pour le client
- * connecté (voir includes/usage/dynamic-tags.php). Le PDF est servi par
- * /?on_action=read_pdf&product_id=… : le visiteur ne voit jamais l'adresse
- * réelle du fichier et la lecture est comptée (includes/usage/count.php).
+ * Le PDF est donné par le champ « Adresse du PDF », qui accepte une balise
+ * dynamique : « Adresse de lecture » pour un magazine ou un cahier (le produit du
+ * champ « Téléchargement » de la page, voir includes/usage/dynamic-tags.php ;
+ * le PDF est alors servi par /?on_action=read_pdf&product_id=… : le visiteur ne
+ * voit jamais l'adresse réelle du fichier, et la lecture est comptée), ou
+ * n'importe quelle adresse de PDF (une ressource, un article…).
+ * Champ vide : l'élément reprend le produit du champ « Téléchargement » de la
+ * page (comme la balise « Adresse de lecture »).
  *
- * Sans droit de lecture, l'élément n'affiche rien (en édition : une note).
+ * Sans droit de lecture (adresse vide), l'élément n'affiche rien (en édition :
+ * une note).
  * Voir docs/lecture-en-ligne.md.
  */
 
@@ -66,21 +69,23 @@ class ON_Online_Reader extends Widget_Base
     {
         $this->start_controls_section('on_reader_content', array('label' => __('Lecteur', 'orgues-nouvelles')));
 
+        $this->add_control('pdf_url', array(
+            'label'       => __('Adresse du PDF', 'orgues-nouvelles'),
+            'type'        => Controls_Manager::URL,
+            'dynamic'     => array('active' => true),
+            'placeholder' => 'https://…/document.pdf',
+            'description' => __('Choisir la balise « Adresse de lecture » (icône de balise dynamique) pour un magazine ou un cahier de partitions, ou saisir l\'adresse d\'un PDF. Laisser vide : le PDF du produit « Téléchargement » de la page.', 'orgues-nouvelles'),
+        ));
+
         $this->add_control('type', array(
-            'label'   => __('Document à lire', 'orgues-nouvelles'),
+            'label'   => __('Titre par défaut', 'orgues-nouvelles'),
             'type'    => Controls_Manager::SELECT,
             'default' => 'cahier',
             'options' => array(
                 'cahier'   => __('Cahier de partitions', 'orgues-nouvelles'),
                 'magazine' => __('Magazine', 'orgues-nouvelles'),
+                'document' => __('Document', 'orgues-nouvelles'),
             ),
-        ));
-
-        $this->add_control('motif', array(
-            'label'       => __('Le nom du produit contient', 'orgues-nouvelles'),
-            'type'        => Controls_Manager::TEXT,
-            'default'     => '',
-            'description' => __('Laisser vide : CahPart pour un cahier, ONED pour un magazine. Sinon un morceau du nom du produit.', 'orgues-nouvelles'),
         ));
 
         $this->add_control('button_label', array(
@@ -164,6 +169,7 @@ class ON_Online_Reader extends Widget_Base
             'open' => __('Lire en ligne', 'orgues-nouvelles'),
             'cahier' => __('Cahier de partitions', 'orgues-nouvelles'),
             'magazine' => __('Magazine', 'orgues-nouvelles'),
+            'document' => __('Document', 'orgues-nouvelles'),
             'toc' => __('Enregistrements', 'orgues-nouvelles'),
             'tocHint' => __('Touchez le titre pour ouvrir la partition, ou le bouton pour écouter. Le son continue quand vous tournez les pages.', 'orgues-nouvelles'),
             'close' => __('Fermer', 'orgues-nouvelles'),
@@ -198,19 +204,28 @@ class ON_Online_Reader extends Widget_Base
     protected function render()
     {
         $s    = $this->get_settings_for_display();
-        $type = ($s['type'] === 'magazine') ? 'magazine' : 'cahier';
+        $type = in_array($s['type'], array('magazine', 'document'), true) ? $s['type'] : 'cahier';
         $L    = self::labels();
 
-        $motif = trim((string) $s['motif']);
-        if ($motif === '') {
-            $motif = ($type === 'magazine') ? 'ONED' : 'CahPart';
+        // Adresse du PDF : le champ (souvent la balise « Adresse de lecture »), sinon
+        // le produit du champ « Téléchargement » de la page.
+        $url = (is_array($s['pdf_url']) && !empty($s['pdf_url']['url'])) ? trim((string) $s['pdf_url']['url']) : '';
+        $dyn = $this->get_settings('__dynamic__');
+        // Champ vide ET pas de balise : on reprend le produit de la page. Avec une balise qui
+        // ne rend rien (pas de droit), on n'affiche rien.
+        if ($url === '' && empty($dyn['pdf_url'])) {
+            $product = function_exists('on_usage_page_product') ? on_usage_page_product('', true) : null;
+            if ($product) {
+                $url = add_query_arg(array(
+                    'on_action'  => 'read_pdf',
+                    'product_id' => $product->get_id(),
+                ), home_url('/'));
+            }
         }
-
-        $product = function_exists('on_usage_page_product') ? on_usage_page_product($motif, true) : null;
-        if (!$product) {
-            // Pas de droit (ou pas de produit) : rien pour le visiteur.
+        if ($url === '') {
+            // Pas de droit (ou pas de PDF) : rien pour le visiteur.
             if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
-                echo '<p style="padding:8px;border:1px dashed #999;font:14px sans-serif">' . esc_html__('Lecteur PDF en ligne : aucun produit lisible pour cette page et ce compte (rien ne s\'affiche aux visiteurs sans droit).', 'orgues-nouvelles') . '</p>';
+                echo '<p style="padding:8px;border:1px dashed #999;font:14px sans-serif">' . esc_html__('Lecteur PDF en ligne : aucun PDF lisible pour cette page et ce compte (rien ne s\'affiche aux visiteurs sans droit).', 'orgues-nouvelles') . '</p>';
             }
             return;
         }
@@ -218,17 +233,12 @@ class ON_Online_Reader extends Widget_Base
         wp_enqueue_style('on-online-reader');
         wp_enqueue_script('on-online-reader');
 
-        $url = add_query_arg(array(
-            'on_action'  => 'read_pdf',
-            'product_id' => $product->get_id(),
-        ), home_url('/'));
-
         $numero = function_exists('pods_field') ? pods_field(get_post_type(), get_the_ID(), 'numero', true) : '';
         $numero = is_scalar($numero) ? (string) $numero : '';
         $sub    = ($numero !== '')
             /* translators: %s: numéro du magazine ou du cahier */
             ? sprintf(__('Orgues Nouvelles n° %s', 'orgues-nouvelles'), $numero)
-            : 'Orgues Nouvelles';
+            : get_the_title();
         $title  = trim((string) $s['title']) !== '' ? $s['title'] : $L[$type];
         $btn    = trim((string) $s['button_label']) !== '' ? $s['button_label'] : $L['open'];
         $uid    = 'on-rd-' . $this->get_id();
