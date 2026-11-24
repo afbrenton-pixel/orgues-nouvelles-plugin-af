@@ -99,6 +99,8 @@ Le type de contenu et les étiquettes sont déclarés traduisibles ; les requêt
 
 Le type de contenu doit avoir `show_in_nav_menus` = oui (réglage Pods « Afficher dans les menus de navigation »), sinon Elementor Pro ne le propose pas comme source dans le Loop Grid.
 
+Il en va de même des deux taxonomies (`zone_vignette` et `etiquette_vignette`) : sans « Afficher dans les menus de navigation », le champ « Terme » de la requête du Loop Grid ne les trouve pas (« No results found »). Dans le fichier du paquet Pods, les deux ont `show_in_nav_menus` = 1 ; sur un site déjà installé, le réglage se change dans Pods Admin > Modifier la taxonomie > Options avancées.
+
 ## Éléments masqués au choix
 
 `includes/vignettes/affichage.php` ajoute à chaque vignette les classes `on-sans-titre` (case « Masquer le titre » cochée) et `on-sans-description` (case « Afficher la description » non cochée). Le CSS cache les widgets des modèles de boucle portant les classes `on-w-titre` et `on-w-description`. Ces classes sont à poser (réglage « Classes CSS » du widget) sur le titre et sur le sous-titre / l'extrait du modèle « standard » ; les grandes vignettes n'ont pas `on-w-description` et gardent leur texte.
