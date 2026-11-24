@@ -46,7 +46,7 @@ Le fichier servi est le **premier fichier téléchargeable du produit** : c'est 
 
 Remplace le bloc HTML provisoire des modèles. À glisser dans le modèle de page (catégorie « Général »).
 
-- **Document à lire** : cahier de partitions ou magazine. Le produit est retrouvé tout seul : même numéro (champ `numero`) que la page, même langue (Polylang), téléchargeable, gratuit pour la personne connectée (`on_usage_page_product`). Le champ « Le nom du produit contient » est facultatif (par défaut `CahPart` ou `ONED`).
+- **Adresse du PDF** : champ avec balise dynamique. Choisir la balise « Adresse de lecture » pour un magazine ou un cahier de partitions (le produit du champ Pods « Téléchargement » de la page, publié, téléchargeable, gratuit pour la personne connectée ou déjà acheté ; `on_usage_page_product`), ou saisir l'adresse de n'importe quel PDF (une ressource, un article : pas de comptage dans ce cas). Champ vide : l'élément prend le produit du champ « Téléchargement » de la page. **Titre par défaut** : cahier, magazine ou document. Plus de règle sur le nom du produit.
 - Le PDF est lu par `/?on_action=read_pdf&product_id=…` : l'adresse réelle du fichier n'apparaît jamais, la lecture est comptée.
 - Sans droit de lecture, l'élément n'affiche rien (le bandeau « Abonnés Magazines » reste géré à part).
 - Les textes sont écrits en français avec le système de traduction de WordPress (domaine `orgues-nouvelles`) ; l’anglais est dans `languages/orgues-nouvelles-en_GB.po`. Les enregistrements sont repérés par les liens `.mp3` du PDF.

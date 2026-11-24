@@ -1250,12 +1250,8 @@ msgid "Simulation"
 msgstr "Simulation"
 
 #: includes/usage/dynamic-tags.php:133
-msgid "Le nom du produit contient"
-msgstr "The product name contains"
-
-#: includes/usage/dynamic-tags.php:136
-msgid "Laisser vide s'il n'y a qu'un produit pour ce numéro. Sinon, un morceau du nom, par exemple CahPart ou ONED."
-msgstr "Leave empty if there is only one product for this issue. Otherwise, part of the name, for example CahPart or ONED."
+msgid "Adresse du PDF"
+msgstr "PDF address"
 
 #: includes/usage/dynamic-tags.php:153
 msgid "Adresse de lecture"
@@ -1278,8 +1274,8 @@ msgid "Lecteur"
 msgstr "Reader"
 
 #: includes/elementor/widgets/online-reader.php:70
-msgid "Document à lire"
-msgstr "Document to read"
+msgid "Titre par défaut"
+msgstr "Default title"
 
 #: includes/elementor/widgets/online-reader.php:74 includes/elementor/widgets/online-reader.php:137
 msgid "Cahier de partitions"
@@ -1290,8 +1286,8 @@ msgid "Magazine"
 msgstr "Magazine"
 
 #: includes/elementor/widgets/online-reader.php:83
-msgid "Laisser vide : CahPart pour un cahier, ONED pour un magazine. Sinon un morceau du nom du produit."
-msgstr "Leave empty: CahPart for a booklet, ONED for a magazine. Otherwise part of the product name."
+msgid "Choisir la balise « Adresse de lecture » (icône de balise dynamique) pour un magazine ou un cahier de partitions, ou saisir l'adresse d'un PDF. Laisser vide : le PDF du produit « Téléchargement » de la page."
+msgstr "Choose the “Reading address” tag (dynamic tag icon) for a magazine or a score booklet, or enter the address of a PDF. Leave empty: the PDF of the product in the page's “Téléchargement” field."
 
 #: includes/elementor/widgets/online-reader.php:87
 msgid "Texte du bouton"
@@ -1433,8 +1429,8 @@ msgid "La lecture en ligne n'est pas disponible pour ce numéro avec votre compt
 msgstr "Online reading is not available for this issue with your account."
 
 #: includes/elementor/widgets/online-reader.php:185
-msgid "Lecteur PDF en ligne : aucun produit lisible pour cette page et ce compte (rien ne s'affiche aux visiteurs sans droit)."
-msgstr "Online PDF reader: no readable product for this page and this account (nothing is shown to visitors without access)."
+msgid "Lecteur PDF en ligne : aucun PDF lisible pour cette page et ce compte (rien ne s'affiche aux visiteurs sans droit)."
+msgstr "Online PDF reader: no readable PDF for this page and this account (nothing is shown to visitors without access)."
 
 #. translators: %s: numéro du magazine ou du cahier
 #: includes/elementor/widgets/online-reader.php:202
@@ -1456,3 +1452,7 @@ msgstr "You do not have access to this issue."
 #: includes/products/read-online.php:210
 msgid "Fichier PDF indisponible."
 msgstr "PDF file unavailable."
+
+#: includes/elementor/widgets/online-reader.php:139
+msgid "Document"
+msgstr "Document"

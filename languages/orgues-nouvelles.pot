@@ -1251,11 +1251,7 @@ msgid "Simulation"
 msgstr ""
 
 #: includes/usage/dynamic-tags.php:133
-msgid "Le nom du produit contient"
-msgstr ""
-
-#: includes/usage/dynamic-tags.php:136
-msgid "Laisser vide s'il n'y a qu'un produit pour ce numéro. Sinon, un morceau du nom, par exemple CahPart ou ONED."
+msgid "Adresse du PDF"
 msgstr ""
 
 #: includes/usage/dynamic-tags.php:153
@@ -1279,7 +1275,7 @@ msgid "Lecteur"
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:70
-msgid "Document à lire"
+msgid "Titre par défaut"
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:74 includes/elementor/widgets/online-reader.php:137
@@ -1291,7 +1287,7 @@ msgid "Magazine"
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:83
-msgid "Laisser vide : CahPart pour un cahier, ONED pour un magazine. Sinon un morceau du nom du produit."
+msgid "Choisir la balise « Adresse de lecture » (icône de balise dynamique) pour un magazine ou un cahier de partitions, ou saisir l'adresse d'un PDF. Laisser vide : le PDF du produit « Téléchargement » de la page."
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:87
@@ -1434,7 +1430,7 @@ msgid "La lecture en ligne n'est pas disponible pour ce numéro avec votre compt
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:185
-msgid "Lecteur PDF en ligne : aucun produit lisible pour cette page et ce compte (rien ne s'affiche aux visiteurs sans droit)."
+msgid "Lecteur PDF en ligne : aucun PDF lisible pour cette page et ce compte (rien ne s'affiche aux visiteurs sans droit)."
 msgstr ""
 
 #. translators: %s: numéro du magazine ou du cahier
@@ -1456,4 +1452,8 @@ msgstr ""
 
 #: includes/products/read-online.php:210
 msgid "Fichier PDF indisponible."
+msgstr ""
+
+#: includes/elementor/widgets/online-reader.php:139
+msgid "Document"
 msgstr ""
