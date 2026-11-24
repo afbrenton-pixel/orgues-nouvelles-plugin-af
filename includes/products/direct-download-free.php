@@ -105,13 +105,12 @@ function on_handle_free_download_request() {
         $order->calculate_totals();
         $order->set_payment_method('other');
         $order->set_payment_method_title('Gratuit');
-        $order->save();
         // === COMPTAGE-USAGE (début) : commande silencieuse ===
-        // Ce marqueur, posé AVANT le changement de statut, supprime les
+        // Ce marqueur, enregistré AVANT le changement de statut, supprime les
         // e-mails de cette commande (voir plus bas on_silent_order_email_enabled).
         $order->update_meta_data('_on_silent_free_download', '1');
-        $order->save();
         // === COMPTAGE-USAGE (fin) ===
+        $order->save();
 
         // 1. Passer la commande en "Terminée"
         $order->update_status('completed', 'Commande générée automatiquement pour téléchargement gratuit.');
