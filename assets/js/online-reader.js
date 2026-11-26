@@ -138,17 +138,42 @@ function fullscreenInit(root){
 }
 function setup(root){
   if(root.getAttribute("data-ready"))return;root.setAttribute("data-ready","1");
-  var opener=root.querySelector('[data-r="Open"]'),panel=root.querySelector('[data-r="Panel"]'),started=false;
+  var opener=root.querySelector('[data-r="Open"]'),panel=root.querySelector('[data-r="Panel"]'),shut=root.querySelector('[data-r="Shut"]'),started=false,home=null;
   fullscreenInit(root);
   if(!opener||!panel)return;
-  opener.addEventListener("click",function(e){
-    e.preventDefault();
-    var show=panel.hidden;panel.hidden=!show;
-    opener.setAttribute("aria-expanded",show?"true":"false");
-    if(show){
-      if(!started){started=true;onReaderInit(panel);}
-      panel.scrollIntoView({behavior:"smooth",block:"start"});
-    }
+  /* Pop-in : le lecteur s'ouvre sur toute la page (sans plein écran du navigateur) ;
+     il est déplacé dans <body> pour qu'aucun conteneur du thème ne le rogne ni le décale. */
+  function isOpen(){return !panel.hidden;}
+  function openBox(){
+    home=panel.parentNode;
+    document.body.appendChild(panel);
+    panel.classList.add("is-lightbox");
+    panel.setAttribute("role","dialog");panel.setAttribute("aria-modal","true");
+    document.documentElement.classList.add("on-rd-lock");
+    panel.hidden=false;
+    opener.setAttribute("aria-expanded","true");
+    if(!started){started=true;onReaderInit(panel);}
+    panel.focus();
+  }
+  function closeBox(){
+    var fs=document.fullscreenElement||document.webkitFullscreenElement;
+    if(fs)(document.exitFullscreen||document.webkitExitFullscreen).call(document);
+    var au=panel.querySelector('[data-r="Audio"]');if(au&&!au.paused)au.pause();
+    panel.hidden=true;
+    panel.classList.remove("is-lightbox");
+    document.documentElement.classList.remove("on-rd-lock");
+    if(home)home.appendChild(panel);
+    opener.setAttribute("aria-expanded","false");
+    opener.focus();
+  }
+  opener.addEventListener("click",function(e){e.preventDefault();if(isOpen())closeBox();else openBox();});
+  if(shut)shut.addEventListener("click",closeBox);
+  /* Échap : ferme d'abord la liste des enregistrements si elle est ouverte, sinon le lecteur */
+  panel.addEventListener("keydown",function(e){
+    if(e.key!=="Escape"||!isOpen())return;
+    var toc=panel.querySelector('[data-r="Toc"]');
+    if(toc&&!toc.hidden)return;
+    closeBox();
   });
 }
 function all(){document.querySelectorAll(".on-reader").forEach(setup);}

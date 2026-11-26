@@ -69,6 +69,9 @@ background:var(--bg);color:var(--fg);font:16px/1.45 var(--fb);border:1px solid v
 .on-rd .zoom{display:inline-flex;align-items:center;gap:6px;margin-left:10px}
 .on-rd .zoom output{min-width:3.2rem;text-align:center;font-variant-numeric:tabular-nums;font-size:.85rem;color:var(--muted)}
 .on-rd .top .tools{display:flex;gap:8px}
+/* Pop-in : le lecteur occupe toute la page, sans plein écran du navigateur */
+.on-rd.is-lightbox{position:fixed;top:0;right:0;bottom:0;left:0;z-index:999999;width:100%;height:100vh;height:100dvh;border:0}
+html.on-rd-lock,html.on-rd-lock body{overflow:hidden}
 .on-rd:fullscreen{height:100vh;border:0}
 .on-rd:-webkit-full-screen{height:100vh;border:0}
 /* Mobile : empêcher la barre d'outils et le lecteur audio de déborder de l'écran */
