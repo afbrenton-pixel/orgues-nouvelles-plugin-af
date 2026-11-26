@@ -223,16 +223,6 @@ class ON_Online_Reader extends Widget_Base
             }
         }
         if ($url === '') {
-            // SONDE TEMPORAIRE (à retirer)
-            if (current_user_can('manage_options')) {
-                $pid = function_exists('on_usage_page_product_id') ? on_usage_page_product_id(get_the_ID()) : -1;
-                $pr  = $pid > 0 ? wc_get_product($pid) : null;
-                echo '<!-- ON-READER-DEBUG ' . esc_html(wp_json_encode(array(
-                    'post' => get_the_ID(), 'type' => get_post_type(), 'logged' => is_user_logged_in(), 'dyn' => !empty($dyn['pdf_url']), 'url' => $url,
-                    'product' => $pid, 'status' => $pr ? $pr->get_status() : null, 'dl' => $pr ? $pr->is_downloadable() : null,
-                    'price' => $pr ? $pr->get_price() : null, 'owns' => ($pr && function_exists('on_usage_customer_owns')) ? on_usage_customer_owns($pr) : null,
-                ))) . ' -->';
-            }
             // Pas de droit (ou pas de PDF) : rien pour le visiteur.
             if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
                 echo '<p style="padding:8px;border:1px dashed #999;font:14px sans-serif">' . esc_html__('Lecteur PDF en ligne : aucun PDF lisible pour cette page et ce compte (rien ne s\'affiche aux visiteurs sans droit).', 'orgues-nouvelles') . '</p>';
