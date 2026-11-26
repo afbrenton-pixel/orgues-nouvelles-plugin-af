@@ -1326,12 +1326,12 @@ msgid "Lire en ligne"
 msgstr "Read online"
 
 #: includes/elementor/widgets/online-reader.php:139
-msgid "Enregistrements"
-msgstr "Recordings"
+msgid "Pistes audio"
+msgstr "Audio tracks"
 
 #: includes/elementor/widgets/online-reader.php:140
-msgid "Touchez le titre pour ouvrir la partition, ou le bouton pour écouter. Le son continue quand vous tournez les pages."
-msgstr "Tap a title to open the score, or the button to listen. Sound keeps playing while you turn pages."
+msgid "Touchez le titre pour aller à la page, ou le bouton pour écouter. Le son continue quand vous tournez les pages."
+msgstr "Tap a title to go to the page, or the button to listen. Sound keeps playing while you turn pages."
 
 #: includes/elementor/widgets/online-reader.php:141
 msgid "Fermer"
@@ -1372,8 +1372,8 @@ msgid "Aucune pièce en cours"
 msgstr "No track playing"
 
 #: includes/elementor/widgets/online-reader.php:150
-msgid "Touchez le haut-parleur d'une partition pour l'écouter."
-msgstr "Tap a speaker icon on the page to listen."
+msgid "Touchez une icône audio de la page pour l'écouter."
+msgstr "Tap an audio icon on the page to listen."
 
 #: includes/elementor/widgets/online-reader.php:151
 msgid "Voir la page"
@@ -1409,8 +1409,8 @@ msgid "Pièce"
 msgstr "Track"
 
 #: includes/elementor/widgets/online-reader.php:162
-msgid "Aucun enregistrement dans ce document."
-msgstr "No recordings in this document."
+msgid "Aucune piste audio dans ce document."
+msgstr "No audio tracks in this document."
 
 #: includes/elementor/widgets/online-reader.php:163
 msgid "page"

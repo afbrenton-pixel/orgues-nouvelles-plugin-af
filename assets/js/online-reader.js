@@ -5,7 +5,6 @@ function q(r){return root.querySelector('[data-r="'+r+'"]');}
 var PDF_URL=root.getAttribute("data-pdf");
 var L={};try{L=JSON.parse(root.getAttribute("data-labels")||"{}");}catch(e){}
 function t(k,v){var x=L[k]||k;return v===undefined?x:x.replace("%s",v);}
-function roman(n){var m=[[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]],s="";m.forEach(function(x){while(n>=x[0]){s+=x[1];n-=x[0];}});return s;}
 function fmt(t){if(!isFinite(t))return"0:00";var m=Math.floor(t/60),s=Math.floor(t%60);return m+":"+(s<10?"0":"")+s;}
 
 var pieces=[],byUrl={},current=null;
@@ -46,7 +45,7 @@ function markHits(){var pl=playingNow();spreadEl.querySelectorAll(".hit[data-pie
 function render(){
  var my=++token;if(!pdfDoc)return;var pages=spreads[idx];
  q("Prev").disabled=idx===0;q("Next").disabled=idx===spreads.length-1;
- q("Roman").textContent=pages.map(roman).join(" – ");q("Num").textContent=pages.join(" – ")+" / "+total;
+ q("Num").textContent=t("pageWord")+" "+pages.join(" – ")+" / "+total;
  Promise.all(pages.map(function(n){return pdfDoc.getPage(n);})).then(function(pgs){
   if(my!==token)return;
   var natW=pgs.reduce(function(s,p){return s+p.getViewport({scale:1}).width;},0),natH=pgs[0].getViewport({scale:1}).height;
@@ -97,7 +96,7 @@ function discover(){
 function buildToc(){var ol=q("List");ol.textContent="";
  if(!pieces.length){var li=document.createElement("li");li.textContent=t("noRecordings");ol.appendChild(li);return;}
  pieces.forEach(function(p){var li=document.createElement("li");li.setAttribute("data-id",p.id);
-  var go=document.createElement("button");go.type="button";go.className="go";var a=document.createElement("span");a.className="name";a.textContent=p.title;var b=document.createElement("span");b.className="meta";b.textContent=t("pageWord")+" "+roman(p.page)+(p.perf?" · "+p.perf:"");go.appendChild(a);go.appendChild(b);go.addEventListener("click",function(){goTo(p.page);});
+  var go=document.createElement("button");go.type="button";go.className="go";var a=document.createElement("span");a.className="name";a.textContent=p.title;var b=document.createElement("span");b.className="meta";b.textContent=t("pageWord")+" "+p.page+(p.perf?" · "+p.perf:"");go.appendChild(a);go.appendChild(b);go.addEventListener("click",function(){goTo(p.page);});
   var pl=document.createElement("button");pl.type="button";pl.className="btn";pl.setAttribute("aria-label",t("listenTitle",p.title));pl.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span class="lbl">'+t("listen")+'</span>';pl.addEventListener("click",function(){playPiece(p);});
   li.appendChild(go);li.appendChild(pl);ol.appendChild(li);});}
 function openToc(){q("Toc").hidden=false;q("Back").hidden=false;q("TocBtn").setAttribute("aria-expanded","true");q("Close").focus();}

@@ -142,8 +142,8 @@ class ON_Online_Reader extends Widget_Base
             'cahier' => __('Cahier de partitions', 'orgues-nouvelles'),
             'magazine' => __('Magazine', 'orgues-nouvelles'),
             'document' => __('Document', 'orgues-nouvelles'),
-            'toc' => __('Enregistrements', 'orgues-nouvelles'),
-            'tocHint' => __('Touchez le titre pour ouvrir la partition, ou le bouton pour écouter. Le son continue quand vous tournez les pages.', 'orgues-nouvelles'),
+            'toc' => __('Pistes audio', 'orgues-nouvelles'),
+            'tocHint' => __('Touchez le titre pour aller à la page, ou le bouton pour écouter. Le son continue quand vous tournez les pages.', 'orgues-nouvelles'),
             'close' => __('Fermer', 'orgues-nouvelles'),
             'fs' => __('Plein écran', 'orgues-nouvelles'),
             'prev' => __('Pages précédentes', 'orgues-nouvelles'),
@@ -153,7 +153,7 @@ class ON_Online_Reader extends Widget_Base
             'loading' => __('Chargement…', 'orgues-nouvelles'),
             'player' => __('Lecteur audio', 'orgues-nouvelles'),
             'none' => __('Aucune pièce en cours', 'orgues-nouvelles'),
-            'hint' => __('Touchez le haut-parleur d\'une partition pour l\'écouter.', 'orgues-nouvelles'),
+            'hint' => __('Touchez une icône audio de la page pour l\'écouter.', 'orgues-nouvelles'),
             'showPage' => __('Voir la page', 'orgues-nouvelles'),
             'seek' => __('Position dans l\'enregistrement', 'orgues-nouvelles'),
             'play' => __('Lecture', 'orgues-nouvelles'),
@@ -165,7 +165,7 @@ class ON_Online_Reader extends Widget_Base
             'openLink' => __('Ouvrir le lien', 'orgues-nouvelles'),
             'pageFail' => __('Cette page n\'a pas pu être affichée.', 'orgues-nouvelles'),
             'piece' => __('Pièce', 'orgues-nouvelles'),
-            'noRecordings' => __('Aucun enregistrement dans ce document.', 'orgues-nouvelles'),
+            'noRecordings' => __('Aucune piste audio dans ce document.', 'orgues-nouvelles'),
             'pageWord' => __('page', 'orgues-nouvelles'),
             'libFail' => __('La visionneuse n\'a pas pu se charger.', 'orgues-nouvelles'),
             'openFail' => __('Le document n\'a pas pu être ouvert.', 'orgues-nouvelles'),
@@ -236,7 +236,7 @@ class ON_Online_Reader extends Widget_Base
                     <div class="view" data-r="View"><div class="spread" data-r="Spread" aria-live="polite"><span class="loading"><?php echo esc_html($L['loading']); ?></span></div></div>
                     <nav class="nav">
                         <button class="btn" data-r="Prev" type="button" aria-label="<?php echo esc_attr($L['prev']); ?>"><?php echo $chev_l; // phpcs:ignore ?></button>
-                        <div class="where"><b data-r="Roman">I</b><small data-r="Num"></small></div>
+                        <div class="where"><b data-r="Num"></b></div>
                         <button class="btn" data-r="Next" type="button" aria-label="<?php echo esc_attr($L['next']); ?>"><?php echo $chev_r; // phpcs:ignore ?></button>
                         <span class="zoom">
                             <button class="btn" data-r="ZoomOut" type="button" aria-label="<?php echo esc_attr($L['zoomOut']); ?>">−</button>
