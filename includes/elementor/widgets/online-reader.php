@@ -229,6 +229,7 @@ class ON_Online_Reader extends Widget_Base
                     <div class="tools">
                         <button class="btn" data-r="Fs" type="button"><span class="lbl"><?php echo esc_html($L['fs']); ?></span></button>
                         <button class="btn" data-r="TocBtn" type="button" aria-expanded="false"><span class="lbl"><?php echo esc_html($L['toc']); ?></span></button>
+                        <button class="btn" data-r="Shut" type="button"><span class="lbl">✕ <?php echo esc_html($L['close']); ?></span></button>
                     </div>
                 </header>
                 <div class="stage">
