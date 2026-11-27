@@ -58,6 +58,8 @@ Remplace le bloc HTML provisoire des modèles. À glisser dans le modèle de pag
 
 Pour poser les mêmes boutons dans les modèles de page d'un numéro (magazine ou cahier), le réglage « Abonnés Magazines » (onglet Avancé de tout élément Elementor, liste « Visibilité aux magazines ») propose quatre choix : visiteur non connecté ; connecté sans droit de lire ; connecté avec droit de lire (abonné, acheteur, numéro gratuit) ; PDF téléchargeable gratuitement. Le droit est celui de la lecture en ligne. Dans l'éditeur, tout reste visible.
 
+Un cinquième choix, « sans droit, et version papier en vente », sert au bouton d'achat du papier : le produit papier est un produit publié, ni virtuel ni téléchargeable, dont le champ « Magazine » désigne la page du numéro (ce champ donne aussi l'accès en ligne après l'achat). Balise « Fiche de la version papier ».
+
 Deux balises dynamiques s'ajoutent aux adresses de lecture et de téléchargement : « Fiche du numéro (boutique) » (produit du champ Téléchargement) et « Adresse de connexion (retour sur cette page) ».
 
 Un acheteur d'un numéro payant n'a pas de bouton « Télécharger » : le téléchargement gratuit refuse les produits payants. Il télécharge depuis « Mon compte ».
