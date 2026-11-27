@@ -66,6 +66,8 @@ Le conteneur du bloc porte la classe CSS « on-actions » : le plugin donne alor
 
 La balise « Extrait PDF du numéro » donne l'adresse (du site courant) du fichier du champ « pdf_sommaire », à mettre dans l'adresse du PDF de ce second lecteur.
 
+Les balises « Page du CD du numéro » et « Page du cahier de partitions du numéro » donnent l'adresse des pages reliées par les champs « page_cd » et « page_partitions », pour rendre cliquables l'image et le titre du CD et du cahier.
+
 Deux balises dynamiques s'ajoutent aux adresses de lecture et de téléchargement : « Fiche du numéro (boutique) » (produit du champ Téléchargement) et « Adresse de connexion (retour sur cette page) ».
 
 Un acheteur d'un numéro payant n'a pas de bouton « Télécharger » : le téléchargement gratuit refuse les produits payants. Il télécharge depuis « Mon compte ».

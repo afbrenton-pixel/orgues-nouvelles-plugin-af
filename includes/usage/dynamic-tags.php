@@ -257,6 +257,46 @@ add_action(
             }
         }
 
+        if (!class_exists('ON_Usage_Page_Cd_Url_Tag')) {
+            class ON_Usage_Page_Cd_Url_Tag extends ON_Usage_Url_Tag_Base
+            {
+                public function get_name()
+                {
+                    return 'on-usage-page-cd';
+                }
+
+                public function get_title()
+                {
+                    return __('Page du CD du numéro', 'orgues-nouvelles');
+                }
+
+                public function get_value(array $options = array())
+                {
+                    return esc_url_raw(on_usage_related_page_url('page_cd'));
+                }
+            }
+        }
+
+        if (!class_exists('ON_Usage_Page_Partitions_Url_Tag')) {
+            class ON_Usage_Page_Partitions_Url_Tag extends ON_Usage_Url_Tag_Base
+            {
+                public function get_name()
+                {
+                    return 'on-usage-page-partitions';
+                }
+
+                public function get_title()
+                {
+                    return __('Page du cahier de partitions du numéro', 'orgues-nouvelles');
+                }
+
+                public function get_value(array $options = array())
+                {
+                    return esc_url_raw(on_usage_related_page_url('page_partitions'));
+                }
+            }
+        }
+
         if (!class_exists('ON_Usage_Login_Url_Tag')) {
             class ON_Usage_Login_Url_Tag extends ON_Usage_Url_Tag_Base
             {
@@ -282,6 +322,8 @@ add_action(
         $dynamic_tags->register(new ON_Usage_Product_Page_Url_Tag());
         $dynamic_tags->register(new ON_Usage_Paper_Url_Tag());
         $dynamic_tags->register(new ON_Usage_Extract_Url_Tag());
+        $dynamic_tags->register(new ON_Usage_Page_Cd_Url_Tag());
+        $dynamic_tags->register(new ON_Usage_Page_Partitions_Url_Tag());
         $dynamic_tags->register(new ON_Usage_Login_Url_Tag());
     }
 );

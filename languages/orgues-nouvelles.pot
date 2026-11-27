@@ -1497,3 +1497,11 @@ msgstr ""
 #: includes/usage/dynamic-tags.php
 msgid "Extrait PDF du numéro"
 msgstr ""
+
+#: includes/usage/dynamic-tags.php
+msgid "Page du CD du numéro"
+msgstr ""
+
+#: includes/usage/dynamic-tags.php
+msgid "Page du cahier de partitions du numéro"
+msgstr ""
