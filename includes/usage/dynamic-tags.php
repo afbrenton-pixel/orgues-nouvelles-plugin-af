@@ -297,6 +297,69 @@ add_action(
             }
         }
 
+        if (!class_exists('ON_Usage_Image_Tag_Base')) {
+            /** Image à la une de la page du CD ou du cahier du numéro. */
+            abstract class ON_Usage_Image_Tag_Base extends \Elementor\Core\DynamicTags\Data_Tag
+            {
+                public function get_group()
+                {
+                    return 'site';
+                }
+
+                public function get_categories()
+                {
+                    return array(\Elementor\Modules\DynamicTags\Module::IMAGE_CATEGORY);
+                }
+
+                abstract protected function field();
+
+                public function get_value(array $options = array())
+                {
+                    return on_usage_related_page_image($this->field());
+                }
+            }
+        }
+
+        if (!class_exists('ON_Usage_Image_Cd_Tag')) {
+            class ON_Usage_Image_Cd_Tag extends ON_Usage_Image_Tag_Base
+            {
+                public function get_name()
+                {
+                    return 'on-usage-image-cd';
+                }
+
+                public function get_title()
+                {
+                    return __('Image du CD du numéro', 'orgues-nouvelles');
+                }
+
+                protected function field()
+                {
+                    return 'page_cd';
+                }
+            }
+        }
+
+        if (!class_exists('ON_Usage_Image_Partitions_Tag')) {
+            class ON_Usage_Image_Partitions_Tag extends ON_Usage_Image_Tag_Base
+            {
+                public function get_name()
+                {
+                    return 'on-usage-image-partitions';
+                }
+
+                public function get_title()
+                {
+                    return __('Image du cahier de partitions du numéro', 'orgues-nouvelles');
+                }
+
+                protected function field()
+                {
+                    return 'page_partitions';
+                }
+            }
+        }
+
         if (!class_exists('ON_Usage_Login_Url_Tag')) {
             class ON_Usage_Login_Url_Tag extends ON_Usage_Url_Tag_Base
             {
@@ -324,6 +387,8 @@ add_action(
         $dynamic_tags->register(new ON_Usage_Extract_Url_Tag());
         $dynamic_tags->register(new ON_Usage_Page_Cd_Url_Tag());
         $dynamic_tags->register(new ON_Usage_Page_Partitions_Url_Tag());
+        $dynamic_tags->register(new ON_Usage_Image_Cd_Tag());
+        $dynamic_tags->register(new ON_Usage_Image_Partitions_Tag());
         $dynamic_tags->register(new ON_Usage_Login_Url_Tag());
     }
 );

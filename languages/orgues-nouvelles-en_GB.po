@@ -1504,3 +1504,11 @@ msgstr "CD page of the issue"
 #: includes/usage/dynamic-tags.php
 msgid "Page du cahier de partitions du numéro"
 msgstr "Music booklet page of the issue"
+
+#: includes/usage/dynamic-tags.php
+msgid "Image du CD du numéro"
+msgstr "CD image of the issue"
+
+#: includes/usage/dynamic-tags.php
+msgid "Image du cahier de partitions du numéro"
+msgstr "Music booklet image of the issue"

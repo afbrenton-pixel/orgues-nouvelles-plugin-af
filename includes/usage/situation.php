@@ -191,6 +191,27 @@ function on_usage_related_page_url($field)
     return (string) get_permalink($id);
 }
 
+/**
+ * Image à la une d'une page reliée à celle du numéro (« page_cd », « page_partitions »), pour une balise d'image.
+ *
+ * @param string $field Nom du champ de la page du numéro.
+ * @return array{id:int,url:string}|array
+ */
+function on_usage_related_page_image($field)
+{
+    $url = on_usage_related_page_url($field);
+    $id  = $url ? url_to_postid($url) : 0;
+    if (!$id) {
+        return array();
+    }
+    $thumb = (int) get_post_thumbnail_id($id);
+    if (!$thumb) {
+        return array();
+    }
+    $src = wp_get_attachment_url($thumb);
+    return $src ? array('id' => $thumb, 'url' => $src) : array();
+}
+
 /** Adresse de connexion qui revient sur la page du numéro. */
 function on_usage_login_url()
 {
