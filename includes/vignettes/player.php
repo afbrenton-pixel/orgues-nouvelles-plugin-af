@@ -50,8 +50,29 @@ function on_vignettes_media_for( $vignette_id ) {
 }
 
 /**
+ * Titre d'une piste : le titre du média dans la médiathèque (celui que l'on modifie dans WordPress), pour que le texte affiché
+ * corresponde au média. Si ce titre est vide ou n'est que le nom du fichier (« 01 », « piste_14 »), on prend l'étiquette ID3 du MP3.
+ *
+ * @param int   $aid  Identifiant de la pièce jointe.
+ * @param array $meta Métadonnées WordPress du fichier audio (wp_get_attachment_metadata).
+ * @return string
+ */
+function on_vignettes_track_title( $aid, $meta ) {
+	$media = trim( (string) get_the_title( $aid ) );
+	$id3   = ! empty( $meta['title'] ) ? trim( (string) $meta['title'] ) : '';
+	$file  = pathinfo( (string) get_attached_file( $aid ), PATHINFO_FILENAME );
+	$norm  = static function ( $t ) {
+		return strtolower( trim( preg_replace( '/[\s_\-]+/', ' ', (string) $t ) ) );
+	};
+	if ( '' === $media || $norm( $media ) === $norm( $file ) ) {
+		return '' !== $id3 ? $id3 : $media;
+	}
+	return $media;
+}
+
+/**
  * Pistes d'une vignette de format « playlist » : fichiers du champ Pods « pistes » (médiathèque), dans l'ordre du champ.
- * Titre, artiste et durée viennent des étiquettes ID3 du MP3 (métadonnées WordPress), sinon du titre du fichier.
+ * Le titre est celui du média dans la médiathèque (sinon l'étiquette ID3 du MP3) ; l'artiste et la durée viennent des étiquettes ID3 du MP3 (métadonnées WordPress).
  * Retourne null si la vignette n'a aucune piste lisible.
  */
 function on_vignettes_playlist_for( $vignette_id ) {
@@ -75,7 +96,7 @@ function on_vignettes_playlist_for( $vignette_id ) {
 		}
 		$meta     = wp_get_attachment_metadata( $aid );
 		$meta     = is_array( $meta ) ? $meta : array();
-		$title    = ! empty( $meta['title'] ) ? $meta['title'] : get_the_title( $aid );
+		$title    = on_vignettes_track_title( $aid, $meta );
 		$title    = preg_replace( '/^\s*\d{1,2}\s*[-.–]\s*/u', '', (string) $title ); // la liste a sa propre numérotation : « 01- Van Soldt » → « Van Soldt ».
 		$audio[]  = esc_url_raw( $url );
 		$tracks[] = array(
