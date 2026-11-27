@@ -161,6 +161,36 @@ function on_usage_extract_url()
     return $url ? (string) $url : '';
 }
 
+/**
+ * Adresse d'une page reliée à celle du numéro par un champ Pods (« page_cd », « page_partitions »), ou ''.
+ *
+ * @param string $field Nom du champ de la page du numéro.
+ * @return string
+ */
+function on_usage_related_page_url($field)
+{
+    $page_id = get_the_ID();
+    if (!$page_id) {
+        return '';
+    }
+    $value = function_exists('pods_field')
+        ? pods_field(get_post_type($page_id), $page_id, $field, true)
+        : get_post_meta($page_id, $field, true);
+    if (is_array($value)) {
+        $value = isset($value['ID']) ? $value['ID'] : reset($value);
+        if (is_array($value)) {
+            $value = isset($value['ID']) ? $value['ID'] : 0;
+        }
+    } elseif (is_object($value)) {
+        $value = isset($value->ID) ? $value->ID : 0;
+    }
+    $id = is_numeric($value) ? (int) $value : 0;
+    if (!$id || get_post_status($id) !== 'publish') {
+        return '';
+    }
+    return (string) get_permalink($id);
+}
+
 /** Adresse de connexion qui revient sur la page du numéro. */
 function on_usage_login_url()
 {
