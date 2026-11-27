@@ -68,12 +68,19 @@ function on_load_plugin() {
     if (is_plugin_active('woocommerce/woocommerce.php')) {
         require_once(__DIR__ . '/includes/products/check-download-product.php');
         require_once(__DIR__ . '/includes/products/direct-download-free.php');
+        // Compteur de lectures et de téléchargements (voir docs/comptage-usage.md)
+        require_once(__DIR__ . '/includes/usage/table.php');
+        require_once(__DIR__ . '/includes/usage/count.php');
+        require_once(__DIR__ . '/includes/usage/rest-api.php');
+        require_once(__DIR__ . '/includes/usage/dynamic-tags.php');
+        require_once(__DIR__ . '/includes/usage/download-message.php');
     }
     
     // Charger les modules de gestion des produits (WooCommerce + Pods)
     if (is_plugin_active('woocommerce/woocommerce.php') && is_plugin_active('pods/init.php')) {
         require_once(__DIR__ . '/includes/products/product-free-for-plans.php');
         require_once(__DIR__ . '/includes/products/restrict-magazines.php');
+        require_once(__DIR__ . '/includes/products/read-online.php');
     }
 
     // Charger les modules Pods transverses.
@@ -141,6 +148,25 @@ function on_register_elementor_widget( $widgets_manager ) {
     require_once(__DIR__ . '/includes/elementor/widgets/search-result-content.php');
 	$widgets_manager->register( new \Search_Form_URL() );
     $widgets_manager->register( new \Search_Result_Content());
+    // Lecteur PDF en ligne (voir docs/lecture-en-ligne.md)
+    if (function_exists('on_usage_page_product')) {
+        require_once(__DIR__ . '/includes/elementor/widgets/online-reader.php');
+        $widgets_manager->register( new \ON_Online_Reader() );
+    }
 }
+
+/** Fichiers du lecteur PDF en ligne : chargés seulement par l'élément (get_*_depends). */
+function on_register_online_reader_assets() {
+    $dir = plugin_dir_path( __FILE__ );
+    $url = plugin_dir_url( __FILE__ );
+    wp_register_style( 'on-online-reader-fonts', 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Source+Sans+3:wght@400;600&display=swap', array(), null );
+    wp_register_style( 'on-online-reader', $url . 'assets/css/online-reader.css', array( 'on-online-reader-fonts' ), (string) @filemtime( $dir . 'assets/css/online-reader.css' ) );
+    wp_register_script( 'on-pdfjs', 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', array(), '3.11.174', true );
+    wp_register_script( 'on-online-reader', $url . 'assets/js/online-reader.js', array( 'on-pdfjs' ), (string) @filemtime( $dir . 'assets/js/online-reader.js' ), true );
+}
+add_action( 'wp_enqueue_scripts', 'on_register_online_reader_assets', 5 );
+add_action( 'elementor/editor/after_enqueue_scripts', 'on_register_online_reader_assets', 5 );
+add_action( 'elementor/frontend/after_register_scripts', 'on_register_online_reader_assets' );
+add_action( 'elementor/frontend/after_register_styles', 'on_register_online_reader_assets' );
 
 add_action( 'plugins_loaded', 'on_load_plugin' );
