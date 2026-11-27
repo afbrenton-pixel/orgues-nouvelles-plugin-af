@@ -14,6 +14,7 @@ class UsageTranslationsTest extends TestCase {
         return array(
             $root . '/includes/usage/dynamic-tags.php',
             $root . '/includes/usage/rest-api.php',
+            $root . '/includes/usage/situation.php',
         );
     }
 
