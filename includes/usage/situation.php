@@ -261,8 +261,8 @@ add_filter('elementor/frontend/container/should_render', 'on_usage_situation_sho
 function on_usage_actions_css()
 {
     echo '<style id="on-actions-css">'
-        . '.on-actions{align-items:stretch}'
-        . '.on-actions>.elementor-widget{flex:1 1 190px;max-width:260px;width:auto;margin:0}'
+        . '.on-actions{align-items:stretch;flex-direction:column;flex-wrap:nowrap;width:100%;max-width:260px;margin-left:auto;margin-right:auto}'
+        . '.on-actions>.elementor-widget{flex:0 0 auto;width:100%;max-width:260px;margin:0}'
         . '.on-actions .elementor-button,.on-actions .on-rd-open{box-sizing:border-box;width:100%;min-height:44px;justify-content:center;text-align:center;border-radius:4px;padding:12px 20px;font:600 16px/1.2 "Open Sans",system-ui,sans-serif}'
         . '.on-actions .elementor-button-text,.on-actions .elementor-button-content-wrapper{justify-content:center}'
         . '.on-actions .on-reader{width:100%}'
