@@ -237,6 +237,26 @@ add_action(
             }
         }
 
+        if (!class_exists('ON_Usage_Extract_Url_Tag')) {
+            class ON_Usage_Extract_Url_Tag extends ON_Usage_Url_Tag_Base
+            {
+                public function get_name()
+                {
+                    return 'on-usage-extrait';
+                }
+
+                public function get_title()
+                {
+                    return __('Extrait PDF du numéro', 'orgues-nouvelles');
+                }
+
+                public function get_value(array $options = array())
+                {
+                    return esc_url_raw(on_usage_extract_url());
+                }
+            }
+        }
+
         if (!class_exists('ON_Usage_Login_Url_Tag')) {
             class ON_Usage_Login_Url_Tag extends ON_Usage_Url_Tag_Base
             {
@@ -261,6 +281,7 @@ add_action(
         $dynamic_tags->register(new ON_Usage_Download_Url_Tag());
         $dynamic_tags->register(new ON_Usage_Product_Page_Url_Tag());
         $dynamic_tags->register(new ON_Usage_Paper_Url_Tag());
+        $dynamic_tags->register(new ON_Usage_Extract_Url_Tag());
         $dynamic_tags->register(new ON_Usage_Login_Url_Tag());
     }
 );

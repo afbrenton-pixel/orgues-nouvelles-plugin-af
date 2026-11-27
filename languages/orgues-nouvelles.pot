@@ -1670,3 +1670,7 @@ msgstr ""
 #: includes/usage/situation.php
 msgid "Seulement si le visiteur ne peut pas lire ce numéro (non connecté ou sans droit)"
 msgstr ""
+
+#: includes/usage/dynamic-tags.php
+msgid "Extrait PDF du numéro"
+msgstr ""

@@ -72,6 +72,8 @@ Un cinquième choix, « sans droit, et version papier en vente », sert au bouto
 
 Le conteneur du bloc porte la classe CSS « on-actions » : le plugin donne alors la même largeur, hauteur et police à tous ses boutons.
 
+La balise « Extrait PDF du numéro » donne l'adresse (du site courant) du fichier du champ « pdf_sommaire », à mettre dans l'adresse du PDF de ce second lecteur.
+
 Deux balises dynamiques s'ajoutent aux adresses de lecture et de téléchargement : « Fiche du numéro (boutique) » (produit du champ Téléchargement) et « Adresse de connexion (retour sur cette page) ».
 
 Un acheteur d'un numéro payant n'a pas de bouton « Télécharger » : le téléchargement gratuit refuse les produits payants. Il télécharge depuis « Mon compte ».
