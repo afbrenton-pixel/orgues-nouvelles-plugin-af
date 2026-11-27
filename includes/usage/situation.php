@@ -31,6 +31,7 @@ function on_usage_situation_choices()
         'on_situation_anonyme'        => __('Seulement si le visiteur n\'est pas connecté', 'orgues-nouvelles'),
         'on_situation_sans_droit'     => __('Seulement si connecté, sans droit de lire ce numéro', 'orgues-nouvelles'),
         'on_situation_papier'         => __('Seulement si connecté, sans droit, et si la version papier est en vente', 'orgues-nouvelles'),
+        'on_situation_sans_lecture'   => __('Seulement si le visiteur ne peut pas lire ce numéro (non connecté ou sans droit)', 'orgues-nouvelles'),
         'on_situation_lecture'        => __('Seulement si connecté, avec droit de lire ce numéro', 'orgues-nouvelles'),
         'on_situation_telechargement' => __('Seulement si le PDF est téléchargeable gratuitement', 'orgues-nouvelles'),
     );
@@ -52,6 +53,9 @@ function on_usage_situation_matches($situation)
 {
     if ($situation === 'on_situation_anonyme') {
         return !is_user_logged_in();
+    }
+    if ($situation === 'on_situation_sans_lecture') {
+        return !is_user_logged_in() || !on_usage_page_product('', true);
     }
     if (!is_user_logged_in()) {
         return false;
