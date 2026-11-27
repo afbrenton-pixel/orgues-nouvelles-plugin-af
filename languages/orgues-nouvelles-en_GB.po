@@ -1765,3 +1765,11 @@ msgstr "Issue page (shop)"
 #: includes/usage/dynamic-tags.php
 msgid "Adresse de connexion (retour sur cette page)"
 msgstr "Login address (returns to this page)"
+
+#: includes/usage/situation.php
+msgid "Seulement si connecté, sans droit, et si la version papier est en vente"
+msgstr "Only if logged in, without the right, and if the print version is on sale"
+
+#: includes/usage/dynamic-tags.php
+msgid "Fiche de la version papier"
+msgstr "Print version page"

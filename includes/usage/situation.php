@@ -30,6 +30,7 @@ function on_usage_situation_choices()
     return array(
         'on_situation_anonyme'        => __('Seulement si le visiteur n\'est pas connecté', 'orgues-nouvelles'),
         'on_situation_sans_droit'     => __('Seulement si connecté, sans droit de lire ce numéro', 'orgues-nouvelles'),
+        'on_situation_papier'         => __('Seulement si connecté, sans droit, et si la version papier est en vente', 'orgues-nouvelles'),
         'on_situation_lecture'        => __('Seulement si connecté, avec droit de lire ce numéro', 'orgues-nouvelles'),
         'on_situation_telechargement' => __('Seulement si le PDF est téléchargeable gratuitement', 'orgues-nouvelles'),
     );
@@ -62,6 +63,9 @@ function on_usage_situation_matches($situation)
         // Une page sans produit relié n'a rien à acheter : on ne propose pas le bouton.
         return on_usage_page_product_id(get_the_ID()) > 0 && !on_usage_page_product('', true);
     }
+    if ($situation === 'on_situation_papier') {
+        return !on_usage_page_product('', true) && on_usage_paper_product_url() !== '';
+    }
     if ($situation === 'on_situation_telechargement') {
         return on_usage_download_url() !== '';
     }
@@ -93,6 +97,36 @@ function on_usage_product_page_url()
         return '';
     }
     return (string) get_permalink($product_id);
+}
+
+/**
+ * Adresse de la fiche de la version papier du numéro, ou ''.
+ *
+ * Le produit papier est un produit publié, non téléchargeable, dont le champ
+ * Pods « Magazine » désigne la page affichée. Ce même champ donne au client
+ * l'accès en ligne après l'achat (on_ajouter_numero_apres_achat).
+ */
+function on_usage_paper_product_url()
+{
+    $page_id = get_the_ID();
+    if (!$page_id || !function_exists('wc_get_product')) {
+        return '';
+    }
+    $ids = get_posts(array(
+        'post_type'      => 'product',
+        'post_status'    => 'publish',
+        'posts_per_page' => 20,
+        'fields'         => 'ids',
+        'meta_query'     => array(array('key' => 'magazine', 'value' => (string) $page_id)),
+        'suppress_filters' => true,
+    ));
+    foreach ($ids as $id) {
+        $product = wc_get_product($id);
+        if ($product && !$product->is_downloadable() && !$product->is_virtual()) {
+            return (string) get_permalink($id);
+        }
+    }
+    return '';
 }
 
 /** Adresse de connexion qui revient sur la page du numéro. */
