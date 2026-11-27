@@ -60,6 +60,8 @@ Pour poser les mêmes boutons dans les modèles de page d'un numéro (magazine o
 
 Un cinquième choix, « sans droit, et version papier en vente », sert au bouton d'achat du papier : le produit papier est un produit publié, ni virtuel ni téléchargeable, dont le champ « Magazine » désigne la page du numéro (ce champ donne aussi l'accès en ligne après l'achat). Balise « Fiche de la version papier ».
 
+Le conteneur du bloc porte la classe CSS « on-actions » : le plugin donne alors la même largeur, hauteur et police à tous ses boutons.
+
 Deux balises dynamiques s'ajoutent aux adresses de lecture et de téléchargement : « Fiche du numéro (boutique) » (produit du champ Téléchargement) et « Adresse de connexion (retour sur cette page) ».
 
 Un acheteur d'un numéro payant n'a pas de bouton « Télécharger » : le téléchargement gratuit refuse les produits payants. Il télécharge depuis « Mon compte ».
