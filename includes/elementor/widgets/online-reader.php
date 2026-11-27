@@ -274,7 +274,7 @@ class ON_Online_Reader extends Widget_Base
         $chev_r = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
         ?>
         <div class="on-reader">
-            <button type="button" class="on-rd-open" data-r="Open" aria-expanded="false" aria-controls="<?php echo esc_attr($uid); ?>"><?php echo esc_html($btn); ?> &gt;</button>
+            <button type="button" class="on-rd-open" data-r="Open" aria-expanded="false" aria-controls="<?php echo esc_attr($uid); ?>"><?php echo esc_html($btn); ?></button>
             <div class="on-rd" id="<?php echo esc_attr($uid); ?>" data-r="Panel" hidden
                  data-pdf="<?php echo esc_url($url); ?>"
                  data-sub="<?php echo esc_attr($sub); ?>"
