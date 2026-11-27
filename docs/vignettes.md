@@ -116,6 +116,13 @@ Format `playlist` : une vignette avec photo (image à la une), étiquette, titre
 - Colonnes fixes (`.on-sticky`) plus hautes que l'écran : `assets/js/vignettes-sticky.js` remonte leur position fixe pour que le bas de la colonne (fin de la playlist) puisse être atteint, puis la colonne reste fixée là.
 - Photo de la playlist : taille, alignement et place réglés dans Elementor, dans le modèle de boucle « Vignette accueil – playlist (Pods) » (widget image : largeur personnalisée, alignement du contenant). Rien dans le CSS du plugin.
 
+## Dupliquer une vignette
+
+Le lien « Dupliquer » (sous le titre, dans la liste des vignettes) crée une copie en **brouillon**, titre « Titre (copie) », et ouvre son écran de modification. Utile pour une playlist dont les pistes ont été choisies une à une.
+- Copiés : texte, image à la une, étiquettes, zone et **tous les champs Pods** (dont « Pistes », dans le même ordre) ; la copie garde la langue de l'original.
+- Non copiés : le lien avec le contenu d'origine et les valeurs de l'import automatique (`_on_source_id`, `_on_locked`, `_on_autodraft`, `_on_sans_image`, `_on_source_type`) : la copie est une vignette faite à la main, un réimport ne la remplace pas ; la traduction (la jumelle anglaise se crée avec le « + » de Polylang).
+- Droits : créer des vignettes et modifier l'original ; lien protégé par un nonce. Code : `includes/vignettes/duplication.php`.
+
 ## Préfixe des noms (CSS, JavaScript, champs)
 
 Tous les noms propres aux vignettes commencent par `on` comme le reste du plugin : classes CSS `on-…`, attributs `data-on-…`, variables JavaScript `ON_MEDIA` et `ON_I18N`, champs `_on_source_id`, `_on_locked`, etc. L'élément en cours de lecture d'une playlist porte la classe `on-current`.

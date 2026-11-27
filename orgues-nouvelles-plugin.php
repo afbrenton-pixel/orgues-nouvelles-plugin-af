@@ -93,6 +93,7 @@ function on_load_plugin() {
         require_once(__DIR__ . '/includes/vignettes/player.php');
         require_once(__DIR__ . '/includes/vignettes/affichage.php');
         require_once(__DIR__ . '/includes/vignettes/creation-en-masse.php');
+        require_once(__DIR__ . '/includes/vignettes/duplication.php');
     }
     
     // Charger les modules frontend

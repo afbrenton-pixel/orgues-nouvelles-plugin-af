@@ -1456,3 +1456,20 @@ msgstr "PDF file unavailable."
 #: includes/elementor/widgets/online-reader.php:139
 msgid "Document"
 msgstr "Document"
+
+#. translators: %s: titre de la vignette d'origine.
+#: includes/vignettes/duplication.php:46
+msgid "%s (copie)"
+msgstr "%s (copy)"
+
+#: includes/vignettes/duplication.php:128
+msgid "Créer une copie de cette vignette (en brouillon), avec ses pistes, son image et ses étiquettes."
+msgstr "Create a copy of this vignette (as a draft), with its tracks, image and labels."
+
+#: includes/vignettes/duplication.php:129
+msgid "Dupliquer"
+msgstr "Duplicate"
+
+#: includes/vignettes/duplication.php:149
+msgid "Vignette introuvable."
+msgstr "Vignette not found."
