@@ -133,6 +133,34 @@ function on_usage_paper_product_url()
     return '';
 }
 
+/**
+ * Adresse du PDF d'extrait du numéro (champ Pods « pdf_sommaire » de la page), ou ''.
+ *
+ * L'adresse est celle du site courant (fichier de la médiathèque), pour que le lecteur
+ * puisse l'ouvrir sans changer de domaine. L'extrait se lit sans compte ni droit.
+ */
+function on_usage_extract_url()
+{
+    $page_id = get_the_ID();
+    if (!$page_id) {
+        return '';
+    }
+    $value = function_exists('pods_field')
+        ? pods_field(get_post_type($page_id), $page_id, 'pdf_sommaire', true)
+        : get_post_meta($page_id, 'pdf_sommaire', true);
+    if (is_array($value)) {
+        $value = isset($value['ID']) ? $value['ID'] : reset($value);
+    } elseif (is_object($value)) {
+        $value = isset($value->ID) ? $value->ID : 0;
+    }
+    $attachment_id = is_numeric($value) ? (int) $value : 0;
+    if (!$attachment_id || get_post_type($attachment_id) !== 'attachment') {
+        return '';
+    }
+    $url = wp_get_attachment_url($attachment_id);
+    return $url ? (string) $url : '';
+}
+
 /** Adresse de connexion qui revient sur la page du numéro. */
 function on_usage_login_url()
 {
