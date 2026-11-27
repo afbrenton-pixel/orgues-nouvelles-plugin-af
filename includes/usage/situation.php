@@ -268,7 +268,8 @@ function on_usage_actions_css()
         . '.on-actions .elementor-button:hover,.on-actions .elementor-button:focus,.on-actions .elementor-button:active,.on-actions .on-rd-open:hover,.on-actions .on-rd-open:focus,.on-actions .on-rd-open:active{background:transparent!important;border-color:#ca008a!important;color:#ca008a!important;border-width:1px!important;font-weight:500!important;text-decoration:none!important;outline:none}'
         . '.on-actions a,.on-actions a:hover,.on-actions a:focus{text-decoration:none!important}'
         . '.on-actions .elementor-button-text,.on-actions .elementor-button-content-wrapper{justify-content:center}'
-        . '.on-actions .elementor-button-icon{margin:0 6px 0 0}.on-actions .elementor-button-text{white-space:nowrap}'
+        . '.on-actions .elementor-button-icon{margin:0 6px 0 0}.on-actions:not(:has(>*:nth-child(3))) .elementor-button-text{white-space:nowrap}'
+        . '.on-actions:has(>*:nth-child(3)){flex-direction:column!important;--flex-direction:column;max-width:280px}.on-actions:has(>*:nth-child(3))>*{flex:0 0 auto;width:100%;max-width:280px}'
         . '.on-actions .on-reader{width:100%}'
         . '</style>';
 }
