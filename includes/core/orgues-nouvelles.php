@@ -307,6 +307,18 @@ if (!function_exists('on_liste_numeros')) {
                 }
             }
         }
+        // Numéros anglais achetés par l'utilisateur (si memberships_plan vide ou contient ONEDA)
+        if (empty($memberships_plan) || in_array('oneda', (array) $memberships_plan)) {
+            $user_pods = pods('user', $user_id);
+            $magazines = $user_pods->get_field('journals');
+            if (!empty($magazines)) {
+                foreach ($magazines as $magazine) {
+                    $magazine_id = $magazine['ID'];
+                    $numero = pods('magazine', $magazine_id)->get_field('numero');
+                    $liste[] = intval($numero);
+                }
+            }
+        }
         // Numéros accessibles via les abonnements Subscriptions de l'utilisateur.
         if (function_exists('wcs_get_users_subscriptions')) {
             $subscriptions = wcs_get_users_subscriptions($user_id);

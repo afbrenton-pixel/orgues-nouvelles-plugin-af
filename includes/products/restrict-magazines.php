@@ -90,32 +90,41 @@ function on_ajouter_numero_apres_achat($order_id)
 
             $magazine = pods('product', $product_id)->field('magazine', true);
 
-            if ($magazine) {
-                // Ajouter le numéro à la liste de l'utilisateur
+            if ($magazine && !empty($magazine['ID'])) {
                 $magazine_id = $magazine['ID'];
-                $user_pods = pods('user', $user_id);
-                $user_magazines = $user_pods->get_field('magazines');
+                
+                // Récupérer la langue du magazine via Polylang ('fr' ou 'en')
+                $lang = function_exists('pll_get_post_language') ? pll_get_post_language($magazine_id) : 'fr';
 
-                if (empty($user_magazines)) {
-                    $user_magazines = array();
+                // Déterminer le nom du champ cible sur le User
+                $target_field = null;
+                if ($lang === 'fr') {
+                    $target_field = 'magazines';
+                } elseif ($lang === 'en') {
+                    $target_field = 'journals';
                 }
 
-                $magazine_exists = false;
-                foreach ($user_magazines as $user_magazine) {
-                    if ($user_magazine['ID'] == $magazine_id) {
-                        $magazine_exists = true;
-                        break;
+                // Si une langue gérée est trouvée, on procède à l'ajout
+                if ($target_field) {
+                    $user_pods = pods('user', $user_id);
+                    $user_items = $user_pods->get_field($target_field);
+
+                    if (empty($user_items) || !is_array($user_items)) {
+                        $user_items = array();
                     }
-                }
 
-                // Vérifier si le numéro n'est pas déjà dans la liste
-                if ($magazine_id && !$magazine_exists) {
-                    $user_pods->add_to('magazines', $magazine_id);
+                    // Vérifier si l'ID existe déjà dans le champ ciblé
+                    $existing_ids = array_column($user_items, 'ID');
+
+                    if (!in_array($magazine_id, $existing_ids)) {
+                        $user_pods->add_to($target_field, $magazine_id);
+                    }
                 }
             }
         }
     }
 }
+add_action('woocommerce_order_status_processing', 'on_ajouter_numero_apres_achat');
 add_action('woocommerce_order_status_completed', 'on_ajouter_numero_apres_achat');
 
 function on_retrict_magazines_elementor_should_render_element($should_render, $widget)
