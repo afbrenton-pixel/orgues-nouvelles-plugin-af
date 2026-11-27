@@ -261,20 +261,18 @@ add_filter('elementor/frontend/container/should_render', 'on_usage_situation_sho
 function on_usage_actions_css()
 {
     echo '<style id="on-actions-css">'
-        . '.on-actions.e-con{--flex-direction:row;--flex-wrap:wrap;flex-direction:row;flex-wrap:wrap;align-items:stretch;gap:8px;width:100%;max-width:430px;margin-left:0;margin-right:0}'
-        . '.on-actions>*{flex:1 1 0;min-width:140px;max-width:210px;width:auto;margin:0}'
-        . '.on-actions .elementor-button,.on-actions .on-rd-open{box-sizing:border-box;width:100%;height:100%;min-height:44px;justify-content:center;text-align:center;border-radius:5px;padding:10px 6px;font:500 16px/1.2 "Roboto Condensed",sans-serif!important;white-space:normal}'
-        . '.on-actions .elementor-button,.on-actions .on-rd-open{background:#ca008a!important;color:#fff!important;border:1px solid #ca008a!important;border-radius:5px!important}'
-        . '.on-actions .elementor-button:hover,.on-actions .elementor-button:focus,.on-actions .elementor-button:active,.on-actions .on-rd-open:hover,.on-actions .on-rd-open:focus,.on-actions .on-rd-open:active{background:transparent!important;border-color:#ca008a!important;color:#ca008a!important;border-width:1px!important;font-weight:500!important;text-decoration:none!important;outline:none}'
+        . '.on-actions.e-con{--flex-direction:row;--flex-wrap:wrap;flex-direction:row;flex-wrap:wrap;align-items:flex-start;justify-content:flex-start;gap:8px;width:100%;max-width:none;margin:0;padding:0}'
+        . '.on-actions>*{flex:0 0 190px;width:190px;max-width:100%;margin:0}'
+        . '.on-actions .elementor-button,.on-actions .on-rd-open{box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:44px;min-height:44px;padding:0 10px;border-radius:5px!important;font:500 16px/1 "Roboto Condensed",sans-serif!important;white-space:nowrap;text-align:center;background:#ca008a!important;color:#fff!important;border:1px solid #ca008a!important}'
+        . '.on-actions .elementor-button-content-wrapper{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:nowrap}'
+        . '.on-actions .elementor-button-text{white-space:nowrap}.on-actions .elementor-button-icon{flex:0 0 auto;margin:0}'
+        . '.on-actions .elementor-button:hover,.on-actions .elementor-button:focus,.on-actions .elementor-button:active,.on-actions .on-rd-open:hover,.on-actions .on-rd-open:focus,.on-actions .on-rd-open:active{background:transparent!important;border-color:#ca008a!important;color:#ca008a!important;text-decoration:none!important;outline:none}'
         . '.on-actions a,.on-actions a:hover,.on-actions a:focus{text-decoration:none!important}'
-        . '.on-actions .elementor-button-text,.on-actions .elementor-button-content-wrapper{justify-content:center}'
-        . '.on-actions .elementor-button-icon{margin:0 6px 0 0}.on-actions .elementor-button-content-wrapper{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:nowrap}.on-actions .elementor-button-text{white-space:normal;text-align:center}.on-actions .elementor-button-icon{flex:0 0 auto}'
-        . '.on-actions:has(>*:nth-child(3)){max-width:380px}.on-actions:has(>*:nth-child(3))>*{flex:1 1 calc(50% - 4px);min-width:0;max-width:none}.on-actions:has(>*:nth-child(3))>*:first-child{flex:1 1 100%}'
+        . '.on-actions .on-reader{width:100%}'
         . '.on-datebar.e-con{--flex-direction:row;--flex-wrap:wrap;flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:0}'
         . '.on-extract{width:auto;margin:0}.on-extract .on-reader{width:auto}'
         . '.on-extract .on-rd-open{box-sizing:border-box;min-height:0;padding:5px 12px;border-radius:5px!important;font:500 14px/1.2 "Roboto Condensed",sans-serif!important;background:#ca008a!important;color:#fff!important;border:1px solid #ca008a!important;white-space:nowrap}'
         . '.on-extract .on-rd-open:hover,.on-extract .on-rd-open:focus,.on-extract .on-rd-open:active{background:transparent!important;color:#ca008a!important;border-color:#ca008a!important;outline:none}'
-        . '.on-actions .on-reader{width:100%}'
         . '</style>';
 }
 add_action('wp_head', 'on_usage_actions_css', 99);
