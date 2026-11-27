@@ -139,3 +139,19 @@ add_filter('on_visibility_condition_options', 'on_usage_situation_add_choices');
 add_filter('elementor/frontend/widget/should_render', 'on_usage_situation_should_render', 5, 2);
 add_filter('elementor/frontend/section/should_render', 'on_usage_situation_should_render', 5, 2);
 add_filter('elementor/frontend/container/should_render', 'on_usage_situation_should_render', 5, 2);
+
+/**
+ * Boutons du bloc « Actions du numéro » (classe CSS on-actions sur le conteneur) :
+ * même largeur, même hauteur, même police pour tous, quel que soit le bouton affiché.
+ */
+function on_usage_actions_css()
+{
+    echo '<style id="on-actions-css">'
+        . '.on-actions{align-items:stretch}'
+        . '.on-actions>.elementor-widget{flex:1 1 190px;max-width:260px;width:auto;margin:0}'
+        . '.on-actions .elementor-button,.on-actions .on-rd-open{box-sizing:border-box;width:100%;min-height:44px;justify-content:center;text-align:center;border-radius:4px;padding:12px 20px;font:600 16px/1.2 "Open Sans",system-ui,sans-serif}'
+        . '.on-actions .elementor-button-text,.on-actions .elementor-button-content-wrapper{justify-content:center}'
+        . '.on-actions .on-reader{width:100%}'
+        . '</style>';
+}
+add_action('wp_head', 'on_usage_actions_css', 99);
