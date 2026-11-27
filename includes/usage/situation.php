@@ -270,6 +270,10 @@ function on_usage_actions_css()
         . '.on-actions .elementor-button-text,.on-actions .elementor-button-content-wrapper{justify-content:center}'
         . '.on-actions .elementor-button-icon{margin:0 6px 0 0}.on-actions:not(:has(>*:nth-child(3))) .elementor-button-text{white-space:nowrap}'
         . '.on-actions:has(>*:nth-child(3)){max-width:380px}.on-actions:has(>*:nth-child(3))>*{flex:1 1 calc(50% - 4px);min-width:0;max-width:none}.on-actions:has(>*:nth-child(3))>*:first-child{flex:1 1 100%}'
+        . '.on-datebar.e-con{--flex-direction:row;--flex-wrap:wrap;flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:0}'
+        . '.on-extract{width:auto;margin:0}.on-extract .on-reader{width:auto}'
+        . '.on-extract .on-rd-open{box-sizing:border-box;min-height:0;padding:5px 12px;border-radius:5px!important;font:500 14px/1.2 "Roboto Condensed",sans-serif!important;background:#ca008a!important;color:#fff!important;border:1px solid #ca008a!important;white-space:nowrap}'
+        . '.on-extract .on-rd-open:hover,.on-extract .on-rd-open:focus,.on-extract .on-rd-open:active{background:transparent!important;color:#ca008a!important;border-color:#ca008a!important;outline:none}'
         . '.on-actions .on-reader{width:100%}'
         . '</style>';
 }
