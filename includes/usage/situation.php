@@ -212,6 +212,37 @@ function on_usage_related_page_image($field)
     return $src ? array('id' => $thumb, 'url' => $src) : array();
 }
 
+/**
+ * Lecteur des pistes du CD du numéro : [on_playlist_cd].
+ *
+ * Reprend la playlist (champ Pods « playlist » de la page CD reliée par « page_cd » à la page du numéro)
+ * avec le même lecteur Cue que la page du CD, pour la montrer sur la page du numéro.
+ */
+function on_usage_playlist_cd_shortcode()
+{
+    $page_id = get_the_ID();
+    if (!$page_id || !function_exists('pods_field') || !shortcode_exists('cue')) {
+        return '';
+    }
+    $cd = on_usage_related_page_url('page_cd');
+    $cd_id = $cd ? url_to_postid($cd) : 0;
+    if (!$cd_id) {
+        return '';
+    }
+    $value = pods_field(get_post_type($cd_id), $cd_id, 'playlist', true);
+    if (is_array($value)) {
+        $value = isset($value['ID']) ? $value['ID'] : reset($value);
+    } elseif (is_object($value)) {
+        $value = isset($value->ID) ? $value->ID : 0;
+    }
+    $playlist_id = is_numeric($value) ? (int) $value : 0;
+    if (!$playlist_id) {
+        return '';
+    }
+    return '<div class="on-playlist-cd">' . do_shortcode('[cue id="' . $playlist_id . '"]') . '</div>';
+}
+add_shortcode('on_playlist_cd', 'on_usage_playlist_cd_shortcode');
+
 /** Adresse de connexion qui revient sur la page du numéro. */
 function on_usage_login_url()
 {

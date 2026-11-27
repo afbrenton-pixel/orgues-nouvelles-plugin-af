@@ -70,6 +70,8 @@ Les balises « Page du CD du numéro » et « Page du cahier de partitions du nu
 
 Les balises « Image du CD du numéro » et « Image du cahier de partitions du numéro » donnent l'image à la une de ces deux pages, pour que les images de la fiche suivent le numéro affiché.
 
+Le code court `[on_playlist_cd]` (widget « Code court » d'Elementor) affiche, sur la page du numéro, le lecteur de pistes du CD (même lecteur Cue que la page du CD).
+
 Deux balises dynamiques s'ajoutent aux adresses de lecture et de téléchargement : « Fiche du numéro (boutique) » (produit du champ Téléchargement) et « Adresse de connexion (retour sur cette page) ».
 
 Un acheteur d'un numéro payant n'a pas de bouton « Télécharger » : le téléchargement gratuit refuse les produits payants. Il télécharge depuis « Mon compte ».
