@@ -125,6 +125,7 @@ function on_ajouter_numero_apres_achat($order_id)
     }
 }
 add_action('woocommerce_order_status_processing', 'on_ajouter_numero_apres_achat');
+add_action('woocommerce_order_status_completed', 'on_ajouter_numero_apres_achat');
 
 function on_retrict_magazines_elementor_should_render_element($should_render, $widget)
 {

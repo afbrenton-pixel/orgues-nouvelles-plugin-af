@@ -723,52 +723,6 @@ msgstr ""
 msgid "Ajouter"
 msgstr ""
 
-#. Vignettes accueil (includes/vignettes)
-#: includes/vignettes/affichage.php:111
-msgid "Objet source"
-msgstr ""
-
-#: includes/vignettes/affichage.php:129
-msgid "Modifier l'objet"
-msgstr ""
-
-#: includes/vignettes/affichage.php:136
-msgid "Voir l'objet sur le site"
-msgstr ""
-
-#: includes/vignettes/player.php:150
-msgid "Lecture"
-msgstr ""
-
-#: includes/vignettes/player.php:151
-msgid "Pause"
-msgstr ""
-
-#: includes/vignettes/player.php:152
-msgid "Morceau précédent"
-msgstr ""
-
-#: includes/vignettes/player.php:153
-msgid "Morceau suivant"
-msgstr ""
-
-#: includes/vignettes/player.php:154
-msgid "Vidéo"
-msgstr ""
-
-#: includes/vignettes/player.php:155
-msgid "Fermer la vidéo"
-msgstr ""
-
-#: includes/vignettes/player.php:157
-#, php-format
-msgid "Voir les %d pistes"
-msgstr ""
-
-#: includes/vignettes/player.php:158
-msgid "Réduire"
-msgstr ""
-
 #. Free student subscription (includes/gratuite)
 #: includes/gratuite/authorization.php:110
 msgid "anglais"
@@ -1185,8 +1139,53 @@ msgstr ""
 msgid "Action non autorisée."
 msgstr ""
 
-#. Création des vignettes en masse (includes/vignettes/creation-en-masse.php)
+#. Vignettes accueil (includes/vignettes)
+#: includes/vignettes/affichage.php:111
+msgid "Objet source"
+msgstr ""
 
+#: includes/vignettes/affichage.php:129
+msgid "Modifier l'objet"
+msgstr ""
+
+#: includes/vignettes/affichage.php:136
+msgid "Voir l'objet sur le site"
+msgstr ""
+
+#: includes/vignettes/player.php:150
+msgid "Lecture"
+msgstr ""
+
+#: includes/vignettes/player.php:151
+msgid "Pause"
+msgstr ""
+
+#: includes/vignettes/player.php:152
+msgid "Morceau précédent"
+msgstr ""
+
+#: includes/vignettes/player.php:153
+msgid "Morceau suivant"
+msgstr ""
+
+#: includes/vignettes/player.php:154
+msgid "Vidéo"
+msgstr ""
+
+#: includes/vignettes/player.php:155
+msgid "Fermer la vidéo"
+msgstr ""
+
+#: includes/vignettes/player.php:157
+#, php-format
+msgid "Voir les %d pistes"
+msgstr ""
+
+#: includes/vignettes/player.php:158
+msgid "Réduire"
+msgstr ""
+
+#. Création des vignettes en masse (includes/vignettes/creation-en-masse.php)
 #: includes/vignettes/creation-en-masse.php:33
 msgid "Actualités"
 msgstr ""
@@ -1203,7 +1202,10 @@ msgstr ""
 msgid "Produits de la boutique"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:347 includes/vignettes/creation-en-masse.php:348 includes/vignettes/creation-en-masse.php:407 includes/vignettes/creation-en-masse.php:450
+#: includes/vignettes/creation-en-masse.php:347
+#: includes/vignettes/creation-en-masse.php:348
+#: includes/vignettes/creation-en-masse.php:407
+#: includes/vignettes/creation-en-masse.php:450
 msgid "Importer les vignettes"
 msgstr ""
 
@@ -1241,11 +1243,14 @@ msgid "La date de départ n'est pas valable."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:373
-msgid "Le motif des titres à écarter n'est pas une expression régulière valable."
+msgid ""
+"Le motif des titres à écarter n'est pas une expression régulière valable."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:375
-msgid "La connexion avec le site a échoué. Relancez la simulation puis la création : ce qui est déjà créé ne sera pas refait."
+msgid ""
+"La connexion avec le site a échoué. Relancez la simulation puis la création "
+": ce qui est déjà créé ne sera pas refait."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:377
@@ -1275,7 +1280,9 @@ msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:384
 #, php-format
-msgid "%d contenu(s) à traiter. Si cela vous convient, cliquez sur « Importer les vignettes »."
+msgid ""
+"%d contenu(s) à traiter. Si cela vous convient, cliquez sur « Importer les "
+"vignettes »."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:385
@@ -1307,11 +1314,18 @@ msgid "Terminé. Le cache d'Elementor a été vidé."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:392
-msgid "Les vignettes en brouillon attendent une image : voir la pastille rouge dans le menu « Vignettes accueil »."
+msgid ""
+"Les vignettes en brouillon attendent une image : voir la pastille rouge dans"
+" le menu « Vignettes accueil »."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:408
-msgid "Le plugin crée une vignette quand on enregistre un contenu. Cette page crée celles des contenus déjà publiés, avec leur jumelle anglaise quand il y en a une. Les contenus ne sont pas réenregistrés : leur date de modification ne change pas. Vous pouvez relancer sans risque : les vignettes modifiées à la main ou mises à la corbeille ne sont pas touchées."
+msgid ""
+"Le plugin crée une vignette quand on enregistre un contenu. Cette page crée "
+"celles des contenus déjà publiés, avec leur jumelle anglaise quand il y en a"
+" une. Les contenus ne sont pas réenregistrés : leur date de modification ne "
+"change pas. Vous pouvez relancer sans risque : les vignettes modifiées à la "
+"main ou mises à la corbeille ne sont pas touchées."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:412
@@ -1327,7 +1341,8 @@ msgid "Publiés depuis le"
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:427
-msgid "Facultatif. Vide : tous les contenus publiés, quelle que soit leur date."
+msgid ""
+"Facultatif. Vide : tous les contenus publiés, quelle que soit leur date."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:431
@@ -1335,11 +1350,19 @@ msgid "Titres à écarter"
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:434
-msgid "Facultatif. Vide : aucun contenu n'est écarté. Sinon, expression régulière appliquée au titre de tous les types cochés (majuscules et minuscules sans importance) : les contenus dont le titre correspond sont écartés. Elle marche mieux avec un seul type coché."
+msgid ""
+"Facultatif. Vide : aucun contenu n'est écarté. Sinon, expression régulière "
+"appliquée au titre de tous les types cochés (majuscules et minuscules sans "
+"importance) : les contenus dont le titre correspond sont écartés. Elle "
+"marche mieux avec un seul type coché."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:435
-msgid "Exemples : « Calendrier|Calendar » écarte les titres qui contiennent l'un ou l'autre mot ; « ^Test » écarte les titres qui commencent par Test ; « Download|Booklet|in English » écarte les fichiers à télécharger et les versions anglaises en double."
+msgid ""
+"Exemples : « Calendrier|Calendar » écarte les titres qui contiennent l'un ou"
+" l'autre mot ; « ^Test » écarte les titres qui commencent par Test ; « "
+"Download|Booklet|in English » écarte les fichiers à télécharger et les "
+"versions anglaises en double."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:439
@@ -1382,16 +1405,21 @@ msgstr ""
 msgid "Titre par défaut"
 msgstr ""
 
-#: includes/elementor/widgets/online-reader.php:74 includes/elementor/widgets/online-reader.php:137
+#: includes/elementor/widgets/online-reader.php:74
+#: includes/elementor/widgets/online-reader.php:137
 msgid "Cahier de partitions"
 msgstr ""
 
-#: includes/elementor/widgets/online-reader.php:75 includes/elementor/widgets/online-reader.php:138
+#: includes/elementor/widgets/online-reader.php:75
+#: includes/elementor/widgets/online-reader.php:138
 msgid "Magazine"
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:83
-msgid "Choisir la balise « Adresse de lecture » (icône de balise dynamique) pour un magazine ou un cahier de partitions, ou saisir l'adresse d'un PDF. Laisser vide : le PDF du produit « Téléchargement » de la page."
+msgid ""
+"Choisir la balise « Adresse de lecture » (icône de balise dynamique) pour un"
+" magazine ou un cahier de partitions, ou saisir l'adresse d'un PDF. Laisser "
+"vide : le PDF du produit « Téléchargement » de la page."
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:87
@@ -1407,7 +1435,9 @@ msgid "Titre dans le lecteur"
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:97
-msgid "Laisser vide : « Cahier de partitions » ou « Magazine », dans la langue de la page."
+msgid ""
+"Laisser vide : « Cahier de partitions » ou « Magazine », dans la langue de "
+"la page."
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:103
@@ -1435,7 +1465,9 @@ msgid "Pistes audio"
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:140
-msgid "Touchez le titre pour aller à la page, ou le bouton pour écouter. Le son continue quand vous tournez les pages."
+msgid ""
+"Touchez le titre pour aller à la page, ou le bouton pour écouter. Le son "
+"continue quand vous tournez les pages."
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:141
@@ -1498,7 +1530,9 @@ msgid "Écouter « %s »"
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:158
-msgid "Cet enregistrement n'a pas pu être lu. Vérifiez la connexion, puis réessayez."
+msgid ""
+"Cet enregistrement n'a pas pu être lu. Vérifiez la connexion, puis "
+"réessayez."
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:159
@@ -1530,11 +1564,14 @@ msgid "Le document n'a pas pu être ouvert."
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:166
-msgid "La lecture en ligne n'est pas disponible pour ce numéro avec votre compte."
+msgid ""
+"La lecture en ligne n'est pas disponible pour ce numéro avec votre compte."
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:185
-msgid "Lecteur PDF en ligne : aucun PDF lisible pour cette page et ce compte (rien ne s'affiche aux visiteurs sans droit)."
+msgid ""
+"Lecteur PDF en ligne : aucun PDF lisible pour cette page et ce compte (rien "
+"ne s'affiche aux visiteurs sans droit)."
 msgstr ""
 
 #. translators: %s: numéro du magazine ou du cahier
@@ -1558,6 +1595,10 @@ msgstr ""
 msgid "Fichier PDF indisponible."
 msgstr ""
 
+#: includes/elementor/widgets/online-reader.php:139
+msgid "Document"
+msgstr ""
+
 #: includes/elementor/widgets/online-reader.php:102
 msgid "Affichage des pages"
 msgstr ""
@@ -1579,7 +1620,11 @@ msgid "2 pages côte à côte"
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:115
-msgid "Réglage par type d'écran (icônes ordinateur, tablette, téléphone). En mode « 2 pages », le bouton « + » du zoom agrandit sans changer de mode ; sinon le premier clic sur « + » passe à une page et agrandit, et « − » revient aux deux pages."
+msgid ""
+"Réglage par type d'écran (icônes ordinateur, tablette, téléphone). En mode «"
+" 2 pages », le bouton « + » du zoom agrandit sans changer de mode ; sinon le"
+" premier clic sur « + » passe à une page et agrandit, et « − » revient aux "
+"deux pages."
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:119
@@ -1588,8 +1633,4 @@ msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:125
 msgid "En pixels, largeur de la zone du lecteur. En dessous, une seule page."
-msgstr ""
-
-#: includes/elementor/widgets/online-reader.php:139
-msgid "Document"
 msgstr ""
