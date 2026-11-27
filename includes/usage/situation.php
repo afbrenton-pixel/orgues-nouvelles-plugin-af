@@ -261,9 +261,9 @@ add_filter('elementor/frontend/container/should_render', 'on_usage_situation_sho
 function on_usage_actions_css()
 {
     echo '<style id="on-actions-css">'
-        . '.on-actions.e-con{--flex-direction:column;--flex-wrap:nowrap;flex-direction:column;flex-wrap:nowrap;align-items:stretch;width:100%;max-width:260px;margin-left:auto;margin-right:auto}'
-        . '.on-actions>.elementor-widget{flex:0 0 auto;width:100%;max-width:260px;margin:0}'
-        . '.on-actions .elementor-button,.on-actions .on-rd-open{box-sizing:border-box;width:100%;min-height:44px;justify-content:center;text-align:center;border-radius:4px;padding:12px 20px;font:600 16px/1.2 "Open Sans",system-ui,sans-serif}'
+        . '.on-actions.e-con{--flex-direction:row;--flex-wrap:wrap;flex-direction:row;flex-wrap:wrap;align-items:stretch;gap:10px;width:100%;max-width:380px;margin-left:0;margin-right:0}'
+        . '.on-actions>.elementor-widget{flex:1 1 150px;width:auto;max-width:none;margin:0}'
+        . '.on-actions .elementor-button,.on-actions .on-rd-open{box-sizing:border-box;width:100%;height:100%;min-height:44px;justify-content:center;text-align:center;border-radius:4px;padding:10px 12px;font:600 15px/1.2 "Open Sans",system-ui,sans-serif;white-space:normal}'
         . '.on-actions .elementor-button,.on-actions .on-rd-open{background:#a00062!important;color:#fff!important;border:2px solid #a00062!important}'
         . '.on-actions .elementor-button:hover,.on-actions .elementor-button:focus,.on-actions .elementor-button:active,.on-actions .on-rd-open:hover,.on-actions .on-rd-open:focus,.on-actions .on-rd-open:active{background:#e0e4ed!important;border-color:#a00062!important;color:#a00062!important;text-decoration:none!important;outline:none}'
         . '.on-actions a,.on-actions a:hover,.on-actions a:focus{text-decoration:none!important}'
