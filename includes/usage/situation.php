@@ -264,6 +264,8 @@ function on_usage_actions_css()
         . '.on-actions.e-con{--flex-direction:column;--flex-wrap:nowrap;flex-direction:column;flex-wrap:nowrap;align-items:stretch;width:100%;max-width:260px;margin-left:auto;margin-right:auto}'
         . '.on-actions>.elementor-widget{flex:0 0 auto;width:100%;max-width:260px;margin:0}'
         . '.on-actions .elementor-button,.on-actions .on-rd-open{box-sizing:border-box;width:100%;min-height:44px;justify-content:center;text-align:center;border-radius:4px;padding:12px 20px;font:600 16px/1.2 "Open Sans",system-ui,sans-serif}'
+        . '.on-actions .elementor-button,.on-actions .on-rd-open{background:#a00062!important;color:#fff!important;border:2px solid #a00062!important}'
+        . '.on-actions .elementor-button:hover,.on-actions .elementor-button:focus,.on-actions .elementor-button:active,.on-actions .on-rd-open:hover,.on-actions .on-rd-open:focus,.on-actions .on-rd-open:active{background:#7d004c!important;border-color:#7d004c!important;color:#fff!important}'
         . '.on-actions .elementor-button-text,.on-actions .elementor-button-content-wrapper{justify-content:center}'
         . '.on-actions .on-reader{width:100%}'
         . '</style>';
