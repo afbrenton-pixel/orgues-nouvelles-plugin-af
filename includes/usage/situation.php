@@ -254,25 +254,3 @@ add_filter('elementor/frontend/widget/should_render', 'on_usage_situation_should
 add_filter('elementor/frontend/section/should_render', 'on_usage_situation_should_render', 5, 2);
 add_filter('elementor/frontend/container/should_render', 'on_usage_situation_should_render', 5, 2);
 
-/**
- * Boutons du bloc « Actions du numéro » (classe CSS on-actions sur le conteneur) :
- * même largeur, même hauteur, même police pour tous, quel que soit le bouton affiché.
- */
-function on_usage_actions_css()
-{
-    echo '<style id="on-actions-css">'
-        . '.on-actions.e-con{--flex-direction:row;--flex-wrap:wrap;flex-direction:row;flex-wrap:wrap;align-items:flex-start;justify-content:flex-start;gap:8px;width:100%;max-width:none;margin:0;padding:0}'
-        . '.on-actions>*{flex:0 0 190px;width:190px;max-width:100%;margin:0}'
-        . '.on-actions .elementor-button,.on-actions .on-rd-open{box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:44px;min-height:44px;padding:0 10px;border-radius:5px!important;font:500 16px/1 "Roboto Condensed",sans-serif!important;white-space:nowrap;text-align:center;background:#ca008a!important;color:#fff!important;border:1px solid #ca008a!important}'
-        . '.on-actions .elementor-button-content-wrapper{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:nowrap}'
-        . '.on-actions .elementor-button-text{white-space:nowrap}.on-actions .elementor-button-icon{flex:0 0 auto;margin:0}'
-        . '.on-actions .elementor-button:hover,.on-actions .elementor-button:focus,.on-actions .elementor-button:active,.on-actions .on-rd-open:hover,.on-actions .on-rd-open:focus,.on-actions .on-rd-open:active{background:transparent!important;border-color:#ca008a!important;color:#ca008a!important;text-decoration:none!important;outline:none}'
-        . '.on-actions a,.on-actions a:hover,.on-actions a:focus{text-decoration:none!important}'
-        . '.on-actions .on-reader{width:100%}'
-        . '.on-datebar.e-con{--flex-direction:row;--flex-wrap:wrap;flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:0}'
-        . '.on-extract{width:auto;margin:0}.on-extract .on-reader{width:auto}'
-        . '.on-extract .on-rd-open{box-sizing:border-box;min-height:0;padding:5px 12px;border-radius:5px!important;font:500 14px/1.2 "Roboto Condensed",sans-serif!important;background:#ca008a!important;color:#fff!important;border:1px solid #ca008a!important;white-space:nowrap}'
-        . '.on-extract .on-rd-open:hover,.on-extract .on-rd-open:focus,.on-extract .on-rd-open:active{background:transparent!important;color:#ca008a!important;border-color:#ca008a!important;outline:none}'
-        . '</style>';
-}
-add_action('wp_head', 'on_usage_actions_css', 99);
