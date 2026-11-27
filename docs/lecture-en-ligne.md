@@ -76,6 +76,8 @@ La balise « Extrait PDF du numéro » donne l'adresse (du site courant) du fich
 
 Les balises « Page du CD du numéro » et « Page du cahier de partitions du numéro » donnent l'adresse des pages reliées par les champs « page_cd » et « page_partitions », pour rendre cliquables l'image et le titre du CD et du cahier.
 
+Les balises « Image du CD du numéro » et « Image du cahier de partitions du numéro » donnent l'image à la une de ces deux pages, pour que les images de la fiche suivent le numéro affiché.
+
 Deux balises dynamiques s'ajoutent aux adresses de lecture et de téléchargement : « Fiche du numéro (boutique) » (produit du champ Téléchargement) et « Adresse de connexion (retour sur cette page) ».
 
 Un acheteur d'un numéro payant n'a pas de bouton « Télécharger » : le téléchargement gratuit refuse les produits payants. Il télécharge depuis « Mon compte ».

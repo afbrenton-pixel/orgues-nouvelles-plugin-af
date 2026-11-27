@@ -1682,3 +1682,11 @@ msgstr ""
 #: includes/usage/dynamic-tags.php
 msgid "Page du cahier de partitions du numéro"
 msgstr ""
+
+#: includes/usage/dynamic-tags.php
+msgid "Image du CD du numéro"
+msgstr ""
+
+#: includes/usage/dynamic-tags.php
+msgid "Image du cahier de partitions du numéro"
+msgstr ""
