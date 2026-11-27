@@ -65,6 +65,43 @@ function on_vignettes_duplicate_meta( $from_id, $to_id ) {
 	}
 }
 
+/** Liste d'identifiants (entiers > 0, sans doublon, dans l'ordre) à partir de ce que renvoie Pods pour un champ fichier. */
+function on_vignettes_duplicate_ids( $value ) {
+	$ids = array();
+	foreach ( (array) $value as $item ) {
+		$id = is_array( $item ) ? ( $item['ID'] ?? 0 ) : $item;
+		$id = (int) $id;
+		if ( $id > 0 && ! in_array( $id, $ids, true ) ) {
+			$ids[] = $id;
+		}
+	}
+	return $ids;
+}
+
+/**
+ * Copie les champs fichier de Pods (les pistes d'une playlist) par l'API de Pods : ils sont aussi enregistrés
+ * dans la table de relations de Pods, que la simple copie des champs ne remplit pas.
+ */
+function on_vignettes_duplicate_files( $from_id, $to_id ) {
+	if ( ! function_exists( 'pods' ) ) {
+		return;
+	}
+	$source = pods( ON_VIGNETTES_CPT, $from_id );
+	$copy   = pods( ON_VIGNETTES_CPT, $to_id );
+	if ( ! $source || ! $copy || empty( $source->fields ) ) {
+		return;
+	}
+	foreach ( $source->fields as $name => $field ) {
+		if ( 'file' !== ( $field['type'] ?? '' ) ) {
+			continue;
+		}
+		$ids = on_vignettes_duplicate_ids( $source->field( $name . '.ID', false ) );
+		if ( $ids ) {
+			$copy->save( $name, $ids );
+		}
+	}
+}
+
 /** Copie les étiquettes, la zone et autres taxonomies (sauf celles de Polylang). */
 function on_vignettes_duplicate_terms( $from_id, $to_id ) {
 	foreach ( get_object_taxonomies( ON_VIGNETTES_CPT ) as $taxonomy ) {
@@ -111,6 +148,7 @@ function on_vignettes_duplicate( $id ) {
 		}
 	}
 	on_vignettes_duplicate_meta( $post->ID, $new );
+	on_vignettes_duplicate_files( $post->ID, $new );
 	on_vignettes_duplicate_terms( $post->ID, $new );
 	on_vignettes_busy( false );
 	return (int) $new;

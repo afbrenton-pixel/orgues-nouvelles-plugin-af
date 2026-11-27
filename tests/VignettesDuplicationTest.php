@@ -71,4 +71,10 @@ class VignettesDuplicationTest extends TestCase {
 		on_vignettes_duplicate_meta( 11, 100 );
 		$this->assertSame( array(), $GLOBALS['on_test_added'] );
 	}
+
+	public function test_file_ids_are_normalised_in_order_without_duplicates() {
+		$this->assertSame( array( 5, 3, 9 ), on_vignettes_duplicate_ids( array( array( 'ID' => '5' ), 3, '9', 5, 0, '' ) ) );
+		$this->assertSame( array( 7 ), on_vignettes_duplicate_ids( 7 ) );
+		$this->assertSame( array(), on_vignettes_duplicate_ids( false ) );
+	}
 }
