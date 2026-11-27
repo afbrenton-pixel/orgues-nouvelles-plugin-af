@@ -31,7 +31,7 @@ Fichier d'import : `docs/pods/vignette_accueil-package.json` (Pods > Composants 
 | `cadrage` | Choix | `carre`, `4-3` ou `original` (défaut). |
 | `masquer_titre` | Oui / non | Cache le titre (l'étiquette reste affichée). |
 | `afficher_description` | Oui / non | Affiche le sous-titre et l'extrait. Non par défaut : seuls l'étiquette et le titre sont affichés. |
-| `pistes` | Fichier (plusieurs) | Format playlist : les MP3 de la médiathèque, dans l'ordre de lecture (glisser-déposer). Titre, artiste et durée viennent des étiquettes du MP3, sinon du titre du fichier. |
+| `pistes` | Fichier (plusieurs) | Format playlist : les MP3 de la médiathèque, dans l'ordre de lecture (glisser-déposer). Le titre affiché est celui du média dans la médiathèque (s'il est vide ou n'est que le nom du fichier, l'étiquette ID3 du MP3) ; l'artiste et la durée viennent des étiquettes du MP3. |
 | `rang` | Nombre | Place voulue dans la grille (1 = en premier). Vide = ordre par date. |
 
 La photo est l'image à la une de WordPress. Les valeurs internes `_on_source_id`, `_on_source_type`, `_on_locked`, `_on_autodraft` et `_on_sans_image` sont gérées par le code, hors Pods.
