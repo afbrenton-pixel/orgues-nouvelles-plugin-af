@@ -62,3 +62,10 @@ Réglé dans l'élément Elementor, section « Affichage des pages » :
 - Les seuils tablette et téléphone sont ceux d'Elementor (`breakpoints`), transmis au script dans l'attribut `data-pages`.
 - **Zoom** : si deux pages sont affichées (et que le mode n'est pas « 2 pages »), le premier clic sur « + » passe à une page (la page de gauche) et applique le premier niveau de zoom ; « − » au zoom minimal revient aux deux pages. En mode « 2 pages », « + » agrandit sans changer de mode ; en mode « 1 page », « − » ne remet jamais deux pages.
 
+## Boutons d'un numéro selon la situation du visiteur
+
+Pour poser les mêmes boutons dans les modèles de page d'un numéro (magazine ou cahier), le réglage « Abonnés Magazines » (onglet Avancé de tout élément Elementor, liste « Visibilité aux magazines ») propose quatre choix : visiteur non connecté ; connecté sans droit de lire ; connecté avec droit de lire (abonné, acheteur, numéro gratuit) ; PDF téléchargeable gratuitement. Le droit est celui de la lecture en ligne. Dans l'éditeur, tout reste visible.
+
+Deux balises dynamiques s'ajoutent aux adresses de lecture et de téléchargement : « Fiche du numéro (boutique) » (produit du champ Téléchargement) et « Adresse de connexion (retour sur cette page) ».
+
+Un acheteur d'un numéro payant n'a pas de bouton « Télécharger » : le téléchargement gratuit refuse les produits payants. Il télécharge depuis « Mon compte ».

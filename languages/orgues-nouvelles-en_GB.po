@@ -1741,3 +1741,27 @@ msgstr "Minimum width for 2 pages (automatic mode)"
 #: includes/elementor/widgets/online-reader.php:125
 msgid "En pixels, largeur de la zone du lecteur. En dessous, une seule page."
 msgstr "In pixels, width of the reader area. Below this, a single page."
+
+#: includes/usage/situation.php:30
+msgid "Seulement si le visiteur n'est pas connecté"
+msgstr "Only if the visitor is not logged in"
+
+#: includes/usage/situation.php:31
+msgid "Seulement si connecté, sans droit de lire ce numéro"
+msgstr "Only if logged in, without the right to read this issue"
+
+#: includes/usage/situation.php:32
+msgid "Seulement si connecté, avec droit de lire ce numéro"
+msgstr "Only if logged in, with the right to read this issue"
+
+#: includes/usage/situation.php:33
+msgid "Seulement si le PDF est téléchargeable gratuitement"
+msgstr "Only if the PDF can be downloaded for free"
+
+#: includes/usage/dynamic-tags.php
+msgid "Fiche du numéro (boutique)"
+msgstr "Issue page (shop)"
+
+#: includes/usage/dynamic-tags.php
+msgid "Adresse de connexion (retour sur cette page)"
+msgstr "Login address (returns to this page)"

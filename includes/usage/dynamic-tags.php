@@ -197,7 +197,49 @@ add_action(
             }
         }
 
+        if (!class_exists('ON_Usage_Product_Page_Url_Tag')) {
+            class ON_Usage_Product_Page_Url_Tag extends ON_Usage_Url_Tag_Base
+            {
+                public function get_name()
+                {
+                    return 'on-usage-fiche';
+                }
+
+                public function get_title()
+                {
+                    return __('Fiche du numéro (boutique)', 'orgues-nouvelles');
+                }
+
+                public function get_value(array $options = array())
+                {
+                    return esc_url_raw(on_usage_product_page_url());
+                }
+            }
+        }
+
+        if (!class_exists('ON_Usage_Login_Url_Tag')) {
+            class ON_Usage_Login_Url_Tag extends ON_Usage_Url_Tag_Base
+            {
+                public function get_name()
+                {
+                    return 'on-usage-connexion';
+                }
+
+                public function get_title()
+                {
+                    return __('Adresse de connexion (retour sur cette page)', 'orgues-nouvelles');
+                }
+
+                public function get_value(array $options = array())
+                {
+                    return esc_url_raw(on_usage_login_url());
+                }
+            }
+        }
+
         $dynamic_tags->register(new ON_Usage_Read_Url_Tag());
         $dynamic_tags->register(new ON_Usage_Download_Url_Tag());
+        $dynamic_tags->register(new ON_Usage_Product_Page_Url_Tag());
+        $dynamic_tags->register(new ON_Usage_Login_Url_Tag());
     }
 );

@@ -1634,3 +1634,27 @@ msgstr ""
 #: includes/elementor/widgets/online-reader.php:125
 msgid "En pixels, largeur de la zone du lecteur. En dessous, une seule page."
 msgstr ""
+
+#: includes/usage/situation.php:30
+msgid "Seulement si le visiteur n'est pas connecté"
+msgstr ""
+
+#: includes/usage/situation.php:31
+msgid "Seulement si connecté, sans droit de lire ce numéro"
+msgstr ""
+
+#: includes/usage/situation.php:32
+msgid "Seulement si connecté, avec droit de lire ce numéro"
+msgstr ""
+
+#: includes/usage/situation.php:33
+msgid "Seulement si le PDF est téléchargeable gratuitement"
+msgstr ""
+
+#: includes/usage/dynamic-tags.php
+msgid "Fiche du numéro (boutique)"
+msgstr ""
+
+#: includes/usage/dynamic-tags.php
+msgid "Adresse de connexion (retour sur cette page)"
+msgstr ""

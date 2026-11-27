@@ -20,11 +20,11 @@ function on_register_visibility_controls($element) {
         'label' => __('Visibilité aux magazines', 'orgues-nouvelles'),
         'type' => \Elementor\Controls_Manager::SELECT,
         'default' => 'visible_to_everyone',
-        'options' => [
+        'options' => apply_filters('on_visibility_condition_options', [
             'visible_to_everyone' => __('Visible pour tous', 'orgues-nouvelles'),
             'visible_only_subscribers' => __('Seulement les abonnés', 'orgues-nouvelles'),
             'hidden_for_subscribers' => __('Seulement les non abonnés', 'orgues-nouvelles'),
-        ],
+        ]),
         'multiple' => false,
         'show_label' => true,
         'label_block' => true,
