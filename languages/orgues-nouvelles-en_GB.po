@@ -1987,3 +1987,8 @@ msgstr "\"items\" (plural)"
 #: includes/elementor/widgets/revues-choix.php
 msgid "Couleur de la précision"
 msgstr "Note colour"
+
+#: includes/usage/situation.php
+msgid ""
+"Seulement si le visiteur ne peut pas lire ce numéro et qu'un extrait existe"
+msgstr "Only if the visitor cannot read this issue and an excerpt exists"
