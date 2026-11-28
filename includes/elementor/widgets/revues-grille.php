@@ -139,5 +139,7 @@ function on_revues_grille_requete($lang)
         $query->set('tax_query', array());
     };
 }
-add_action('elementor/query/revues_numeros', on_revues_grille_requete('fr'));
-add_action('elementor/query/revues_numeros_en', on_revues_grille_requete('en'));
+if (function_exists('add_action')) {
+    add_action('elementor/query/revues_numeros', on_revues_grille_requete('fr'));
+    add_action('elementor/query/revues_numeros_en', on_revues_grille_requete('en'));
+}
