@@ -90,7 +90,7 @@ class ON_Revues_Choix extends Widget_Base
         $this->start_controls_section('style_title', array('label' => __('Titre', 'orgues-nouvelles'), 'tab' => Controls_Manager::TAB_STYLE));
         $this->add_group_control(Group_Control_Typography::get_type(), array(
             'name' => 'title_typo',
-            'selector' => '{{WRAPPER}} .onr-t',
+            'selector' => '{{WRAPPER}} .on-revues-t',
             'fields_options' => array(
                 'typography' => array('default' => 'custom'),
                 'font_family' => array('default' => 'Roboto Condensed'),
@@ -98,38 +98,38 @@ class ON_Revues_Choix extends Widget_Base
                 'font_weight' => array('default' => '500'),
             ),
         ));
-        $this->add_control('title_color', array('label' => __('Couleur', 'orgues-nouvelles'), 'type' => Controls_Manager::COLOR, 'selectors' => array('{{WRAPPER}} .onr-t' => 'color: {{VALUE}};')));
+        $this->add_control('title_color', array('label' => __('Couleur', 'orgues-nouvelles'), 'type' => Controls_Manager::COLOR, 'selectors' => array('{{WRAPPER}} .on-revues-t' => 'color: {{VALUE}};')));
         $this->end_controls_section();
 
         $this->start_controls_section('style_options', array('label' => __('Cases à cocher', 'orgues-nouvelles'), 'tab' => Controls_Manager::TAB_STYLE));
         $this->add_group_control(Group_Control_Typography::get_type(), array(
             'name' => 'opt_typo',
             'label' => __('Texte', 'orgues-nouvelles'),
-            'selector' => '{{WRAPPER}} .onr-o',
+            'selector' => '{{WRAPPER}} .on-revues-o',
             'fields_options' => array(
                 'typography' => array('default' => 'custom'),
                 'font_family' => array('default' => 'Roboto Condensed'),
                 'font_size' => array('default' => array('unit' => 'px', 'size' => 14)),
             ),
         ));
-        $this->add_control('opt_color', array('label' => __('Couleur du texte', 'orgues-nouvelles'), 'type' => Controls_Manager::COLOR, 'selectors' => array('{{WRAPPER}} .onr-o' => 'color: {{VALUE}};')));
-        $this->add_control('note_color', array('label' => __('Couleur de la précision', 'orgues-nouvelles'), 'type' => Controls_Manager::COLOR, 'default' => '#666666', 'selectors' => array('{{WRAPPER}} .onr-o small' => 'color: {{VALUE}};')));
+        $this->add_control('opt_color', array('label' => __('Couleur du texte', 'orgues-nouvelles'), 'type' => Controls_Manager::COLOR, 'selectors' => array('{{WRAPPER}} .on-revues-o' => 'color: {{VALUE}};')));
+        $this->add_control('note_color', array('label' => __('Couleur de la précision', 'orgues-nouvelles'), 'type' => Controls_Manager::COLOR, 'default' => '#666666', 'selectors' => array('{{WRAPPER}} .on-revues-o small' => 'color: {{VALUE}};')));
         $this->add_control('note_size', array(
             'label' => __('Taille de la précision', 'orgues-nouvelles'),
             'type' => Controls_Manager::SLIDER,
             'size_units' => array('px'),
             'range' => array('px' => array('min' => 9, 'max' => 20)),
             'default' => array('unit' => 'px', 'size' => 11),
-            'selectors' => array('{{WRAPPER}} .onr-o small' => 'font-size: {{SIZE}}{{UNIT}};'),
+            'selectors' => array('{{WRAPPER}} .on-revues-o small' => 'font-size: {{SIZE}}{{UNIT}};'),
         ));
-        $this->add_control('check_color', array('label' => __('Couleur de la case cochée', 'orgues-nouvelles'), 'type' => Controls_Manager::COLOR, 'default' => '#CA008A', 'selectors' => array('{{WRAPPER}} .onr-o input' => 'accent-color: {{VALUE}};')));
+        $this->add_control('check_color', array('label' => __('Couleur de la case cochée', 'orgues-nouvelles'), 'type' => Controls_Manager::COLOR, 'default' => '#CA008A', 'selectors' => array('{{WRAPPER}} .on-revues-o input' => 'accent-color: {{VALUE}};')));
         $this->add_control('opt_gap', array(
             'label' => __('Espace entre les choix', 'orgues-nouvelles'),
             'type' => Controls_Manager::SLIDER,
             'size_units' => array('px'),
             'range' => array('px' => array('min' => 0, 'max' => 30)),
             'default' => array('unit' => 'px', 'size' => 5),
-            'selectors' => array('{{WRAPPER}} .onr-o' => 'margin: {{SIZE}}{{UNIT}} 0;'),
+            'selectors' => array('{{WRAPPER}} .on-revues-o' => 'margin: {{SIZE}}{{UNIT}} 0;'),
         ));
         $this->end_controls_section();
     }
@@ -176,26 +176,26 @@ class ON_Revues_Choix extends Widget_Base
             $demo = true;
         }
 
-        echo '<div class="onr-choice">';
+        echo '<div class="on-revues-choice">';
         if ($s['show_title'] === 'yes') {
-            echo '<div class="onr-t">' . esc_html(trim($s['label_title']) . ($demo ? '74' : $numero)) . '</div>';
+            echo '<div class="on-revues-t">' . esc_html(trim($s['label_title']) . ($demo ? '74' : $numero)) . '</div>';
         }
         foreach ($options as $slot => $o) {
             $prod = $demo ? null : $entry[$slot];
             if (!$demo && !$prod) {
                 // Papier plus disponible alors que d'autres versions existent : on l'indique.
                 if ($slot === 'papier' && $s['label_soldout'] !== '') {
-                    echo '<div class="onr-o onr-off"><span><b>' . esc_html($o[1]) . '</b></span><span class="onr-p">' . esc_html($s['label_soldout']) . '</span></div>';
+                    echo '<div class="on-revues-o on-revues-off"><span><b>' . esc_html($o[1]) . '</b></span><span class="on-revues-p">' . esc_html($s['label_soldout']) . '</span></div>';
                 }
                 continue;
             }
             $prix = $demo ? 22 : (float) $prod->get_regular_price();
-            echo '<label class="onr-o"><input type="checkbox" data-g="' . (int) $numero . '" data-k="' . esc_attr($o[0]) . '" data-id="' . (int) ($demo ? 0 : $prod->get_id()) . '" data-p="' . esc_attr($prix) . '">';
+            echo '<label class="on-revues-o"><input type="checkbox" data-g="' . (int) $numero . '" data-k="' . esc_attr($o[0]) . '" data-id="' . (int) ($demo ? 0 : $prod->get_id()) . '" data-p="' . esc_attr($prix) . '">';
             echo '<span><b>' . esc_html($o[1]) . '</b>';
             if ($o[2] !== '') {
                 echo ' <small>' . esc_html($o[2]) . '</small>';
             }
-            echo '</span><span class="onr-p">' . (($prix == 0 && !$demo) ? esc_html__('Inclus', 'orgues-nouvelles') : wp_kses_post(wc_price($prix, array('decimals' => ($prix == floor($prix)) ? 0 : 2)))) . '</span></label>';
+            echo '</span><span class="on-revues-p">' . (($prix == 0 && !$demo) ? esc_html__('Inclus', 'orgues-nouvelles') : wp_kses_post(wc_price($prix, array('decimals' => ($prix == floor($prix)) ? 0 : 2)))) . '</span></label>';
         }
         echo '</div>';
     }

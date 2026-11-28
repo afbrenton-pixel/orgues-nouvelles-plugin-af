@@ -8,7 +8,7 @@ La page se compose **dans Elementor** avec des éléments ordinaires et deux él
 | **Modèle de boucle** (Elementor) | modèle « Boucle » des produits | Dessin libre d'une carte : image à la une du produit (balise dynamique), titre, et l'élément du plugin ci-dessous. |
 | **Choix d'achat du numéro** (plugin) | dans le modèle de boucle | Le titre « Orgues Nouvelles n°N » et les cases à cocher du numéro : Papier (numérique inclus), Numérique, Cahier de partitions seul. Prix lus dans WooCommerce ; « Inclus » à la place de 0 € pour qui a déjà les droits ; ligne Papier grisée « épuisé » si le numéro n'existe plus en papier (champ « Papier épuisé » vide = ligne masquée). Le modèle de boucle n'a donc que l'image à la une (balise dynamique) et cet élément. |
 | **Total du choix** (plugin) | page, sous la grille | « 2 articles · 27 € » et les messages. |
-| **Bouton** (Elementor ordinaire) | page, à côté du total | À qui l'on donne la classe CSS `onr-add` (Avancé > Classes CSS). Un clic ajoute tous les choix au panier puis ouvre le panier. Style, texte, survol : réglages Elementor habituels. |
+| **Bouton** (Elementor ordinaire) | page, à côté du total | À qui l'on donne la classe CSS `on-revues-add` (Avancé > Classes CSS). Un clic ajoute tous les choix au panier puis ouvre le panier. Style, texte, survol : réglages Elementor habituels. |
 
 La barre du bas collante est un conteneur Elementor (Avancé > Effets de mouvement > Sticky > Bas) qui contient le total et le bouton.
 
@@ -32,7 +32,7 @@ Pas de papier en anglais : créer un second modèle de boucle (image + « Choix 
 
 ## À recréer sur le site en ligne (rien de tout cela n'est dans le code)
 1. Le modèle de boucle (français, et anglais).
-2. La page : texte d'introduction, grille de boucle, conteneur flottant (position fixe, en bas à droite, ~30 % de large, pleine largeur sur téléphone) avec « Total du choix » et un bouton Elementor de classe CSS `onr-add`.
+2. La page : texte d'introduction, grille de boucle, conteneur flottant (position fixe, en bas à droite, ~30 % de large, pleine largeur sur téléphone) avec « Total du choix » et un bouton Elementor de classe CSS `on-revues-add`.
 3. Remplacer ou rediriger la page de catégorie `/product-category/magazine/`.
 
 ## Remarque technique

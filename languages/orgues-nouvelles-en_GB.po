@@ -1883,3 +1883,107 @@ msgstr "Title"
 
 msgid "Afficher le titre du numéro"
 msgstr "Show the issue title"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Cases à cocher"
+msgstr "Checkboxes"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Précision sous « Papier »"
+msgstr "Note under \"Print\""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Produits"
+msgstr "Products"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid ""
+"Le bouton « Ajouter au panier » est un bouton Elementor ordinaire : donnez-"
+"lui la classe CSS « on-revues-add » (Avancé > Classes CSS)."
+msgstr ""
+"The \"Add to cart\" button is an ordinary Elementor button: give it the CSS "
+"class \"on-revues-add\" (Advanced > CSS Classes)."
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Couleur"
+msgstr "Colour"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Espace entre les choix"
+msgstr "Space between choices"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Choix d'achat du numéro"
+msgstr "Issue purchase choice"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Total du choix"
+msgstr "Selection total"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Couleur des messages"
+msgstr "Message colour"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Rien de choisi"
+msgstr "Nothing selected"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Couleur de la case cochée"
+msgstr "Checked box colour"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Début du nom : cahier de partitions"
+msgstr "Name starts with: music booklet"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Message : erreur d'ajout"
+msgstr "Message: add error"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Début du nom : numérique"
+msgstr "Name starts with: digital"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Début du nom : papier"
+msgstr "Name starts with: print"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Taille de la précision"
+msgstr "Note size"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Textes"
+msgstr "Texts"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "« article » (singulier)"
+msgstr "\"item\" (singular)"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Texte"
+msgstr "Text"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Message : rien de choisi"
+msgstr "Message: nothing selected"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Libellés"
+msgstr "Labels"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid ""
+"Un numéro est reconnu par le début du nom de ses produits, suivi du numéro "
+"(ex. « ONED74 »)."
+msgstr ""
+"An issue is recognised by the start of its product names, followed by the "
+"number (e.g. \"ONED74\")."
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "« articles » (pluriel)"
+msgstr "\"items\" (plural)"
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Couleur de la précision"
+msgstr "Note colour"

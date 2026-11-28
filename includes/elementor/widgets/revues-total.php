@@ -2,7 +2,7 @@
 /**
  * Élément Elementor « Total du choix » : « 2 articles · 27 € » et les messages du
  * bouton d'ajout au panier. À placer sous la « Grille de boucle » des revues,
- * avec un bouton Elementor ordinaire portant la classe CSS « onr-add ».
+ * avec un bouton Elementor ordinaire portant la classe CSS « on-revues-add ».
  * Voir includes/elementor/widgets/revues-grille.php et docs/revues-grille.md.
  */
 
@@ -66,7 +66,7 @@ class ON_Revues_Total extends Widget_Base
         }
         $this->add_control('texts_note', array(
             'type' => Controls_Manager::RAW_HTML,
-            'raw'  => __('Le bouton « Ajouter au panier » est un bouton Elementor ordinaire : donnez-lui la classe CSS « onr-add » (Avancé > Classes CSS).', 'orgues-nouvelles'),
+            'raw'  => __('Le bouton « Ajouter au panier » est un bouton Elementor ordinaire : donnez-lui la classe CSS « on-revues-add » (Avancé > Classes CSS).', 'orgues-nouvelles'),
             'content_classes' => 'elementor-descriptor',
         ));
         $this->end_controls_section();
@@ -74,7 +74,7 @@ class ON_Revues_Total extends Widget_Base
         $this->start_controls_section('style_total', array('label' => __('Texte', 'orgues-nouvelles'), 'tab' => Controls_Manager::TAB_STYLE));
         $this->add_group_control(Group_Control_Typography::get_type(), array(
             'name' => 'total_typo',
-            'selector' => '{{WRAPPER}} .onr-rec',
+            'selector' => '{{WRAPPER}} .on-revues-rec',
             'fields_options' => array(
                 'typography' => array('default' => 'custom'),
                 'font_family' => array('default' => 'Roboto Condensed'),
@@ -82,8 +82,8 @@ class ON_Revues_Total extends Widget_Base
                 'font_weight' => array('default' => '500'),
             ),
         ));
-        $this->add_control('total_color', array('label' => __('Couleur', 'orgues-nouvelles'), 'type' => Controls_Manager::COLOR, 'selectors' => array('{{WRAPPER}} .onr-rec' => 'color: {{VALUE}};')));
-        $this->add_control('msg_color', array('label' => __('Couleur des messages', 'orgues-nouvelles'), 'type' => Controls_Manager::COLOR, 'default' => '#AA0000', 'selectors' => array('{{WRAPPER}} .onr-msg' => 'color: {{VALUE}};')));
+        $this->add_control('total_color', array('label' => __('Couleur', 'orgues-nouvelles'), 'type' => Controls_Manager::COLOR, 'selectors' => array('{{WRAPPER}} .on-revues-rec' => 'color: {{VALUE}};')));
+        $this->add_control('msg_color', array('label' => __('Couleur des messages', 'orgues-nouvelles'), 'type' => Controls_Manager::COLOR, 'default' => '#AA0000', 'selectors' => array('{{WRAPPER}} .on-revues-msg' => 'color: {{VALUE}};')));
         $this->end_controls_section();
     }
 
@@ -93,10 +93,10 @@ class ON_Revues_Total extends Widget_Base
         $ajax = class_exists('WC_AJAX') ? \WC_AJAX::get_endpoint('add_to_cart') : home_url('/?wc-ajax=add_to_cart');
         $cart = function_exists('wc_get_cart_url') ? wc_get_cart_url() : home_url('/');
 
-        echo '<div class="onr-total" data-ajax="' . esc_url($ajax) . '" data-cart="' . esc_url($cart) . '"'
+        echo '<div class="on-revues-total" data-ajax="' . esc_url($ajax) . '" data-cart="' . esc_url($cart) . '"'
             . ' data-empty="' . esc_attr($s['text_empty']) . '" data-one="' . esc_attr($s['text_one']) . '" data-many="' . esc_attr($s['text_many']) . '"'
             . ' data-choose="' . esc_attr($s['text_choose']) . '" data-error="' . esc_attr($s['text_error']) . '"'
             . ' data-currency="' . esc_attr(function_exists('get_woocommerce_currency_symbol') ? html_entity_decode(get_woocommerce_currency_symbol()) : '€') . '">'
-            . '<span class="onr-rec">' . esc_html($s['text_empty']) . '</span> <span class="onr-msg" role="status"></span></div>';
+            . '<span class="on-revues-rec">' . esc_html($s['text_empty']) . '</span> <span class="on-revues-msg" role="status"></span></div>';
     }
 }

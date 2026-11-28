@@ -9,7 +9,7 @@
  *   - dans ce modèle, l'élément « Choix d'achat du numéro » (ce fichier + revues-choix.php) :
  *     les cases à cocher du numéro, avec leurs prix lus dans WooCommerce ;
  *   - sous la grille, l'élément « Total du choix » (revues-total.php) et un bouton
- *     Elementor ordinaire à qui l'on donne la classe CSS « onr-add » : un clic ajoute
+ *     Elementor ordinaire à qui l'on donne la classe CSS « on-revues-add » : un clic ajoute
  *     tous les choix au panier, puis ouvre le panier (assets/js/revues-grille.js).
  *
  * Le plugin ne gère que la logique : quels produits vont avec quel numéro, les prix
@@ -65,8 +65,7 @@ function on_revues_grille_numeros($prefixes)
         return $cache[$key];
     }
     // Noms lus directement en base : on ne charge en objets WooCommerce que les produits retenus.
-    global $wpdb;
-    $lignes = $wpdb->get_results("SELECT ID, post_title FROM {$wpdb->posts} WHERE post_type = 'product' AND post_status = 'publish' ORDER BY ID DESC");
+    $lignes = on_revues_grille_titres();
     $produits = array();
     foreach ((array) $lignes as $l) {
         $retenu = false;
@@ -166,4 +165,31 @@ function on_revues_grille_requete($lang)
 if (function_exists('add_action')) {
     add_action('elementor/query/revues_numeros', on_revues_grille_requete('fr'));
     add_action('elementor/query/revues_numeros_en', on_revues_grille_requete('en'));
+}
+
+
+/**
+ * Identifiants et noms des produits publiés, gardés en mémoire (transient) pour ne pas
+ * parcourir la table des produits à chaque affichage ; vidés dès qu'un produit change.
+ */
+function on_revues_grille_titres()
+{
+    $lignes = get_transient('on_revues_grille_titres');
+    if (!is_array($lignes)) {
+        global $wpdb;
+        $lignes = (array) $wpdb->get_results("SELECT ID, post_title FROM {$wpdb->posts} WHERE post_type = 'product' AND post_status = 'publish' ORDER BY ID DESC");
+        set_transient('on_revues_grille_titres', $lignes, DAY_IN_SECONDS);
+    }
+    return $lignes;
+}
+
+function on_revues_grille_vider_titres()
+{
+    delete_transient('on_revues_grille_titres');
+}
+if (function_exists('add_action')) {
+    add_action('save_post_product', 'on_revues_grille_vider_titres');
+    add_action('trashed_post', 'on_revues_grille_vider_titres');
+    add_action('deleted_post', 'on_revues_grille_vider_titres');
+    add_action('untrashed_post', 'on_revues_grille_vider_titres');
 }

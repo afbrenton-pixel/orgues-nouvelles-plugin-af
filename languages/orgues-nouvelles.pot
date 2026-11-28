@@ -1771,3 +1771,103 @@ msgstr ""
 
 msgid "Afficher le titre du numéro"
 msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Cases à cocher"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Précision sous « Papier »"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Produits"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid ""
+"Le bouton « Ajouter au panier » est un bouton Elementor ordinaire : donnez-"
+"lui la classe CSS « on-revues-add » (Avancé > Classes CSS)."
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Couleur"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Espace entre les choix"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Choix d'achat du numéro"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Total du choix"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Couleur des messages"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Rien de choisi"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Couleur de la case cochée"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Début du nom : cahier de partitions"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Message : erreur d'ajout"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Début du nom : numérique"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Début du nom : papier"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Taille de la précision"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Textes"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "« article » (singulier)"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Texte"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Message : rien de choisi"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Libellés"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid ""
+"Un numéro est reconnu par le début du nom de ses produits, suivi du numéro "
+"(ex. « ONED74 »)."
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "« articles » (pluriel)"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Couleur de la précision"
+msgstr ""
