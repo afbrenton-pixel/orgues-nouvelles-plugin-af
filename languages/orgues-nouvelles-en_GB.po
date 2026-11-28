@@ -1462,8 +1462,8 @@ msgid "Seulement si le visiteur n'est pas connecté"
 msgstr "Only if the visitor is not logged in"
 
 #: includes/usage/situation.php:31
-msgid "Seulement si connecté, sans droit de lire ce numéro"
-msgstr "Only if logged in, without the right to read this issue"
+msgid "Seulement si le visiteur ne peut pas lire ce numéro et que la version numérique est en vente"
+msgstr "Only if the visitor cannot read this issue and the digital version is on sale"
 
 #: includes/usage/situation.php:32
 msgid "Seulement si connecté, avec droit de lire ce numéro"
@@ -1482,8 +1482,8 @@ msgid "Adresse de connexion (retour sur cette page)"
 msgstr "Login address (returns to this page)"
 
 #: includes/usage/situation.php
-msgid "Seulement si connecté, sans droit, et si la version papier est en vente"
-msgstr "Only if logged in, without the right, and if the print version is on sale"
+msgid "Seulement si le visiteur ne peut pas lire ce numéro et que la version papier est en vente"
+msgstr "Only if the visitor cannot read this issue and the print version is on sale"
 
 #: includes/usage/dynamic-tags.php
 msgid "Fiche de la version papier"

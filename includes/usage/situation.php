@@ -30,8 +30,8 @@ function on_usage_situation_choices()
 {
     return array(
         'on_situation_anonyme'        => __('Seulement si le visiteur n\'est pas connecté', 'orgues-nouvelles'),
-        'on_situation_sans_droit'     => __('Seulement si connecté, sans droit de lire ce numéro', 'orgues-nouvelles'),
-        'on_situation_papier'         => __('Seulement si connecté, sans droit, et si la version papier est en vente', 'orgues-nouvelles'),
+        'on_situation_sans_droit'     => __('Seulement si le visiteur ne peut pas lire ce numéro et que la version numérique est en vente', 'orgues-nouvelles'),
+        'on_situation_papier'         => __('Seulement si le visiteur ne peut pas lire ce numéro et que la version papier est en vente', 'orgues-nouvelles'),
         'on_situation_sans_lecture'   => __('Seulement si le visiteur ne peut pas lire ce numéro (non connecté ou sans droit)', 'orgues-nouvelles'),
         'on_situation_extrait'        => __('Seulement si le visiteur ne peut pas lire ce numéro et qu\'un extrait existe', 'orgues-nouvelles'),
         'on_situation_lecture'        => __('Seulement si connecté, avec droit de lire ce numéro', 'orgues-nouvelles'),
@@ -62,18 +62,19 @@ function on_usage_situation_matches($situation)
     if ($situation === 'on_situation_extrait') {
         return on_usage_extract_url() !== '' && (!is_user_logged_in() || !on_usage_page_product('', true));
     }
+    // L'achat ne demande pas de compte : un visiteur non connecté peut acheter (ou se connecter s'il a déjà le numéro).
+    if ($situation === 'on_situation_sans_droit') {
+        // Une page sans produit relié n'a rien à acheter : on ne propose pas le bouton.
+        return on_usage_page_product_id(get_the_ID()) > 0 && (!is_user_logged_in() || !on_usage_page_product('', true));
+    }
+    if ($situation === 'on_situation_papier') {
+        return on_usage_paper_product_url() !== '' && (!is_user_logged_in() || !on_usage_page_product('', true));
+    }
     if (!is_user_logged_in()) {
         return false;
     }
     if ($situation === 'on_situation_lecture') {
         return (bool) on_usage_page_product('', true);
-    }
-    if ($situation === 'on_situation_sans_droit') {
-        // Une page sans produit relié n'a rien à acheter : on ne propose pas le bouton.
-        return on_usage_page_product_id(get_the_ID()) > 0 && !on_usage_page_product('', true);
-    }
-    if ($situation === 'on_situation_papier') {
-        return !on_usage_page_product('', true) && on_usage_paper_product_url() !== '';
     }
     if ($situation === 'on_situation_telechargement') {
         return on_usage_download_url() !== '';
