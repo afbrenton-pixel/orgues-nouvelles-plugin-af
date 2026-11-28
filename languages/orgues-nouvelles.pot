@@ -1660,7 +1660,8 @@ msgid "Adresse de connexion (retour sur cette page)"
 msgstr ""
 
 #: includes/usage/situation.php
-msgid "Seulement si connecté, sans droit, et si la version papier est en vente"
+msgid ""
+"Seulement si connecté, sans droit, et si la version papier est en vente"
 msgstr ""
 
 #: includes/usage/dynamic-tags.php
@@ -1668,7 +1669,9 @@ msgid "Fiche de la version papier"
 msgstr ""
 
 #: includes/usage/situation.php
-msgid "Seulement si le visiteur ne peut pas lire ce numéro (non connecté ou sans droit)"
+msgid ""
+"Seulement si le visiteur ne peut pas lire ce numéro (non connecté ou sans "
+"droit)"
 msgstr ""
 
 #: includes/usage/dynamic-tags.php
@@ -1697,7 +1700,9 @@ msgid "%s (copie)"
 msgstr ""
 
 #: includes/vignettes/duplication.php:128
-msgid "Créer une copie de cette vignette (en brouillon), avec ses pistes, son image et ses étiquettes."
+msgid ""
+"Créer une copie de cette vignette (en brouillon), avec ses pistes, son image"
+" et ses étiquettes."
 msgstr ""
 
 #: includes/vignettes/duplication.php:129
@@ -1750,4 +1755,19 @@ msgstr ""
 
 #: includes/elementor/widgets/revues-grille.php
 msgid "Impossible d'ajouter un article. Réessayez."
+msgstr ""
+
+msgid "épuisé"
+msgstr ""
+
+msgid "Papier épuisé"
+msgstr ""
+
+msgid "Titre du numéro (avant le numéro)"
+msgstr ""
+
+msgid "Titre"
+msgstr ""
+
+msgid "Afficher le titre du numéro"
 msgstr ""

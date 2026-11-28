@@ -63,11 +63,17 @@ class ON_Revues_Choix extends Widget_Base
             'label_papier'      => array(__('Papier', 'orgues-nouvelles'), __('Papier', 'orgues-nouvelles')),
             'label_papier_note' => array(__('Précision sous « Papier »', 'orgues-nouvelles'), __('numérique inclus', 'orgues-nouvelles')),
             'label_numerique'   => array(__('Numérique', 'orgues-nouvelles'), __('Numérique', 'orgues-nouvelles')),
+            'label_soldout'     => array(__('Papier épuisé', 'orgues-nouvelles'), __('épuisé', 'orgues-nouvelles')),
+            'label_title'       => array(__('Titre du numéro (avant le numéro)', 'orgues-nouvelles'), __('Orgues Nouvelles n°', 'orgues-nouvelles')),
             'label_cahier'      => array(__('Cahier de partitions seul', 'orgues-nouvelles'), __('Cahier de partitions seul', 'orgues-nouvelles')),
         );
         foreach ($labels as $key => $def) {
             $this->add_control($key, array('label' => $def[0], 'type' => Controls_Manager::TEXT, 'default' => $def[1], 'label_block' => true));
         }
+        $this->end_controls_section();
+
+        $this->start_controls_section('section_title', array('label' => __('Titre', 'orgues-nouvelles')));
+        $this->add_control('show_title', array('label' => __('Afficher le titre du numéro', 'orgues-nouvelles'), 'type' => Controls_Manager::SWITCHER, 'return_value' => 'yes', 'default' => 'yes'));
         $this->end_controls_section();
 
         $this->start_controls_section('section_products', array('label' => __('Produits', 'orgues-nouvelles')));
@@ -79,6 +85,20 @@ class ON_Revues_Choix extends Widget_Base
         $this->add_control('prefix_papier', array('label' => __('Début du nom : papier', 'orgues-nouvelles'), 'type' => Controls_Manager::TEXT, 'default' => 'Orgues Nouvelles n°', 'label_block' => true));
         $this->add_control('prefix_numerique', array('label' => __('Début du nom : numérique', 'orgues-nouvelles'), 'type' => Controls_Manager::TEXT, 'default' => 'ONED', 'label_block' => true));
         $this->add_control('prefix_cahier', array('label' => __('Début du nom : cahier de partitions', 'orgues-nouvelles'), 'type' => Controls_Manager::TEXT, 'default' => 'CahPart', 'label_block' => true));
+        $this->end_controls_section();
+
+        $this->start_controls_section('style_title', array('label' => __('Titre', 'orgues-nouvelles'), 'tab' => Controls_Manager::TAB_STYLE));
+        $this->add_group_control(Group_Control_Typography::get_type(), array(
+            'name' => 'title_typo',
+            'selector' => '{{WRAPPER}} .onr-t',
+            'fields_options' => array(
+                'typography' => array('default' => 'custom'),
+                'font_family' => array('default' => 'Roboto Condensed'),
+                'font_size' => array('default' => array('unit' => 'px', 'size' => 17)),
+                'font_weight' => array('default' => '500'),
+            ),
+        ));
+        $this->add_control('title_color', array('label' => __('Couleur', 'orgues-nouvelles'), 'type' => Controls_Manager::COLOR, 'selectors' => array('{{WRAPPER}} .onr-t' => 'color: {{VALUE}};')));
         $this->end_controls_section();
 
         $this->start_controls_section('style_options', array('label' => __('Cases à cocher', 'orgues-nouvelles'), 'tab' => Controls_Manager::TAB_STYLE));
@@ -141,7 +161,7 @@ class ON_Revues_Choix extends Widget_Base
 
         // Un seul bloc par numéro : celui de son produit principal (papier, sinon numérique, sinon cahier).
         if ($entry) {
-            $principal = $entry['papier'] ?: ($entry['numerique'] ?: $entry['cahier']);
+            $principal = on_revues_grille_principal($entry);
             if ((int) $principal->get_id() !== (int) $current) {
                 return;
             }
@@ -157,9 +177,16 @@ class ON_Revues_Choix extends Widget_Base
         }
 
         echo '<div class="onr-choice">';
+        if ($s['show_title'] === 'yes') {
+            echo '<div class="onr-t">' . esc_html(trim($s['label_title']) . ($demo ? '74' : $numero)) . '</div>';
+        }
         foreach ($options as $slot => $o) {
             $prod = $demo ? null : $entry[$slot];
             if (!$demo && !$prod) {
+                // Papier plus disponible alors que d'autres versions existent : on l'indique.
+                if ($slot === 'papier' && $s['label_soldout'] !== '') {
+                    echo '<div class="onr-o onr-off"><span><b>' . esc_html($o[1]) . '</b></span><span class="onr-p">' . esc_html($s['label_soldout']) . '</span></div>';
+                }
                 continue;
             }
             $prix = $demo ? 22 : (float) $prod->get_regular_price();

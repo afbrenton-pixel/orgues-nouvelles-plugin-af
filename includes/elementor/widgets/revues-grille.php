@@ -100,3 +100,44 @@ function on_revues_grille_numeros($prefixes)
     $cache[$key] = apply_filters('on_revues_grille_numeros', $numeros, $prefixes);
     return $cache[$key];
 }
+
+
+/**
+ * Produit « principal » d'un numéro : papier, sinon numérique, sinon cahier.
+ */
+function on_revues_grille_principal($entry)
+{
+    return $entry['papier'] ?: ($entry['numerique'] ?: $entry['cahier']);
+}
+
+/**
+ * Début de nom par défaut des produits, par langue du site.
+ */
+function on_revues_grille_prefixes_par_defaut($lang = 'fr')
+{
+    if ($lang === 'en') {
+        return array('papier' => 'Orgues Nouvelles n°', 'numerique' => 'Orgues-Nouvelles', 'cahier' => 'Orgues Nouvelles Music Booklet');
+    }
+    return array('papier' => 'Orgues Nouvelles n°', 'numerique' => 'ONED', 'cahier' => 'CahPart');
+}
+
+/**
+ * Requête de la « Grille de boucle » : un seul produit par numéro, du plus récent au plus ancien.
+ * Dans la grille, mettre l'« ID de requête » : revues_numeros (français) ou revues_numeros_en (anglais).
+ */
+function on_revues_grille_requete($lang)
+{
+    return function ($query) use ($lang) {
+        $ids = array();
+        foreach (on_revues_grille_numeros(on_revues_grille_prefixes_par_defaut($lang)) as $entry) {
+            $ids[] = (int) on_revues_grille_principal($entry)->get_id();
+        }
+        $query->set('post__in', $ids ? $ids : array(0));
+        $query->set('orderby', 'post__in');
+        $query->set('posts_per_page', -1);
+        $query->set('nopaging', true);
+        $query->set('tax_query', array());
+    };
+}
+add_action('elementor/query/revues_numeros', on_revues_grille_requete('fr'));
+add_action('elementor/query/revues_numeros_en', on_revues_grille_requete('en'));
