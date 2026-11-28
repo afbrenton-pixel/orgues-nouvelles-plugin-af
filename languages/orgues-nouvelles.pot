@@ -1640,7 +1640,7 @@ msgid "Seulement si le visiteur n'est pas connecté"
 msgstr ""
 
 #: includes/usage/situation.php:31
-msgid "Seulement si connecté, sans droit de lire ce numéro"
+msgid "Seulement si le visiteur ne peut pas lire ce numéro et que la version numérique est en vente"
 msgstr ""
 
 #: includes/usage/situation.php:32
