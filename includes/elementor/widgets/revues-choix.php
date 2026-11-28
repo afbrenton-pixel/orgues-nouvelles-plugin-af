@@ -195,7 +195,7 @@ class ON_Revues_Choix extends Widget_Base
             if ($o[2] !== '') {
                 echo ' <small>' . esc_html($o[2]) . '</small>';
             }
-            echo '</span><span class="onr-p">' . wp_kses_post(wc_price($prix, array('decimals' => ($prix == floor($prix)) ? 0 : 2))) . '</span></label>';
+            echo '</span><span class="onr-p">' . (($prix == 0 && !$demo) ? esc_html__('Inclus', 'orgues-nouvelles') : wp_kses_post(wc_price($prix, array('decimals' => ($prix == floor($prix)) ? 0 : 2)))) . '</span></label>';
         }
         echo '</div>';
     }
