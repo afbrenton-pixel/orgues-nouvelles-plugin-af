@@ -64,7 +64,22 @@ function on_revues_grille_numeros($prefixes)
     if (isset($cache[$key])) {
         return $cache[$key];
     }
-    $produits = wc_get_products(array('status' => 'publish', 'limit' => -1, 'orderby' => 'ID', 'order' => 'DESC'));
+    // Noms lus directement en base : on ne charge en objets WooCommerce que les produits retenus.
+    global $wpdb;
+    $lignes = $wpdb->get_results("SELECT ID, post_title FROM {$wpdb->posts} WHERE post_type = 'product' AND post_status = 'publish' ORDER BY ID DESC");
+    $produits = array();
+    foreach ((array) $lignes as $l) {
+        $retenu = false;
+        foreach (array('cahier', 'numerique', 'papier') as $k) {
+            if (on_revues_grille_numero_du_nom($l->post_title, $prefixes[$k])) {
+                $retenu = true;
+                break;
+            }
+        }
+        if ($retenu && ($p = wc_get_product((int) $l->ID))) {
+            $produits[] = $p;
+        }
+    }
 
     $numeros = array();
     foreach ($produits as $p) {
