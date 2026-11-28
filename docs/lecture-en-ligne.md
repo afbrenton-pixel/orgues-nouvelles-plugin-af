@@ -74,6 +74,8 @@ Un choix « ne peut pas lire et un extrait existe » (`on_situation_extrait`) co
 
 Le conteneur du bloc porte la classe CSS « on-actions » : le plugin donne alors la même largeur, hauteur et police à tous ses boutons.
 
+La balise « Page du magazine du cahier de partitions » donne l'adresse de la page du magazine dont le champ « page_partitions » désigne la page du cahier affichée (lien « Voir Orgues Nouvelles n°N » de la page du cahier).
+
 La balise « Extrait PDF du numéro » donne l'adresse (du site courant) du fichier du champ « pdf_sommaire », à mettre dans l'adresse du PDF de ce second lecteur.
 
 Les balises « Page du CD du numéro » et « Page du cahier de partitions du numéro » donnent l'adresse des pages reliées par les champs « page_cd » et « page_partitions », pour rendre cliquables l'image et le titre du CD et du cahier.

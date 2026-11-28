@@ -277,6 +277,26 @@ add_action(
             }
         }
 
+        if (!class_exists('ON_Usage_Page_Magazine_Url_Tag')) {
+            class ON_Usage_Page_Magazine_Url_Tag extends ON_Usage_Url_Tag_Base
+            {
+                public function get_name()
+                {
+                    return 'on-usage-page-magazine';
+                }
+
+                public function get_title()
+                {
+                    return __('Page du magazine du cahier de partitions', 'orgues-nouvelles');
+                }
+
+                public function get_value(array $options = array())
+                {
+                    return esc_url_raw(on_usage_magazine_of_page_url());
+                }
+            }
+        }
+
         if (!class_exists('ON_Usage_Page_Partitions_Url_Tag')) {
             class ON_Usage_Page_Partitions_Url_Tag extends ON_Usage_Url_Tag_Base
             {
@@ -387,6 +407,7 @@ add_action(
         $dynamic_tags->register(new ON_Usage_Extract_Url_Tag());
         $dynamic_tags->register(new ON_Usage_Page_Cd_Url_Tag());
         $dynamic_tags->register(new ON_Usage_Page_Partitions_Url_Tag());
+        $dynamic_tags->register(new ON_Usage_Page_Magazine_Url_Tag());
         $dynamic_tags->register(new ON_Usage_Image_Cd_Tag());
         $dynamic_tags->register(new ON_Usage_Image_Partitions_Tag());
         $dynamic_tags->register(new ON_Usage_Login_Url_Tag());

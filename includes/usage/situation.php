@@ -168,6 +168,28 @@ function on_usage_extract_url()
 }
 
 /**
+ * Adresse de la page du magazine dont le champ « page_partitions » désigne la page affichée (cahier), ou ''.
+ *
+ * Sert au lien « Voir Orgues Nouvelles n°N » de la page du cahier de partitions.
+ */
+function on_usage_magazine_of_page_url()
+{
+    $page_id = get_the_ID();
+    if (!$page_id) {
+        return '';
+    }
+    $ids = get_posts(array(
+        'post_type'        => 'magazine',
+        'post_status'      => 'publish',
+        'posts_per_page'   => 1,
+        'fields'           => 'ids',
+        'meta_query'       => array(array('key' => 'page_partitions', 'value' => (string) $page_id)),
+        'suppress_filters' => true,
+    ));
+    return $ids ? (string) get_permalink($ids[0]) : '';
+}
+
+/**
  * Adresse d'une page reliée à celle du numéro par un champ Pods (« page_cd », « page_partitions »), ou ''.
  *
  * @param string $field Nom du champ de la page du numéro.

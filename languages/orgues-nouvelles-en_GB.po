@@ -1747,8 +1747,12 @@ msgid "Seulement si le visiteur n'est pas connecté"
 msgstr "Only if the visitor is not logged in"
 
 #: includes/usage/situation.php:31
-msgid "Seulement si le visiteur ne peut pas lire ce numéro et que la version numérique est en vente"
-msgstr "Only if the visitor cannot read this issue and the digital version is on sale"
+msgid ""
+"Seulement si le visiteur ne peut pas lire ce numéro et que la version "
+"numérique est en vente"
+msgstr ""
+"Only if the visitor cannot read this issue and the digital version is on "
+"sale"
 
 #: includes/usage/situation.php:32
 msgid "Seulement si connecté, avec droit de lire ce numéro"
@@ -1992,3 +1996,7 @@ msgstr "Note colour"
 msgid ""
 "Seulement si le visiteur ne peut pas lire ce numéro et qu'un extrait existe"
 msgstr "Only if the visitor cannot read this issue and an excerpt exists"
+
+#: includes/usage/dynamic-tags.php
+msgid "Page du magazine du cahier de partitions"
+msgstr "Magazine page of the music booklet"
