@@ -143,10 +143,18 @@ function on_revues_grille_prefixes_par_defaut($lang = 'fr')
 function on_revues_grille_requete($lang)
 {
     return function ($query) use ($lang) {
+        // Charger les produits lance d'autres requêtes WordPress : sans cette garde, elles
+        // rappellent ce filtre sans fin.
+        static $en_cours = false;
+        if ($en_cours) {
+            return;
+        }
+        $en_cours = true;
         $ids = array();
         foreach (on_revues_grille_numeros(on_revues_grille_prefixes_par_defaut($lang)) as $entry) {
             $ids[] = (int) on_revues_grille_principal($entry)->get_id();
         }
+        $en_cours = false;
         $query->set('post__in', $ids ? $ids : array(0));
         $query->set('orderby', 'post__in');
         $query->set('posts_per_page', -1);
