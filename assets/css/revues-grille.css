@@ -1,15 +1,10 @@
-/* Grille des revues : mise en page seulement. Les couleurs, polices et tailles
-   se règlent dans Elementor (onglets de l'élément « Grille des revues »). */
-.onr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:24px;margin:16px 0 24px}
-.onr-c{display:flex;flex-direction:column}
-.onr-cv{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:contain;margin-bottom:8px}
-.onr-t{margin:0 0 8px}
+/* Choix d'achat des revues : mise en page seulement. Les couleurs, polices et
+   tailles se règlent dans Elementor (éléments « Choix d'achat du numéro » et « Total du choix »). */
+.onr-choice{display:block}
 .onr-o{display:flex;align-items:flex-start;gap:8px;margin:5px 0;line-height:1.25;cursor:pointer}
 .onr-o input{margin:2px 0 0;flex:none}
 .onr-o b{font-weight:500}
 .onr-p{margin-left:auto;white-space:nowrap}
-.onr-bar{position:sticky;bottom:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:10px}
-.onr-rec{flex:1}
-.onr-msg{font-size:14px;color:#a00}
-.onr-btn{cursor:pointer;line-height:1.2;text-decoration:none}
-.onr-btn:disabled{opacity:.6;cursor:wait}
+.onr-total{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px}
+.onr-msg{font-size:14px}
+.onr-add.onr-busy{opacity:.6;cursor:wait;pointer-events:none}

@@ -150,10 +150,12 @@ function on_register_elementor_widget( $widgets_manager ) {
     require_once(__DIR__ . '/includes/elementor/widgets/search-result-content.php');
 	$widgets_manager->register( new \Search_Form_URL() );
     $widgets_manager->register( new \Search_Result_Content());
-    // Grille des revues (page « Revues hors abonnement »)
+    // Revues hors abonnement : choix d'achat par numéro et total (voir docs/revues-grille.md)
     if (class_exists('WooCommerce')) {
-        require_once(__DIR__ . '/includes/elementor/widgets/revues-grille.php');
-        $widgets_manager->register( new \ON_Revues_Grille() );
+        require_once(__DIR__ . '/includes/elementor/widgets/revues-choix.php');
+        require_once(__DIR__ . '/includes/elementor/widgets/revues-total.php');
+        $widgets_manager->register( new \ON_Revues_Choix() );
+        $widgets_manager->register( new \ON_Revues_Total() );
     }
     // Lecteur PDF en ligne (voir docs/lecture-en-ligne.md)
     if (function_exists('on_usage_page_product')) {

@@ -1,15 +1,19 @@
-# Grille des revues (page « Revues hors abonnement »)
+# Revues hors abonnement : choix papier / numérique / cahier et un seul bouton d'ajout au panier
 
-Élément Elementor **« Grille des revues »** (`includes/elementor/widgets/revues-grille.php`, `assets/css/revues-grille.css`, `assets/js/revues-grille.js`).
+La page se compose **dans Elementor** avec des éléments ordinaires et deux éléments du plugin.
 
-## Ce que fait le plugin
-- Regroupe les produits WooCommerce publiés **par numéro**, du plus récent au plus ancien.
-- Affiche pour chaque numéro la couverture et, dessous, des cases à cocher : **Papier** (numérique inclus), **Numérique**, **Cahier de partitions seul**. « Papier » et « Numérique » s'excluent.
-- Les **prix viennent de WooCommerce** (prix normal du produit), jamais écrits à la main.
-- Un seul bouton **Ajouter au panier** ajoute tous les choix (`?wc-ajax=add_to_cart`) puis ouvre le panier.
+| Élément | Où | Rôle |
+|---|---|---|
+| **Grille de boucle** (Elementor Pro) | page | Requête : produits de la catégorie « Revues hors abonnement ». Colonnes, espaces, pagination (ou « tout sur une page » en mettant un grand nombre d'éléments par page) se règlent ici. |
+| **Modèle de boucle** (Elementor) | modèle « Boucle » des produits | Dessin libre d'une carte : image à la une du produit (balise dynamique), titre, et l'élément du plugin ci-dessous. |
+| **Choix d'achat du numéro** (plugin) | dans le modèle de boucle | Les cases à cocher du numéro : Papier (numérique inclus), Numérique, Cahier de partitions seul. Prix lus dans WooCommerce. |
+| **Total du choix** (plugin) | page, sous la grille | « 2 articles · 27 € » et les messages. |
+| **Bouton** (Elementor ordinaire) | page, à côté du total | À qui l'on donne la classe CSS `onr-add` (Avancé > Classes CSS). Un clic ajoute tous les choix au panier puis ouvre le panier. Style, texte, survol : réglages Elementor habituels. |
+
+La barre du bas collante est un conteneur Elementor (Avancé > Effets de mouvement > Sticky > Bas) qui contient le total et le bouton.
 
 ## Comment un numéro est reconnu
-Par le **début du nom** des produits, suivi du numéro. Réglable dans l'onglet « Produits » de l'élément (une page française et une page anglaise ont chacune leur élément) :
+Par le **début du nom** des produits, suivi du numéro. Réglable dans l'onglet « Produits » de l'élément « Choix d'achat du numéro » (une page française et une page anglaise ont chacune leur modèle) :
 
 | Produit | Début du nom par défaut | Exemple |
 |---|---|---|
@@ -17,10 +21,8 @@ Par le **début du nom** des produits, suivi du numéro. Réglable dans l'onglet
 | Numérique | `ONED` | ONED74 |
 | Cahier de partitions | `CahPart` | CahPart74 |
 
-Un produit « Orgues Nouvelles n°69 (en téléchargement) » compte comme numérique. Le filtre `on_revues_grille_numeros` permet d'ajuster la liste.
+Un produit « Orgues Nouvelles n°69 (en téléchargement) » compte comme numérique. Le filtre `on_revues_grille_numeros` permet d'ajuster la liste. Un numéro n'est affiché qu'une fois : par son produit papier, sinon son numérique, sinon son cahier.
 
-## Ce qui se règle dans Elementor
-Libellés (Papier, « numérique inclus », Numérique, Cahier seul, bouton, messages), débuts de nom des produits, largeur des colonnes, espaces, polices, couleurs, bouton (couleurs, survol, trait, angles), barre du bas. Les textes par défaut sont traduits en anglais (`languages/`).
-
-## Limite connue
-La reconnaissance par le nom est volontairement simple : elle suppose que les produits gardent leurs noms (`ONED…`, `CahPart…`). Si le webmaster préfère une liaison par champ (Pods), seule la fonction `on_revues_grille_numeros()` est à changer.
+## Limites connues
+- La reconnaissance par le nom suppose que les produits gardent leurs noms (`ONED…`, `CahPart…`). Si le webmaster préfère une liaison par champ (Pods), seule la fonction `on_revues_grille_numeros()` est à changer.
+- Le prix affiché est le prix normal du produit. Pour un compte qui a déjà les droits, le site rend ces produits gratuits : le prix affiché est alors 0 €.
