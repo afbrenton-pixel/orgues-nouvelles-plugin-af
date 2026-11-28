@@ -4,13 +4,14 @@
  * Affichage d'un élément Elementor selon la situation du visiteur sur la page d'un numéro
  * (magazine ou cahier de partitions).
  *
- * Quatre choix s'ajoutent au réglage « Abonnés Magazines » (onglet Avancé de tout
+ * Plusieurs choix s'ajoutent au réglage « Abonnés Magazines » (onglet Avancé de tout
  * élément, liste « Visibilité aux magazines »), pour poser les mêmes boutons dans tous
  * les modèles de page :
  *
  *  - pas connecté ;
  *  - connecté, sans droit de lire ce numéro ;
  *  - connecté, avec droit de lire ce numéro (abonné, acheteur, numéro gratuit) ;
+ *  - ne peut pas lire ce numéro et un extrait existe (bouton « Lire l'extrait ») ;
  *  - peut télécharger le PDF gratuitement.
  *
  * Le droit est celui de l'élément « Lecteur PDF en ligne » et de la lecture en ligne
@@ -32,6 +33,7 @@ function on_usage_situation_choices()
         'on_situation_sans_droit'     => __('Seulement si connecté, sans droit de lire ce numéro', 'orgues-nouvelles'),
         'on_situation_papier'         => __('Seulement si connecté, sans droit, et si la version papier est en vente', 'orgues-nouvelles'),
         'on_situation_sans_lecture'   => __('Seulement si le visiteur ne peut pas lire ce numéro (non connecté ou sans droit)', 'orgues-nouvelles'),
+        'on_situation_extrait'        => __('Seulement si le visiteur ne peut pas lire ce numéro et qu\'un extrait existe', 'orgues-nouvelles'),
         'on_situation_lecture'        => __('Seulement si connecté, avec droit de lire ce numéro', 'orgues-nouvelles'),
         'on_situation_telechargement' => __('Seulement si le PDF est téléchargeable gratuitement', 'orgues-nouvelles'),
     );
@@ -56,6 +58,9 @@ function on_usage_situation_matches($situation)
     }
     if ($situation === 'on_situation_sans_lecture') {
         return !is_user_logged_in() || !on_usage_page_product('', true);
+    }
+    if ($situation === 'on_situation_extrait') {
+        return on_usage_extract_url() !== '' && (!is_user_logged_in() || !on_usage_page_product('', true));
     }
     if (!is_user_logged_in()) {
         return false;

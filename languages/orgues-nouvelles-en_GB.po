@@ -1512,3 +1512,7 @@ msgstr "CD image of the issue"
 #: includes/usage/dynamic-tags.php
 msgid "Image du cahier de partitions du numéro"
 msgstr "Music booklet image of the issue"
+
+#: includes/usage/situation.php
+msgid "Seulement si le visiteur ne peut pas lire ce numéro et qu'un extrait existe"
+msgstr "Only if the visitor cannot read this issue and an excerpt exists"
