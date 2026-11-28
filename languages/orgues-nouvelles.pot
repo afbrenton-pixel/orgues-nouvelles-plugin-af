@@ -4,15 +4,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orgues-Nouvelles Plugin 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/orgues-nouvelles-plugin\n"
-"POT-Creation-Date: 2026-08-28T10:00:00+00:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Domain: orgues-nouvelles\n"
+"POT-Creation-Date: 2026-08-28T10:00:00+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: orgues-nouvelles\n"
 
 #. Plugin Name of the plugin
 #: orgues-nouvelles-plugin.php
@@ -84,9 +84,7 @@ msgid "ID du Post"
 msgstr ""
 
 #: includes/elementor/widgets/search-result-content.php:42
-msgid ""
-"Laissez vide pour le post actuel (dans une boucle de recherche). Entrez un "
-"ID de post spécifique."
+msgid "Laissez vide pour le post actuel (dans une boucle de recherche). Entrez un ID de post spécifique."
 msgstr ""
 
 #: includes/elementor/widgets/search-result-content.php:50
@@ -94,9 +92,7 @@ msgid "Mots avant/après le terme de recherche"
 msgstr ""
 
 #: includes/elementor/widgets/search-result-content.php:54
-msgid ""
-"Nombre de mots à afficher avant et après chaque occurrence du terme de "
-"recherche."
+msgid "Nombre de mots à afficher avant et après chaque occurrence du terme de recherche."
 msgstr ""
 
 #: includes/elementor/widgets/search-result-content.php:72
@@ -124,8 +120,7 @@ msgid "Classe CSS pour la mise en évidence"
 msgstr ""
 
 #: includes/elementor/widgets/search-result-content.php:90
-msgid ""
-"Ajoutez une classe CSS personnalisée si vous utilisez une balise <span>."
+msgid "Ajoutez une classe CSS personnalisée si vous utilisez une balise <span>."
 msgstr ""
 
 #: includes/elementor/widgets/search-result-content.php:205
@@ -147,9 +142,7 @@ msgstr ""
 #. translators: %s: link to subscription category.
 #: includes/frontend/form-login.php:103
 #, php-format
-msgid ""
-"Vous n'avez pas besoin de compte si vous ne vous abonnez pas et celui-ci "
-"sera créé automatiquement lors de votre %s."
+msgid "Vous n'avez pas besoin de compte si vous ne vous abonnez pas et celui-ci sera créé automatiquement lors de votre %s."
 msgstr ""
 
 #: includes/frontend/mon-compte.php:32
@@ -203,16 +196,13 @@ msgid "Mettre à jour l'adresse de livraison de mes %d abonnement(s) papier"
 msgstr ""
 
 #: includes/frontend/subscription-address-sync.php:49
-msgid ""
-"Si vous cochez cette option, votre nouvelle adresse de livraison sera "
-"appliquée à tous vos abonnements papier actifs."
+msgid "Si vous cochez cette option, votre nouvelle adresse de livraison sera appliquée à tous vos abonnements papier actifs."
 msgstr ""
 
 #. translators: %s: customer username
 #: includes/frontend/subscription-address-sync.php:109
 #, php-format
-msgid ""
-"Adresse de livraison mise à jour par %s depuis les paramètres du compte."
+msgid "Adresse de livraison mise à jour par %s depuis les paramètres du compte."
 msgstr ""
 
 #. translators: %d: count of subscriptions
@@ -258,9 +248,7 @@ msgid "Adresse de livraison mise à jour avec succès."
 msgstr ""
 
 #: includes/orders/check-abonnement-france.php:22
-msgid ""
-"Vous devez selectionner la livraison Monde pour une livraison en dehors de "
-"la France lors de votre abonnement à Orgues-Nouvelles"
+msgid "Vous devez selectionner la livraison Monde pour une livraison en dehors de la France lors de votre abonnement à Orgues-Nouvelles"
 msgstr ""
 
 #: includes/orders/custom-export-type-filter.php:23
@@ -268,8 +256,7 @@ msgid "Type d'export de données"
 msgstr ""
 
 #: includes/orders/custom-export-type-filter.php:26
-msgid ""
-"Choisissez le type d'entité principale à extraire de la base de données :"
+msgid "Choisissez le type d'entité principale à extraire de la base de données :"
 msgstr ""
 
 #: includes/orders/custom-export-type-filter.php:29
@@ -309,9 +296,7 @@ msgid "Numéro de magazine"
 msgstr ""
 
 #: includes/orders/custom-export-type-filter.php:165
-msgid ""
-"Filtre les contrats où le numéro est compris entre number-start et number-"
-"end."
+msgid "Filtre les contrats où le numéro est compris entre number-start et number-end."
 msgstr ""
 
 #: includes/orders/custom-export-type-filter.php:436
@@ -354,9 +339,7 @@ msgid "Demande de justificatif étudiants"
 msgstr ""
 
 #: includes/orders/justificatif-etudiant.php:13
-msgid ""
-"Cet email est envoyé lorsqu'un abonné choisit le tarif étudiant pour lui "
-"demander d'envoyer un justificatif."
+msgid "Cet email est envoyé lorsqu'un abonné choisit le tarif étudiant pour lui demander d'envoyer un justificatif."
 msgstr ""
 
 #: includes/orders/justificatif-etudiant.php:79
@@ -372,15 +355,11 @@ msgid "Contenu de l'email"
 msgstr ""
 
 #: includes/orders/justificatif-etudiant.php:113
-msgid ""
-"Texte de l'email envoyé aux clients lorsqu'ils choisissent le tarif étudiant"
-" pour leur demander un justificatif."
+msgid "Texte de l'email envoyé aux clients lorsqu'ils choisissent le tarif étudiant pour leur demander un justificatif."
 msgstr ""
 
 #: includes/orders/justificatif-etudiant.php:124
-msgid ""
-"Nous vous demandons de bien vouloir nous fournir un justificatif de votre "
-"statut étudiant pour valider votre abonnement."
+msgid "Nous vous demandons de bien vouloir nous fournir un justificatif de votre statut étudiant pour valider votre abonnement."
 msgstr ""
 
 #: includes/orders/justificatif-etudiant.php:247
@@ -412,9 +391,7 @@ msgid "Téléchargement impossible"
 msgstr ""
 
 #: includes/products/direct-download-free.php:34
-msgid ""
-"Ce produit téléchargeable ne contient actuellement aucun fichier à "
-"télécharger."
+msgid "Ce produit téléchargeable ne contient actuellement aucun fichier à télécharger."
 msgstr ""
 
 #: includes/products/direct-download-free.php:35
@@ -422,9 +399,7 @@ msgid "Téléchargement indisponible"
 msgstr ""
 
 #: includes/products/direct-download-free.php:50
-msgid ""
-"Une erreur est survenue lors de la création de votre commande gratuite. "
-"Veuillez réessayer plus tard."
+msgid "Une erreur est survenue lors de la création de votre commande gratuite. Veuillez réessayer plus tard."
 msgstr ""
 
 #: includes/products/direct-download-free.php:51
@@ -433,8 +408,7 @@ msgid "Erreur lors de la création de la commande"
 msgstr ""
 
 #: includes/products/direct-download-free.php:62
-msgid ""
-"Impossible d'ajouter le produit à la commande. Veuillez réessayer plus tard."
+msgid "Impossible d'ajouter le produit à la commande. Veuillez réessayer plus tard."
 msgstr ""
 
 #: includes/products/direct-download-free.php:102
@@ -446,10 +420,7 @@ msgid "Erreur de commande"
 msgstr ""
 
 #: includes/products/direct-download-free.php:136
-msgid ""
-"Impossible de générer le lien de téléchargement pour ce produit gratuit. "
-"Votre commande a bien été enregistrée, mais aucun fichier n'a pu être "
-"trouvé. Veuillez réessayer ultérieurement ou contacter le support."
+msgid "Impossible de générer le lien de téléchargement pour ce produit gratuit. Votre commande a bien été enregistrée, mais aucun fichier n'a pu être trouvé. Veuillez réessayer ultérieurement ou contacter le support."
 msgstr ""
 
 #: includes/products/direct-download-free.php:158
@@ -481,9 +452,7 @@ msgid "Seulement les non abonnés"
 msgstr ""
 
 #: includes/products/restrict-magazines.php:31
-msgid ""
-"Choisissez qui peut voir ce contenu pour les abonnés comprenant le numéro en"
-" cours"
+msgid "Choisissez qui peut voir ce contenu pour les abonnés comprenant le numéro en cours"
 msgstr ""
 
 #: includes/products/restrict-magazines.php:37
@@ -491,8 +460,7 @@ msgid "Actif pour les abonnés aux plans:"
 msgstr ""
 
 #: includes/products/restrict-magazines.php:42
-msgid ""
-"Choisissez quels plans d'adhésion sont requis pour accéder à ce contenu."
+msgid "Choisissez quels plans d'adhésion sont requis pour accéder à ce contenu."
 msgstr ""
 
 #: includes/products/restrict-magazines.php:47
@@ -540,9 +508,7 @@ msgid "Voir l'adhésion"
 msgstr ""
 
 #: includes/subscriptions/gifting-recipient-help.php:17
-msgid ""
-"Indiquez ici l'adresse e-mail de la personne à qui vous offrez cet "
-"abonnement."
+msgid "Indiquez ici l'adresse e-mail de la personne à qui vous offrez cet abonnement."
 msgstr ""
 
 #: includes/subscriptions/subscription.php:99
@@ -615,9 +581,7 @@ msgid "Numéro de début personnalisé"
 msgstr ""
 
 #: includes/subscriptions/admin-metabox.php:125
-msgid ""
-"Laissez vide pour utiliser le calcul automatique effectué à partir des dates"
-" d'abonnement."
+msgid "Laissez vide pour utiliser le calcul automatique effectué à partir des dates d'abonnement."
 msgstr ""
 
 #: includes/subscriptions/admin-metabox.php:128
@@ -672,12 +636,10 @@ msgstr ""
 msgid "Définissez combien de numéros sont inclus avant le prochain paiement."
 msgstr ""
 
-#. translators: 1: previous end number, 2: new end number, 3: issue count
-#. added.
+#. translators: 1: previous end number, 2: new end number, 3: issue count added.
 #: includes/subscriptions/lifecycle.php:282
 #, php-format
-msgid ""
-"Numéro de fin d'abonnement étendu de ON-%1$d à ON-%2$d (+%3$d numéro(s))."
+msgid "Numéro de fin d'abonnement étendu de ON-%1$d à ON-%2$d (+%3$d numéro(s))."
 msgstr ""
 
 #: templates/free-download-button.php:23
@@ -699,10 +661,7 @@ msgstr ""
 
 #: templates/mon-compte-mes-magazines.php:73
 #, php-format
-msgid ""
-"Vous n'êtes abonné à aucun magazine pour le moment. %1$sAbonnez-vous à "
-"Orgues-nouvelles%2$s ou ajoutez le code de l'espace client dans le "
-"formulaire ci-dessous"
+msgid "Vous n'êtes abonné à aucun magazine pour le moment. %1$sAbonnez-vous à Orgues-nouvelles%2$s ou ajoutez le code de l'espace client dans le formulaire ci-dessous"
 msgstr ""
 
 #: templates/mon-compte-mes-magazines.php:81
@@ -710,9 +669,7 @@ msgid "Ajouter un magazine avec un code :"
 msgstr ""
 
 #: templates/mon-compte-mes-magazines.php:82
-msgid ""
-"Retrouvez le code à saisir dans votre magazine pour accéder à l'espace "
-"privé."
+msgid "Retrouvez le code à saisir dans votre magazine pour accéder à l'espace privé."
 msgstr ""
 
 #: templates/mon-compte-mes-magazines.php:84
@@ -724,6 +681,7 @@ msgid "Ajouter"
 msgstr ""
 
 #. Free student subscription (includes/gratuite)
+
 #: includes/gratuite/authorization.php:110
 msgid "anglais"
 msgstr ""
@@ -741,11 +699,7 @@ msgid "Gratuité -26 ans"
 msgstr ""
 
 #: includes/gratuite/class-form-action.php:28
-msgid ""
-"Identifiants des champs : prenom, nom, email, date_naissance, justificatif "
-"(envoi de fichier, 1 fichier), newsletter (facultatif), consentement "
-"(acceptation obligatoire), langue (champ caché : fr ou en). Choisir "
-"uniquement cette action (et Redirection). Voir docs/gratuite.md."
+msgid "Identifiants des champs : prenom, nom, email, date_naissance, justificatif (envoi de fichier, 1 fichier), newsletter (facultatif), consentement (acceptation obligatoire), langue (champ caché : fr ou en). Choisir uniquement cette action (et Redirection). Voir docs/gratuite.md."
 msgstr ""
 
 #: includes/gratuite/confirmation.php:58
@@ -769,9 +723,7 @@ msgid "Lien expiré"
 msgstr ""
 
 #: includes/gratuite/confirmation.php:62
-msgid ""
-"Ce lien n'est plus valable. Merci de refaire votre demande depuis la page du"
-" formulaire."
+msgid "Ce lien n'est plus valable. Merci de refaire votre demande depuis la page du formulaire."
 msgstr ""
 
 #: includes/gratuite/confirmation.php:64
@@ -779,21 +731,15 @@ msgid "Lien non valable"
 msgstr ""
 
 #: includes/gratuite/confirmation.php:64
-msgid ""
-"Ce lien n'est pas valable. Merci de refaire votre demande depuis la page du "
-"formulaire."
+msgid "Ce lien n'est pas valable. Merci de refaire votre demande depuis la page du formulaire."
 msgstr ""
 
 #: includes/gratuite/confirmation.php:77
-msgid ""
-"Une demande d'abonnement numérique gratuit pour les jeunes jusqu'à 26 ans a "
-"été faite pour vous par un utilisateur de notre site."
+msgid "Une demande d'abonnement numérique gratuit pour les jeunes jusqu'à 26 ans a été faite pour vous par un utilisateur de notre site."
 msgstr ""
 
 #: includes/gratuite/confirmation.php:78
-msgid ""
-"Nous avons bien reçu votre demande d'abonnement numérique gratuit pour les "
-"jeunes jusqu'à 26 ans."
+msgid "Nous avons bien reçu votre demande d'abonnement numérique gratuit pour les jeunes jusqu'à 26 ans."
 msgstr ""
 
 #: includes/gratuite/confirmation.php:80
@@ -805,27 +751,19 @@ msgid "Confirmez votre demande"
 msgstr ""
 
 #: includes/gratuite/confirmation.php:82
-msgid ""
-"Pour confirmer que cette adresse e-mail est bien la vôtre, cliquez sur le "
-"lien ci-dessous :"
+msgid "Pour confirmer que cette adresse e-mail est bien la vôtre, cliquez sur le lien ci-dessous :"
 msgstr ""
 
 #: includes/gratuite/confirmation.php:84
-msgid ""
-"Le lien est valable {days} jours. Sans confirmation, votre demande et le "
-"document envoyé sont supprimés."
+msgid "Le lien est valable {days} jours. Sans confirmation, votre demande et le document envoyé sont supprimés."
 msgstr ""
 
 #: includes/gratuite/confirmation.php:85
-msgid ""
-"Une fois confirmée, nous examinons votre justificatif et nous vous répondons"
-" par e-mail."
+msgid "Une fois confirmée, nous examinons votre justificatif et nous vous répondons par e-mail."
 msgstr ""
 
 #: includes/gratuite/confirmation.php:86
-msgid ""
-"Si vous n'êtes pas à l'origine de cette demande, ignorez simplement ce "
-"message."
+msgid "Si vous n'êtes pas à l'origine de cette demande, ignorez simplement ce message."
 msgstr ""
 
 #: includes/gratuite/confirmation.php:95
@@ -842,21 +780,15 @@ msgid "Votre demande est acceptée"
 msgstr ""
 
 #: includes/gratuite/decision-rules.php:27
-msgid ""
-"Bonne nouvelle : votre demande d'abonnement numérique gratuit pour les "
-"jeunes jusqu'à 26 ans est acceptée."
+msgid "Bonne nouvelle : votre demande d'abonnement numérique gratuit pour les jeunes jusqu'à 26 ans est acceptée."
 msgstr ""
 
 #: includes/gratuite/decision-rules.php:28
-msgid ""
-"Votre abonnement est actif jusqu'au {end_date}. Vous pouvez lire les numéros"
-" en ligne depuis votre compte :"
+msgid "Votre abonnement est actif jusqu'au {end_date}. Vous pouvez lire les numéros en ligne depuis votre compte :"
 msgstr ""
 
 #: includes/gratuite/decision-rules.php:30
-msgid ""
-"Pour conserver la gratuité l'année suivante, il suffira de refaire une "
-"demande avec un nouveau justificatif."
+msgid "Pour conserver la gratuité l'année suivante, il suffira de refaire une demande avec un nouveau justificatif."
 msgstr ""
 
 #: includes/gratuite/decision-rules.php:31
@@ -876,25 +808,18 @@ msgid "Votre demande n'a pas pu être acceptée"
 msgstr ""
 
 #: includes/gratuite/decision-rules.php:38
-msgid ""
-"Nous n'avons pas pu accepter votre demande d'abonnement numérique gratuit "
-"pour les jeunes jusqu'à 26 ans."
+msgid "Nous n'avons pas pu accepter votre demande d'abonnement numérique gratuit pour les jeunes jusqu'à 26 ans."
 msgstr ""
 
 #: includes/gratuite/decision-rules.php:39
-msgid ""
-"Le document que vous avez envoyé a été supprimé de notre site. Vous pouvez "
-"déposer une nouvelle demande dès maintenant, avec un justificatif valide :"
+msgid "Le document que vous avez envoyé a été supprimé de notre site. Vous pouvez déposer une nouvelle demande dès maintenant, avec un justificatif valide :"
 msgstr ""
 
 #: includes/gratuite/decision-rules.php:41
-msgid ""
-"Pour toute question, répondez simplement à ce message ou écrivez à "
-"{contact}."
+msgid "Pour toute question, répondez simplement à ce message ou écrivez à {contact}."
 msgstr ""
 
-#: includes/gratuite/decision-rules.php:50
-#: includes/gratuite/decision-rules.php:94
+#: includes/gratuite/decision-rules.php:50 includes/gratuite/decision-rules.php:94
 msgid "Motif : "
 msgstr ""
 
@@ -907,9 +832,7 @@ msgid "La demande est acceptée"
 msgstr ""
 
 #: includes/gratuite/decision-rules.php:78
-msgid ""
-"Pour information : la demande d'abonnement numérique gratuit que vous avez "
-"faite pour {name} ({email}) est acceptée."
+msgid "Pour information : la demande d'abonnement numérique gratuit que vous avez faite pour {name} ({email}) est acceptée."
 msgstr ""
 
 #: includes/gratuite/decision-rules.php:79
@@ -925,17 +848,14 @@ msgid "La demande n'a pas pu être acceptée"
 msgstr ""
 
 #: includes/gratuite/decision-rules.php:85
-msgid ""
-"Pour information : la demande d'abonnement numérique gratuit que vous avez "
-"faite pour {name} ({email}) n'a pas pu être acceptée."
+msgid "Pour information : la demande d'abonnement numérique gratuit que vous avez faite pour {name} ({email}) n'a pas pu être acceptée."
 msgstr ""
 
 #: includes/gratuite/decision.php:40
 msgid "j F Y"
 msgstr ""
 
-#: includes/gratuite/private-proof-storage.php:127
-#: includes/gratuite/private-proof-storage.php:150
+#: includes/gratuite/private-proof-storage.php:127 includes/gratuite/private-proof-storage.php:150
 msgid "Le justificatif est introuvable."
 msgstr ""
 
@@ -951,13 +871,11 @@ msgstr ""
 msgid "Le contenu du fichier ne correspond pas à son format."
 msgstr ""
 
-#: includes/gratuite/private-proof-storage.php:146
-#: includes/gratuite/private-proof-storage.php:155
+#: includes/gratuite/private-proof-storage.php:146 includes/gratuite/private-proof-storage.php:155
 msgid "Le justificatif ne peut pas être enregistré pour le moment."
 msgstr ""
 
-#: includes/gratuite/private-proof-storage.php:214
-#: includes/gratuite/private-proof-storage.php:240
+#: includes/gratuite/private-proof-storage.php:214 includes/gratuite/private-proof-storage.php:240
 msgid "Accès refusé."
 msgstr ""
 
@@ -997,9 +915,7 @@ msgstr ""
 
 #: includes/gratuite/request-rules.php:21
 #, php-format
-msgid ""
-"Cette offre est réservée aux jeunes jusqu'à %1$d ans (avant leur %2$de "
-"anniversaire)."
+msgid "Cette offre est réservée aux jeunes jusqu'à %1$d ans (avant leur %2$de anniversaire)."
 msgstr ""
 
 #: includes/gratuite/request-rules.php:24
@@ -1013,28 +929,20 @@ msgid "Cette offre est terminée : les demandes étaient ouvertes jusqu'au %s."
 msgstr ""
 
 #: includes/gratuite/request-rules.php:29
-msgid ""
-"Un compte existe déjà avec cette adresse. Connectez-vous d'abord à votre "
-"compte, puis refaites votre demande depuis cette page."
+msgid "Un compte existe déjà avec cette adresse. Connectez-vous d'abord à votre compte, puis refaites votre demande depuis cette page."
 msgstr ""
 
 #: includes/gratuite/request-rules.php:32
 #, php-format
-msgid ""
-"Vous êtes connecté(e) : la demande se fait avec l'adresse de votre compte "
-"(%s). Pour demander pour une autre personne, cochez la case prévue."
+msgid "Vous êtes connecté(e) : la demande se fait avec l'adresse de votre compte (%s). Pour demander pour une autre personne, cochez la case prévue."
 msgstr ""
 
 #: includes/gratuite/request-rules.php:34
-msgid ""
-"Pour faire une demande pour une autre personne, connectez-vous d'abord à "
-"votre compte."
+msgid "Pour faire une demande pour une autre personne, connectez-vous d'abord à votre compte."
 msgstr ""
 
 #: includes/gratuite/request-rules.php:36
-msgid ""
-"Cette adresse est celle de votre compte. Décochez la case « pour une autre "
-"personne », ou indiquez l'adresse de la personne concernée."
+msgid "Cette adresse est celle de votre compte. Décochez la case « pour une autre personne », ou indiquez l'adresse de la personne concernée."
 msgstr ""
 
 #: includes/gratuite/request-rules.php:38
@@ -1043,11 +951,7 @@ msgstr ""
 
 #: includes/gratuite/request-rules.php:41
 #, php-format
-msgid ""
-"Un abonnement gratuit a déjà été obtenu avec cette adresse au titre de cette"
-" offre. Le renouvellement en ligne n'est pas encore disponible ; il sera "
-"ouvert %1$d jours avant la date d'expiration de l'abonnement. Pour toute "
-"question sur un abonnement, écrivez-nous à %2$s."
+msgid "Un abonnement gratuit a déjà été obtenu avec cette adresse au titre de cette offre. Le renouvellement en ligne n'est pas encore disponible ; il sera ouvert %1$d jours avant la date d'expiration de l'abonnement. Pour toute question sur un abonnement, écrivez-nous à %2$s."
 msgstr ""
 
 #: includes/gratuite/request-rules.php:43
@@ -1063,9 +967,7 @@ msgid "Trop de demandes depuis cette connexion. Réessayez plus tard."
 msgstr ""
 
 #: includes/gratuite/request-rules.php:49
-msgid ""
-"Votre demande n'a pas pu être enregistrée. Réessayez plus tard ou écrivez-"
-"nous."
+msgid "Votre demande n'a pas pu être enregistrée. Réessayez plus tard ou écrivez-nous."
 msgstr ""
 
 #: includes/gratuite/request-rules.php:106
@@ -1089,8 +991,7 @@ msgid "Commande :"
 msgstr ""
 
 #: includes/gratuite/subscription-admin.php:38
-msgid ""
-"À vérifier : cette personne a peut-être déjà un compte ou une demande :"
+msgid "À vérifier : cette personne a peut-être déjà un compte ou une demande :"
 msgstr ""
 
 #: includes/gratuite/subscription-admin.php:46
@@ -1098,9 +999,7 @@ msgid "Accepter la demande"
 msgstr ""
 
 #: includes/gratuite/subscription-admin.php:47
-msgid ""
-"Crée le compte si besoin, active l'abonnement pour un an, supprime le "
-"justificatif et prévient la personne."
+msgid "Crée le compte si besoin, active l'abonnement pour un an, supprime le justificatif et prévient la personne."
 msgstr ""
 
 #: includes/gratuite/subscription-admin.php:48
@@ -1112,9 +1011,7 @@ msgid "Refuser la demande"
 msgstr ""
 
 #: includes/gratuite/subscription-admin.php:53
-msgid ""
-"Supprime le justificatif et prévient la personne, qui pourra redéposer une "
-"demande tout de suite."
+msgid "Supprime le justificatif et prévient la personne, qui pourra redéposer une demande tout de suite."
 msgstr ""
 
 #: includes/gratuite/subscription-admin.php:56
@@ -1130,9 +1027,7 @@ msgid "Motif :"
 msgstr ""
 
 #: includes/gratuite/subscription-admin.php:62
-msgid ""
-"Rien n'est créé tant que la demande n'est pas confirmée par e-mail et "
-"acceptée."
+msgid "Rien n'est créé tant que la demande n'est pas confirmée par e-mail et acceptée."
 msgstr ""
 
 #: includes/gratuite/subscription-admin.php:70
@@ -1140,6 +1035,7 @@ msgid "Action non autorisée."
 msgstr ""
 
 #. Vignettes accueil (includes/vignettes)
+
 #: includes/vignettes/affichage.php:111
 msgid "Objet source"
 msgstr ""
@@ -1186,6 +1082,7 @@ msgid "Réduire"
 msgstr ""
 
 #. Création des vignettes en masse (includes/vignettes/creation-en-masse.php)
+
 #: includes/vignettes/creation-en-masse.php:33
 msgid "Actualités"
 msgstr ""
@@ -1202,10 +1099,7 @@ msgstr ""
 msgid "Produits de la boutique"
 msgstr ""
 
-#: includes/vignettes/creation-en-masse.php:347
-#: includes/vignettes/creation-en-masse.php:348
-#: includes/vignettes/creation-en-masse.php:407
-#: includes/vignettes/creation-en-masse.php:450
+#: includes/vignettes/creation-en-masse.php:347 includes/vignettes/creation-en-masse.php:348 includes/vignettes/creation-en-masse.php:407 includes/vignettes/creation-en-masse.php:450
 msgid "Importer les vignettes"
 msgstr ""
 
@@ -1243,14 +1137,11 @@ msgid "La date de départ n'est pas valable."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:373
-msgid ""
-"Le motif des titres à écarter n'est pas une expression régulière valable."
+msgid "Le motif des titres à écarter n'est pas une expression régulière valable."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:375
-msgid ""
-"La connexion avec le site a échoué. Relancez la simulation puis la création "
-": ce qui est déjà créé ne sera pas refait."
+msgid "La connexion avec le site a échoué. Relancez la simulation puis la création : ce qui est déjà créé ne sera pas refait."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:377
@@ -1280,9 +1171,7 @@ msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:384
 #, php-format
-msgid ""
-"%d contenu(s) à traiter. Si cela vous convient, cliquez sur « Importer les "
-"vignettes »."
+msgid "%d contenu(s) à traiter. Si cela vous convient, cliquez sur « Importer les vignettes »."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:385
@@ -1314,18 +1203,11 @@ msgid "Terminé. Le cache d'Elementor a été vidé."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:392
-msgid ""
-"Les vignettes en brouillon attendent une image : voir la pastille rouge dans"
-" le menu « Vignettes accueil »."
+msgid "Les vignettes en brouillon attendent une image : voir la pastille rouge dans le menu « Vignettes accueil »."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:408
-msgid ""
-"Le plugin crée une vignette quand on enregistre un contenu. Cette page crée "
-"celles des contenus déjà publiés, avec leur jumelle anglaise quand il y en a"
-" une. Les contenus ne sont pas réenregistrés : leur date de modification ne "
-"change pas. Vous pouvez relancer sans risque : les vignettes modifiées à la "
-"main ou mises à la corbeille ne sont pas touchées."
+msgid "Le plugin crée une vignette quand on enregistre un contenu. Cette page crée celles des contenus déjà publiés, avec leur jumelle anglaise quand il y en a une. Les contenus ne sont pas réenregistrés : leur date de modification ne change pas. Vous pouvez relancer sans risque : les vignettes modifiées à la main ou mises à la corbeille ne sont pas touchées."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:412
@@ -1341,8 +1223,7 @@ msgid "Publiés depuis le"
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:427
-msgid ""
-"Facultatif. Vide : tous les contenus publiés, quelle que soit leur date."
+msgid "Facultatif. Vide : tous les contenus publiés, quelle que soit leur date."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:431
@@ -1350,19 +1231,11 @@ msgid "Titres à écarter"
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:434
-msgid ""
-"Facultatif. Vide : aucun contenu n'est écarté. Sinon, expression régulière "
-"appliquée au titre de tous les types cochés (majuscules et minuscules sans "
-"importance) : les contenus dont le titre correspond sont écartés. Elle "
-"marche mieux avec un seul type coché."
+msgid "Facultatif. Vide : aucun contenu n'est écarté. Sinon, expression régulière appliquée au titre de tous les types cochés (majuscules et minuscules sans importance) : les contenus dont le titre correspond sont écartés. Elle marche mieux avec un seul type coché."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:435
-msgid ""
-"Exemples : « Calendrier|Calendar » écarte les titres qui contiennent l'un ou"
-" l'autre mot ; « ^Test » écarte les titres qui commencent par Test ; « "
-"Download|Booklet|in English » écarte les fichiers à télécharger et les "
-"versions anglaises en double."
+msgid "Exemples : « Calendrier|Calendar » écarte les titres qui contiennent l'un ou l'autre mot ; « ^Test » écarte les titres qui commencent par Test ; « Download|Booklet|in English » écarte les fichiers à télécharger et les versions anglaises en double."
 msgstr ""
 
 #: includes/vignettes/creation-en-masse.php:439
@@ -1405,21 +1278,16 @@ msgstr ""
 msgid "Titre par défaut"
 msgstr ""
 
-#: includes/elementor/widgets/online-reader.php:74
-#: includes/elementor/widgets/online-reader.php:137
+#: includes/elementor/widgets/online-reader.php:74 includes/elementor/widgets/online-reader.php:137
 msgid "Cahier de partitions"
 msgstr ""
 
-#: includes/elementor/widgets/online-reader.php:75
-#: includes/elementor/widgets/online-reader.php:138
+#: includes/elementor/widgets/online-reader.php:75 includes/elementor/widgets/online-reader.php:138
 msgid "Magazine"
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:83
-msgid ""
-"Choisir la balise « Adresse de lecture » (icône de balise dynamique) pour un"
-" magazine ou un cahier de partitions, ou saisir l'adresse d'un PDF. Laisser "
-"vide : le PDF du produit « Téléchargement » de la page."
+msgid "Choisir la balise « Adresse de lecture » (icône de balise dynamique) pour un magazine ou un cahier de partitions, ou saisir l'adresse d'un PDF. Laisser vide : le PDF du produit « Téléchargement » de la page."
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:87
@@ -1435,9 +1303,7 @@ msgid "Titre dans le lecteur"
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:97
-msgid ""
-"Laisser vide : « Cahier de partitions » ou « Magazine », dans la langue de "
-"la page."
+msgid "Laisser vide : « Cahier de partitions » ou « Magazine », dans la langue de la page."
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:103
@@ -1465,9 +1331,7 @@ msgid "Pistes audio"
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:140
-msgid ""
-"Touchez le titre pour aller à la page, ou le bouton pour écouter. Le son "
-"continue quand vous tournez les pages."
+msgid "Touchez le titre pour aller à la page, ou le bouton pour écouter. Le son continue quand vous tournez les pages."
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:141
@@ -1530,9 +1394,7 @@ msgid "Écouter « %s »"
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:158
-msgid ""
-"Cet enregistrement n'a pas pu être lu. Vérifiez la connexion, puis "
-"réessayez."
+msgid "Cet enregistrement n'a pas pu être lu. Vérifiez la connexion, puis réessayez."
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:159
@@ -1564,14 +1426,11 @@ msgid "Le document n'a pas pu être ouvert."
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:166
-msgid ""
-"La lecture en ligne n'est pas disponible pour ce numéro avec votre compte."
+msgid "La lecture en ligne n'est pas disponible pour ce numéro avec votre compte."
 msgstr ""
 
 #: includes/elementor/widgets/online-reader.php:185
-msgid ""
-"Lecteur PDF en ligne : aucun PDF lisible pour cette page et ce compte (rien "
-"ne s'affiche aux visiteurs sans droit)."
+msgid "Lecteur PDF en ligne : aucun PDF lisible pour cette page et ce compte (rien ne s'affiche aux visiteurs sans droit)."
 msgstr ""
 
 #. translators: %s: numéro du magazine ou du cahier
@@ -1605,9 +1464,7 @@ msgid "%s (copie)"
 msgstr ""
 
 #: includes/vignettes/duplication.php:128
-msgid ""
-"Créer une copie de cette vignette (en brouillon), avec ses pistes, son image"
-" et ses étiquettes."
+msgid "Créer une copie de cette vignette (en brouillon), avec ses pistes, son image et ses étiquettes."
 msgstr ""
 
 #: includes/vignettes/duplication.php:129
@@ -1618,16 +1475,74 @@ msgstr ""
 msgid "Vignette introuvable."
 msgstr ""
 
-#: includes/elementor/widgets/revues-choix.php
-msgid "Afficher le titre du numéro"
+#: includes/elementor/widgets/revues-grille.php
+msgid "Papier"
 msgstr ""
 
-#: includes/elementor/widgets/revues-choix.php
+#: includes/elementor/widgets/revues-grille.php
+msgid "numérique inclus"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Numérique"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Cahier de partitions seul"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Orgues Nouvelles n°"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
 msgid "Aucun article choisi"
 msgstr ""
 
-#: includes/elementor/widgets/revues-choix.php
-msgid "Cahier de partitions seul"
+#: includes/elementor/widgets/revues-grille.php
+msgid "article"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "articles"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Choisissez au moins un article."
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Impossible d'ajouter un article. Réessayez."
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid "épuisé"
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid "Papier épuisé"
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid "Titre du numéro (avant le numéro)"
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid "Titre"
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid "Afficher le titre du numéro"
 msgstr ""
 
 #: includes/elementor/widgets/revues-choix.php
@@ -1635,11 +1550,15 @@ msgid "Cases à cocher"
 msgstr ""
 
 #: includes/elementor/widgets/revues-choix.php
-msgid "Choisissez au moins un article."
+msgid "Précision sous « Papier »"
 msgstr ""
 
 #: includes/elementor/widgets/revues-choix.php
-msgid "Choix d'achat du numéro"
+msgid "Produits"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Le bouton « Ajouter au panier » est un bouton Elementor ordinaire : donnez-lui la classe CSS « on-revues-add » (Avancé > Classes CSS)."
 msgstr ""
 
 #: includes/elementor/widgets/revues-choix.php
@@ -1647,11 +1566,15 @@ msgid "Couleur"
 msgstr ""
 
 #: includes/elementor/widgets/revues-choix.php
-msgid "Couleur de la case cochée"
+msgid "Espace entre les choix"
 msgstr ""
 
 #: includes/elementor/widgets/revues-choix.php
-msgid "Couleur de la précision"
+msgid "Choix d'achat du numéro"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Total du choix"
 msgstr ""
 
 #: includes/elementor/widgets/revues-choix.php
@@ -1659,7 +1582,19 @@ msgid "Couleur des messages"
 msgstr ""
 
 #: includes/elementor/widgets/revues-choix.php
+msgid "Rien de choisi"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Couleur de la case cochée"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
 msgid "Début du nom : cahier de partitions"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Message : erreur d'ajout"
 msgstr ""
 
 #: includes/elementor/widgets/revues-choix.php
@@ -1671,59 +1606,7 @@ msgid "Début du nom : papier"
 msgstr ""
 
 #: includes/elementor/widgets/revues-choix.php
-msgid "Espace entre les choix"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "Impossible d'ajouter un article. Réessayez."
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "Libellés"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "Message : erreur d'ajout"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "Message : rien de choisi"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "Numérique"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "Orgues Nouvelles n°"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "Papier"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "Papier épuisé"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "Produits"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "Précision sous « Papier »"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "Rien de choisi"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
 msgid "Taille de la précision"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "Texte"
 msgstr ""
 
 #: includes/elementor/widgets/revues-choix.php
@@ -1731,37 +1614,23 @@ msgid "Textes"
 msgstr ""
 
 #: includes/elementor/widgets/revues-choix.php
-msgid "Titre"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "Titre du numéro (avant le numéro)"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "Total du choix"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid ""
-"Un numéro est reconnu par le début du nom de ses produits, suivi du numéro "
-"(ex. « ONED74 »)."
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "article"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "articles"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid "numérique inclus"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
 msgid "« article » (singulier)"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Texte"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Message : rien de choisi"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Libellés"
+msgstr ""
+
+#: includes/elementor/widgets/revues-choix.php
+msgid "Un numéro est reconnu par le début du nom de ses produits, suivi du numéro (ex. « ONED74 »)."
 msgstr ""
 
 #: includes/elementor/widgets/revues-choix.php
@@ -1769,11 +1638,5 @@ msgid "« articles » (pluriel)"
 msgstr ""
 
 #: includes/elementor/widgets/revues-choix.php
-msgid "épuisé"
-msgstr ""
-
-#: includes/elementor/widgets/revues-choix.php
-msgid ""
-"Le bouton « Ajouter au panier » est un bouton Elementor ordinaire : donnez-"
-"lui la classe CSS « on-revues-add » (Avancé > Classes CSS)."
+msgid "Couleur de la précision"
 msgstr ""
