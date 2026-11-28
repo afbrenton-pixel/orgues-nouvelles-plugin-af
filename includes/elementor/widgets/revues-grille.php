@@ -131,7 +131,8 @@ function on_revues_grille_principal($entry)
 function on_revues_grille_prefixes_par_defaut($lang = 'fr')
 {
     if ($lang === 'en') {
-        return array('papier' => 'Orgues Nouvelles n°', 'numerique' => 'Orgues-Nouvelles', 'cahier' => 'Orgues Nouvelles Music Booklet');
+        // Pas de version papier en anglais : un début de nom vide l'ignore.
+        return array('papier' => '', 'numerique' => 'Orgues-Nouvelles', 'cahier' => 'Orgues Nouvelles Music Booklet');
     }
     return array('papier' => 'Orgues Nouvelles n°', 'numerique' => 'ONED', 'cahier' => 'CahPart');
 }
