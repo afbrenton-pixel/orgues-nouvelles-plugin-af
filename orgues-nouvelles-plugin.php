@@ -149,6 +149,13 @@ function on_register_elementor_widget( $widgets_manager ) {
     require_once(__DIR__ . '/includes/elementor/widgets/search-result-content.php');
 	$widgets_manager->register( new \Search_Form_URL() );
     $widgets_manager->register( new \Search_Result_Content());
+    // Revues hors abonnement : choix d'achat par numéro et total (voir docs/revues-grille.md)
+    if (class_exists('WooCommerce')) {
+        require_once(__DIR__ . '/includes/elementor/widgets/revues-choix.php');
+        require_once(__DIR__ . '/includes/elementor/widgets/revues-total.php');
+        $widgets_manager->register( new \ON_Revues_Choix() );
+        $widgets_manager->register( new \ON_Revues_Total() );
+    }
     // Lecteur PDF en ligne (voir docs/lecture-en-ligne.md)
     if (function_exists('on_usage_page_product')) {
         require_once(__DIR__ . '/includes/elementor/widgets/online-reader.php');
@@ -169,5 +176,17 @@ add_action( 'wp_enqueue_scripts', 'on_register_online_reader_assets', 5 );
 add_action( 'elementor/editor/after_enqueue_scripts', 'on_register_online_reader_assets', 5 );
 add_action( 'elementor/frontend/after_register_scripts', 'on_register_online_reader_assets' );
 add_action( 'elementor/frontend/after_register_styles', 'on_register_online_reader_assets' );
+
+/** Fichiers de la grille des revues : chargés seulement par l'élément (get_*_depends). */
+function on_register_revues_grille_assets() {
+    $dir = plugin_dir_path( __FILE__ );
+    $url = plugin_dir_url( __FILE__ );
+    wp_register_style( 'on-revues-grille', $url . 'assets/css/revues-grille.css', array(), (string) @filemtime( $dir . 'assets/css/revues-grille.css' ) );
+    wp_register_script( 'on-revues-grille', $url . 'assets/js/revues-grille.js', array(), (string) @filemtime( $dir . 'assets/js/revues-grille.js' ), true );
+}
+add_action( 'wp_enqueue_scripts', 'on_register_revues_grille_assets', 5 );
+add_action( 'elementor/editor/after_enqueue_scripts', 'on_register_revues_grille_assets', 5 );
+add_action( 'elementor/frontend/after_register_scripts', 'on_register_revues_grille_assets' );
+add_action( 'elementor/frontend/after_register_styles', 'on_register_revues_grille_assets' );
 
 add_action( 'plugins_loaded', 'on_load_plugin' );

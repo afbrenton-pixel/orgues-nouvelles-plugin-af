@@ -1,0 +1,14 @@
+/* Choix d'achat des revues : mise en page seulement. Les couleurs, polices et
+   tailles se règlent dans Elementor (éléments « Choix d'achat du numéro » et « Total du choix »). */
+.on-revues-choice{display:block}
+.on-revues-o{display:flex;align-items:flex-start;gap:8px;margin:5px 0;line-height:1.25;cursor:pointer}
+.on-revues-o input{margin:2px 0 0;flex:none}
+.on-revues-o b{font-weight:500}
+.on-revues-p{margin-left:auto;white-space:nowrap}
+.on-revues-total{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px}
+.on-revues-msg{font-size:14px}
+.on-revues-add.on-revues-busy{opacity:.6;cursor:wait;pointer-events:none}
+/* Dans la grille de boucle, les produits sans choix (cahier ou numérique d'un numéro déjà présenté, produit sans numéro) ne sont pas affichés. */
+.e-loop-item:not(:has(.on-revues-choice)){display:none}
+.on-revues-off{opacity:.55;cursor:default;padding-left:22px}
+.on-revues-t{margin:6px 0 4px}
