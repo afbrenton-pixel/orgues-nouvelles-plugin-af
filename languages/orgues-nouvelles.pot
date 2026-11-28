@@ -1707,3 +1707,47 @@ msgstr ""
 #: includes/vignettes/duplication.php:149
 msgid "Vignette introuvable."
 msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Papier"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "numérique inclus"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Numérique"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Cahier de partitions seul"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Orgues Nouvelles n°"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Ajouter au panier"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Aucun article choisi"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "article"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "articles"
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Choisissez au moins un article."
+msgstr ""
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Impossible d'ajouter un article. Réessayez."
+msgstr ""

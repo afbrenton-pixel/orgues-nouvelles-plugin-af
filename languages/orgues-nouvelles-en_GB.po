@@ -1814,3 +1814,47 @@ msgstr "Duplicate"
 #: includes/vignettes/duplication.php:149
 msgid "Vignette introuvable."
 msgstr "Vignette not found."
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Papier"
+msgstr "Print"
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "numérique inclus"
+msgstr "digital included"
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Numérique"
+msgstr "Digital"
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Cahier de partitions seul"
+msgstr "Music booklet only"
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Orgues Nouvelles n°"
+msgstr "Orgues Nouvelles n°"
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Ajouter au panier"
+msgstr "Add to cart"
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Aucun article choisi"
+msgstr "No item selected"
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "article"
+msgstr "item"
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "articles"
+msgstr "items"
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Choisissez au moins un article."
+msgstr "Choose at least one item."
+
+#: includes/elementor/widgets/revues-grille.php
+msgid "Impossible d'ajouter un article. Réessayez."
+msgstr "Couldn't add an item. Try again."
